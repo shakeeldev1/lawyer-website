@@ -3,6 +3,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../../features/dashboard/pages/AdminDashboard";
 import MainLayout from "../layouts/MainLayout";
+import AllCases from "../../features/dashboard/components/dashboardCaseManagement/AllCases";
+import CaseTimeline from '../../features/dashboard/components/dashboardCaseManagement/CaseTimeline';
 
 const router = createBrowserRouter([
     {
@@ -14,7 +16,9 @@ const router = createBrowserRouter([
     {
         element: <DashboardLayout />,
         children:[
-            {path:'/dashboard',element:<AdminDashboard />}
+            {path:'/dashboard',element:<AdminDashboard />},
+            {path:"/all-cases",element:<AllCases/>},
+            {path:"/case-timeline",element:<CaseTimeline/>},
         ]
     }
 ])

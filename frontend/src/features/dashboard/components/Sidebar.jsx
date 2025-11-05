@@ -21,8 +21,8 @@ const Sidebar = () => {
             name: "Case Management",
             icon: <FolderOpen size={20} />,
             submenu: [
-                { name: "All Cases", path: "/admin/cases/all" },
-                { name: "Case Timeline", path: "/admin/cases/timeline" },
+                { name: "All Cases", path: "/all-cases" },
+                { name: "Case Timeline", path: "/case-timeline" },
             ],
         },
         { name: "Final Approvals", icon: <FileCheck size={20} />, path: "/admin/approvals" },
