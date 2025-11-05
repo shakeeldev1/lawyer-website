@@ -9,12 +9,7 @@ import {
 import CountUp from "react-countup";
 
 const CaseStageChart = () => {
-  const summaryData = [
-    { label: "Total Cases", value: 125, icon: <Briefcase size={20} />, color: "bg-blue-500" },
-    { label: "Closed Cases", value: 30, icon: <CheckCircle2 size={20} />, color: "bg-green-500" },
-    { label: "Pending Approvals", value: 12, icon: <Clock size={20} />, color: "bg-amber-500" },
-    { label: "Active Lawyers", value: 8, icon: <Users size={20} />, color: "bg-indigo-500" },
-  ];
+
 
   const caseDistribution = [
     { name: "Main Case", value: 60, color: "#3b82f6" },
@@ -40,25 +35,7 @@ const CaseStageChart = () => {
         </button>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {summaryData.map((stat, i) => (
-          <div
-            key={i}
-            className={`p-4 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center gap-3 hover:shadow-md transition`}
-          >
-            <div className={`${stat.color} text-white p-3 rounded-lg`}>
-              {stat.icon}
-            </div>
-            <div>
-              <h4 className="text-slate-600 text-sm">{stat.label}</h4>
-              <p className="text-lg font-semibold text-slate-800">
-                <CountUp end={stat.value} duration={2} />
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      
 
       {/* Charts */}
       <div className="grid md:grid-cols-2 gap-10 mt-6">

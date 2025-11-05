@@ -72,14 +72,14 @@ const RecentCasesTable = () => {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "High": return "bg-red-100 text-red-800";
-      case "Medium": return "bg-amber-100 text-amber-800";
-      case "Low": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
+  // const getPriorityColor = (priority) => {
+  //   switch (priority) {
+  //     case "High": return "bg-red-100 text-red-800";
+  //     case "Medium": return "bg-amber-100 text-amber-800";
+  //     case "Low": return "bg-green-100 text-green-800";
+  //     default: return "bg-gray-100 text-gray-800";
+  //   }
+  // };
 
   const filteredCases = recentCases.filter(caseItem =>
     caseItem.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -111,8 +111,7 @@ const RecentCasesTable = () => {
               <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Case Name</th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Type</th>
               <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Status</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Priority</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Actions</th>
+              {/* <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Priority</th> */}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -135,24 +134,12 @@ const RecentCasesTable = () => {
                     {caseItem.status}
                   </span>
                 </td>
-                <td className="py-4 px-4">
+                {/* <td className="py-4 px-4">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(caseItem.priority)}`}>
                     {caseItem.priority}
                   </span>
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-2">
-                    <button className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors">
-                      <Eye size={16} />
-                    </button>
-                    <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                      <Edit size={16} />
-                    </button>
-                    <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                      <MoreVertical size={16} />
-                    </button>
-                  </div>
-                </td>
+                </td> */}
+                
               </tr>
             ))}
           </tbody>

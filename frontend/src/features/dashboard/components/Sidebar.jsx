@@ -16,21 +16,21 @@ const Sidebar = () => {
     const [openMenu, setOpenMenu] = useState(null);
 
     const links = [
-        { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/admin/overview" },
+        { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/overview" },
         {
             name: "Case Management",
             icon: <FolderOpen size={20} />,
             submenu: [
-                { name: "All Cases", path: "/admin/cases/all" },
-                { name: "Case Timeline", path: "/admin/cases/timeline" },
+                { name: "All Cases", path: "/all-cases" },
+                { name: "Case Timeline", path: "/case-timeline" },
             ],
         },
-        { name: "Final Approvals", icon: <FileCheck size={20} />, path: "/admin/approvals" },
+        { name: "Final Approvals", icon: <FileCheck size={20} />, path: "/final-approval" },
         // { name: "Hearings", icon: <CalendarDays size={20} />, path: "/admin/hearings" },
-        { name: "Archive", icon: <Archive size={20} />, path: "/admin/archive" },
-        { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "/admin/reports" },
-        { name: "Reminders", icon: <Bell size={20} />, path: "/admin/reminders" },
-        { name: "Team Management", icon: <Users size={20} />, path: "/admin/team" },
+        { name: "Archive", icon: <Archive size={20} />, path: "/archive" },
+        { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "/reports" },
+        { name: "Reminders", icon: <Bell size={20} />, path: "/reminders" },
+        { name: "Team Management", icon: <Users size={20} />, path: "/team" },
 
     ];
 
@@ -77,7 +77,7 @@ const Sidebar = () => {
                                                 key={idx}
                                                 to={sub.path}
                                                 className={({ isActive }) =>
-                                                    `p-2 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition ${isActive ? "bg-amber-500 text-white shadow-lg" : ""
+                                                    `p-2 rounded-lg text-slate-300 border-l-2 border-l-[#FE9A00] shadow-inner shadow-white/20 hover:bg-slate-700/50 hover:text-white transition ${isActive ? "bg-amber-500 text-white shadow-lg" : ""
                                                     }`
                                                 }
                                             >
