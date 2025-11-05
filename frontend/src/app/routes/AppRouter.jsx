@@ -3,6 +3,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../../features/dashboard/pages/AdminDashboard";
 import MainLayout from "../layouts/MainLayout";
+import AllCases from "../../features/dashboard/components/dashboardCaseManagement/AllCases";
+import CaseTimeline from '../../features/dashboard/components/dashboardCaseManagement/CaseTimeline';
 import FinalApprovals from "../../features/dashboard/components/DashboardFinalApproval/Finalapprovals";
 import ReportsAnalytics from "../../features/dashboard/components/DashboardReports/ReportsAnalytics";
 import ArchivePage from "../../features/dashboard/components/DashboardArchive/ArchivePage";
@@ -19,6 +21,9 @@ const router = createBrowserRouter([
     {
         element: <DashboardLayout />,
         children:[
+            {path:'/dashboard',element:<AdminDashboard />},
+            {path:"/all-cases",element:<AllCases/>},
+            {path:"/case-timeline",element:<CaseTimeline/>},
             {path:'/overview',element:<AdminDashboard />},
             {path: '/final-approval', element: <FinalApprovals/>},
             {path: '/archive', element: <ArchivePage/>},
