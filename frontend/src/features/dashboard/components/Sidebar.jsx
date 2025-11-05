@@ -35,9 +35,9 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="w-72 h-screen bg-gradient-to-b from-slate-800 to-slate-900 text-gray-100 flex flex-col shadow-2xl border-r border-slate-600">
+        <div className="w-72 h-screen bg-gradient-to-b  from-slate-800 to-slate-900 text-gray-100 flex flex-col shadow-2xl border-r border-slate-600">
             {/* Header */}
-            <div className="p-6 border-b border-slate-700">
+            <div className="px-6 py-4 border-b border-slate-700">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-amber-500 rounded-lg">
                         <Scale size={28} className="text-white" />
@@ -50,7 +50,7 @@ const Sidebar = () => {
             </div>
 
             {/* Navigation Links */}
-            <nav className="flex-1 px-4 py-2 space-y-2">
+            <nav className="flex flex-col px-4 py-1 space-y-1">
                 {links.map((link, i) => (
                     <div key={i}>
                         {link.submenu ? (
