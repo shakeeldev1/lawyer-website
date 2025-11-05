@@ -1,15 +1,37 @@
-import { LayoutDashboard, FileCheck, CalendarDays, Archive, BarChart3, Users, Bell, Scale } from "lucide-react";
+import { useState } from "react";
+import {
+    LayoutDashboard,
+    FileCheck,
+    CalendarDays,
+    Archive,
+    BarChart3,
+    Users,
+    Bell,
+    Scale,
+    FolderOpen,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
+    const [openMenu, setOpenMenu] = useState(null);
+
     const links = [
         { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/admin/overview" },
-        { name: "Pending Approvals", icon: <FileCheck size={20} />, path: "/admin/approvals" },
-        { name: "Hearings", icon: <CalendarDays size={20} />, path: "/admin/hearings" },
+        {
+            name: "Case Management",
+            icon: <FolderOpen size={20} />,
+            submenu: [
+                { name: "All Cases", path: "/admin/cases/all" },
+                { name: "Case Timeline", path: "/admin/cases/timeline" },
+            ],
+        },
+        { name: "Final Approvals", icon: <FileCheck size={20} />, path: "/admin/approvals" },
+        // { name: "Hearings", icon: <CalendarDays size={20} />, path: "/admin/hearings" },
         { name: "Archive", icon: <Archive size={20} />, path: "/admin/archive" },
         { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "/admin/reports" },
         { name: "Reminders", icon: <Bell size={20} />, path: "/admin/reminders" },
-        { name: "Users", icon: <Users size={20} />, path: "/admin/users" },
+        { name: "Team Management", icon: <Users size={20} />, path: "/admin/team" },
+
     ];
 
     return (
@@ -28,34 +50,66 @@ const Sidebar = () => {
             </div>
 
             {/* Navigation Links */}
-            <nav className="flex-1 p-4 space-y-2">
-                {links.map((link) => (
-                    <NavLink
-                        key={link.name}
-                        to={link.path}
-                        className={({ isActive }) =>
-                            `flex items-center gap-4 p-4 rounded-xl transition-all duration-200 group ${isActive
-                                ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25"
-                                : "text-slate-300 hover:bg-slate-700/50 hover:text-white hover:translate-x-1"
-                            }`
-                        }
-                    >
-                        <div className={`transition-transform duration-200 group-hover:scale-110 ${({ isActive }) => isActive ? "scale-110" : ""
-                            }`}>
-                            {link.icon}
-                        </div>
-                        <span className="font-medium">{link.name}</span>
-                        {link.name === "Pending Approvals" && (
-                            <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                                3
-                            </span>
+            <nav className="flex-1 px-4 py-2 space-y-2">
+                {links.map((link, i) => (
+                    <div key={i}>
+                        {link.submenu ? (
+                            <>
+                                {/* Main menu item */}
+                                <button
+                                    onClick={() =>
+                                        setOpenMenu(openMenu === link.name ? null : link.name)
+                                    }
+                                    className="w-full flex items-center gap-4 p-4 rounded-xl text-slate-300 hover:bg-slate-700/50 hover:text-white transition"
+                                >
+                                    {link.icon}
+                                    <span className="font-medium">{link.name}</span>
+                                    <span className="ml-auto">
+                                        {openMenu === link.name ? "▾" : "▸"}
+                                    </span>
+                                </button>
+
+                                {/* Submenu */}
+                                {openMenu === link.name && (
+                                    <div className="ml-8 mt-2 flex flex-col gap-2">
+                                        {link.submenu.map((sub, idx) => (
+                                            <NavLink
+                                                key={idx}
+                                                to={sub.path}
+                                                className={({ isActive }) =>
+                                                    `p-2 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition ${isActive ? "bg-amber-500 text-white shadow-lg" : ""
+                                                    }`
+                                                }
+                                            >
+                                                {sub.name}
+                                            </NavLink>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <NavLink
+                                to={link.path}
+                                className={({ isActive }) =>
+                                    `flex items-center gap-4 p-4 rounded-xl transition-all duration-200 group ${isActive
+                                        ? "bg-amber-500 text-white shadow-lg shadow-amber-500/25"
+                                        : "text-slate-300 hover:bg-slate-700/50 hover:text-white hover:translate-x-1"
+                                    }`
+                                }
+                            >
+                                {link.icon}
+                                <span className="font-medium">{link.name}</span>
+                                {(link.name === "Final Approvals" || link.name === "Reminders") && (
+                                    <span
+                                        className={`ml-auto text-xs px-2 py-1 rounded-full text-white ${link.name === "Final Approvals" ? "bg-red-500 animate-pulse" : "bg-blue-500"
+                                            }`}
+                                    >
+                                        {link.name === "Final Approvals" ? 3 : 5}
+                                    </span>
+                                )}
+                            </NavLink>
                         )}
-                        {link.name === "Reminders" && (
-                            <span className="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                                5
-                            </span>
-                        )}
-                    </NavLink>
+                    </div>
                 ))}
             </nav>
 

@@ -88,7 +88,7 @@ const RecentCasesTable = () => {
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6 mt-20">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <h2 className="text-xl font-bold text-slate-800">Recent Cases</h2>
         <div className="relative">
