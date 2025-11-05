@@ -6,7 +6,7 @@ const Topbar = () => {
   const [searchFocused, setSearchFocused] = useState(false);
 
   return (
-    <header className="w-[1314px] ml-[260px] h-20 bg-gradient-to-r from-slate-800 to-slate-900 shadow-2xl border-b border-slate-700 flex items-center justify-between px-8 fixed top-0 right-0 z-50">
+    <header className="lg:w-[1314px] ml-[260px] h-20 bg-gradient-to-r from-slate-800 to-slate-900 shadow-2xl border-b border-slate-700 flex items-center justify-between px-8 fixed top-0 right-0 z-50">
       {/* Left Section - Branding & Title */}
       <div className="flex items-center gap-4">
         
