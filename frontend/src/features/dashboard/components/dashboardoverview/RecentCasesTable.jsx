@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MoreVertical, Eye, Edit, ArrowUp } from "lucide-react";
+import { Search, ArrowRight } from "lucide-react";
 
 const RecentCasesTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,9 +12,6 @@ const RecentCasesTable = () => {
       type: "Civil Litigation",
       status: "In Progress",
       priority: "High",
-      assignedTo: "Sarah Wilson",
-      lastUpdated: "2024-01-15",
-      nextHearing: "2024-02-10"
     },
     {
       id: "C-2024-002",
@@ -23,9 +20,6 @@ const RecentCasesTable = () => {
       type: "Real Estate",
       status: "Pending Approval",
       priority: "Medium",
-      assignedTo: "David Brown",
-      lastUpdated: "2024-01-14",
-      nextHearing: "2024-02-05"
     },
     {
       id: "C-2024-003",
@@ -34,9 +28,6 @@ const RecentCasesTable = () => {
       type: "Corporate Law",
       status: "Document Review",
       priority: "High",
-      assignedTo: "Sarah Wilson",
-      lastUpdated: "2024-01-13",
-      nextHearing: "2024-01-25"
     },
     {
       id: "C-2024-004",
@@ -45,9 +36,6 @@ const RecentCasesTable = () => {
       type: "Family Law",
       status: "Completed",
       priority: "Low",
-      assignedTo: "Emily Chen",
-      lastUpdated: "2024-01-12",
-      nextHearing: "N/A"
     },
     {
       id: "C-2024-005",
@@ -56,103 +44,108 @@ const RecentCasesTable = () => {
       type: "Labor Law",
       status: "In Progress",
       priority: "Medium",
-      assignedTo: "David Brown",
-      lastUpdated: "2024-01-11",
-      nextHearing: "2024-01-30"
-    }
+    },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "In Progress": return "bg-blue-100 text-blue-800";
-      case "Pending Approval": return "bg-amber-100 text-amber-800";
-      case "Document Review": return "bg-purple-100 text-purple-800";
-      case "Completed": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "In Progress":
+        return "bg-[#fe9a00]/10 text-[#fe9a00]";
+      case "Pending Approval":
+        return "bg-[#1c283c]/10 text-[#1c283c]";
+      case "Document Review":
+        return "bg-gray-100 text-gray-800";
+      case "Completed":
+        return "bg-green-100 text-green-700";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  // const getPriorityColor = (priority) => {
-  //   switch (priority) {
-  //     case "High": return "bg-red-100 text-red-800";
-  //     case "Medium": return "bg-amber-100 text-amber-800";
-  //     case "Low": return "bg-green-100 text-green-800";
-  //     default: return "bg-gray-100 text-gray-800";
-  //   }
-  // };
-
-  const filteredCases = recentCases.filter(caseItem =>
-    caseItem.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    caseItem.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    caseItem.type.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCases = recentCases.filter(
+    (caseItem) =>
+      caseItem.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      caseItem.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      caseItem.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 mt-20">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mt-20 transition-all duration-300 hover:shadow-xl">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-        <h2 className="text-xl font-bold text-slate-800">Recent Cases</h2>
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
+        <h2 className="text-2xl font-bold text-[#1c283c]">Recent Cases</h2>
+
+        <div className="relative w-full sm:w-64">
+          <Search
+            className="absolute left-3 top-2.5 text-gray-400"
+            size={18}
+          />
           <input
             type="text"
             placeholder="Search cases..."
-            className="pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] transition-all"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Case ID</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Case Name</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Type</th>
-              <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Status</th>
-              {/* <th className="text-left py-3 px-4 text-sm font-semibold text-slate-600">Priority</th> */}
+      {/* Table */}
+      <div className="overflow-hidden border border-gray-100 rounded-xl">
+        <table className="w-full text-sm">
+          <thead className="bg-[#1c283c] text-white">
+            <tr>
+              <th className="text-left py-3 px-5 font-semibold">Case ID</th>
+              <th className="text-left py-3 px-5 font-semibold">Case Name</th>
+              <th className="text-left py-3 px-5 font-semibold">Type</th>
+              <th className="text-left py-3 px-5 font-semibold">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+
+          <tbody className="divide-y divide-gray-100 bg-white">
             {filteredCases.map((caseItem, index) => (
-              <tr key={index} className="hover:bg-slate-50 transition-colors">
-                <td className="py-4 px-4">
-                  <span className="font-mono text-sm text-slate-600">{caseItem.id}</span>
+              <tr
+                key={index}
+                className="hover:bg-[#fe9a00]/5 transition-all duration-200"
+              >
+                <td className="py-4 px-5 text-[#1c283c]/80 font-medium font-mono">
+                  {caseItem.id}
                 </td>
-                <td className="py-4 px-4">
+                <td className="py-4 px-5">
                   <div>
-                    <p className="font-medium text-slate-800">{caseItem.caseName}</p>
-                    <p className="text-sm text-slate-500">{caseItem.client}</p>
+                    <p className="font-semibold text-[#1c283c]">
+                      {caseItem.caseName}
+                    </p>
+                    <p className="text-xs text-gray-500">{caseItem.client}</p>
                   </div>
                 </td>
-                <td className="py-4 px-4">
-                  <span className="text-sm text-slate-600">{caseItem.type}</span>
+                <td className="py-4 px-5 text-[#1c283c]/70">
+                  {caseItem.type}
                 </td>
-                <td className="py-4 px-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(caseItem.status)}`}>
+                <td className="py-4 px-5">
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      caseItem.status
+                    )}`}
+                  >
                     {caseItem.status}
                   </span>
                 </td>
-                {/* <td className="py-4 px-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(caseItem.priority)}`}>
-                    {caseItem.priority}
-                  </span>
-                </td> */}
-                
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-200">
-        <p className="text-sm text-slate-600">
-          Showing {filteredCases.length} of {recentCases.length} cases
+      {/* Footer */}
+      <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
+        <p className="text-sm text-gray-500">
+          Showing <b>{filteredCases.length}</b> of{" "}
+          <b>{recentCases.length}</b> cases
         </p>
-        <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
+        <button className="flex items-center gap-2 text-sm font-medium text-[#fe9a00] hover:text-[#1c283c] transition-all">
           View All Cases
-          <ArrowUp size={16} className="rotate-90" />
+          <ArrowRight size={16} />
         </button>
       </div>
     </div>

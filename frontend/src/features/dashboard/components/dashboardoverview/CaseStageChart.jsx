@@ -1,4 +1,4 @@
-import { Download, Briefcase, CheckCircle2, Clock, Users } from "lucide-react";
+import { Download } from "lucide-react";
 import {
   PieChart,
   Pie,
@@ -9,13 +9,11 @@ import {
 import CountUp from "react-countup";
 
 const CaseStageChart = () => {
-
-
   const caseDistribution = [
-    { name: "Main Case", value: 60, color: "#3b82f6" },
-    { name: "Appeal", value: 35, color: "#f59e0b" },
-    { name: "Cassation", value: 15, color: "#10b981" },
-    { name: "Closed", value: 30, color: "#22c55e" },
+    { name: "Main Case", value: 60, color: "#1c283c" },
+    { name: "Appeal", value: 35, color: "#fe9a00" },
+    { name: "Cassation", value: 15, color: "#6b7280" }, // muted gray for contrast
+    { name: "Closed", value: 30, color: "#d1d5db" }, // light gray tone
   ];
 
   const lawyerPerformance = [
@@ -26,22 +24,20 @@ const CaseStageChart = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-slate-50 to-white p-8 rounded-3xl shadow-lg border border-slate-200 w-full space-y-8">
+    <div className="bg-white mt-20 p-8 rounded-2xl shadow-md border border-gray-100 w-full space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800">Managing Director Overview</h2>
-        <button className="flex items-center gap-2 text-sm bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-lg transition">
+        <h2 className="text-2xl font-bold text-[#1c283c]">Managing Director Overview</h2>
+        <button className="flex items-center gap-2 text-sm bg-[#1c283c] text-white hover:bg-[#fe9a00] px-4 py-2 rounded-lg transition-colors duration-300 shadow-sm">
           <Download size={16} /> Export Report
         </button>
       </div>
 
-      
-
       {/* Charts */}
       <div className="grid md:grid-cols-2 gap-10 mt-6">
         {/* Left - Donut Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Case Distribution</h3>
+        <div className="bg-[#f9fafb] p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-[#1c283c] mb-4">Case Distribution</h3>
           <div className="flex items-center justify-center">
             <ResponsiveContainer width="100%" height={240}>
               <PieChart>
@@ -49,19 +45,27 @@ const CaseStageChart = () => {
                   data={caseDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
+                  innerRadius={65}
                   outerRadius={100}
-                  paddingAngle={4}
+                  paddingAngle={3}
                   dataKey="value"
                 >
                   {caseDistribution.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#ffffff",
+                    borderRadius: "10px",
+                    border: "1px solid #e5e7eb",
+                    color: "#1c283c",
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
+
           <div className="mt-6 grid grid-cols-2 gap-y-2">
             {caseDistribution.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -69,7 +73,7 @@ const CaseStageChart = () => {
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="text-sm text-slate-600">
+                <span className="text-sm text-[#1c283c]">
                   {item.name} – <b>{item.value}</b>
                 </span>
               </div>
@@ -78,24 +82,24 @@ const CaseStageChart = () => {
         </div>
 
         {/* Right - Lawyer Performance */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-lg font-semibold text-slate-800 mb-6">
-            Lawyers Performance
-          </h3>
+        <div className="bg-[#f9fafb] p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-[#1c283c] mb-6">Lawyers Performance</h3>
           <div className="space-y-5">
             {lawyerPerformance.map((lawyer, i) => (
               <div key={i}>
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium text-slate-700">{lawyer.name}</span>
-                  <span className="text-slate-600">{lawyer.cases} Cases</span>
+                  <span className="font-medium text-[#1c283c]">{lawyer.name}</span>
+                  <span className="text-gray-600">
+                    <CountUp end={lawyer.cases} duration={1.5} /> Cases
+                  </span>
                 </div>
-                <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-3 rounded-full transition-all duration-1000"
+                    className="h-2.5 rounded-full transition-all duration-1000"
                     style={{
                       width: `${(lawyer.cases / 30) * 100}%`,
-                      background: "linear-gradient(to right, #6366f1, #3b82f6)",
-                      boxShadow: "0 0 8px #6366f140",
+                      background:
+                        "linear-gradient(to right, #fe9a00, #1c283c)",
                     }}
                   ></div>
                 </div>
