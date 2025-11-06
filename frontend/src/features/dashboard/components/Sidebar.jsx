@@ -16,14 +16,8 @@ const Sidebar = () => {
 
   const links = [
     { name: "Overview", icon: <LayoutDashboard size={20} />, path: "overview" },
-    {
-      name: "Case Management",
-      icon: <FolderOpen size={20} />,
-      submenu: [
-        { name: "All Cases", path: "all-cases" },
-        { name: "Case Timeline", path: "case-timeline" },
-      ],
-    },
+    { name: "All Cases", icon: <FolderOpen size={20} />, path: "all-cases" },
+
     { name: "Final Approvals", icon: <FileCheck size={20} />, path: "final-approval" },
     { name: "Archive", icon: <Archive size={20} />, path: "archive" },
     { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "reports" },
@@ -61,9 +55,11 @@ const Sidebar = () => {
           <div key={i}>
             {link.submenu ? (
               <>
-                {/* Dropdown Button */}
+                {/* Dropdown Link */}
                 <button
-                  onClick={() => setOpenMenu(openMenu === link.name ? null : link.name)}
+                  onClick={() =>
+                    setOpenMenu(openMenu === link.name ? null : link.name)
+                  }
                   className={`w-full flex items-center gap-3 p-3 rounded-lg font-medium transition-all duration-200 ${
                     openMenu === link.name
                       ? "bg-[#fe9a00]/15 text-[#fe9a00]"
@@ -72,10 +68,11 @@ const Sidebar = () => {
                 >
                   {link.icon}
                   <span>{link.name}</span>
-                  <span className="ml-auto text-xs">{openMenu === link.name ? "▾" : "▸"}</span>
+                  <span className="ml-auto text-xs">
+                    {openMenu === link.name ? "▾" : "▸"}
+                  </span>
                 </button>
 
-                {/* Submenu */}
                 {openMenu === link.name && (
                   <div className="ml-8 mt-2 flex flex-col gap-2 transition-all duration-300">
                     {link.submenu.map((sub, idx) => (
@@ -110,6 +107,7 @@ const Sidebar = () => {
                 {link.icon}
                 <span className="font-medium">{link.name}</span>
 
+                {/* Notification Badges */}
                 {(link.name === "Final Approvals" || link.name === "Reminders") && (
                   <span
                     className={`ml-auto text-xs px-2 py-1 rounded-full font-semibold ${
