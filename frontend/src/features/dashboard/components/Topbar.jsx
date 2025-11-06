@@ -23,16 +23,16 @@ const Topbar = () => {
         </div>
 
         {/* Notification Bell */}
-        <div className="relative group">
-          <button className="p-2.5 rounded-xl bg-[#1c283c]/80 hover:bg-[#24344f] text-slate-300 hover:text-white transition-all duration-200 relative">
+        {/* <div className="relative group"> */}
+          {/* <button className="p-2.5 rounded-xl bg-[#1c283c]/80 hover:bg-[#24344f] text-slate-300 hover:text-white transition-all duration-200 relative">
             <Bell size={22} />
             <span className="absolute -top-1 -right-1 bg-[#fe9a00] text-white text-xs px-1.5 py-0.5 rounded-full shadow-lg animate-pulse">
               3
             </span>
-          </button>
+          </button> */}
 
           {/* Notification Dropdown */}
-          <div className="absolute right-0 mt-3 w-64 bg-[#1c283c]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-[#fe9a00]/20 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+          {/* <div className="absolute right-0 mt-3 w-64 bg-[#1c283c]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-[#fe9a00]/20 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
             <p className="text-white font-semibold mb-2">Notifications</p>
             <div className="space-y-2">
               <div className="text-sm text-slate-300 p-2 rounded-lg bg-slate-700/50">
@@ -42,8 +42,8 @@ const Topbar = () => {
                 Hearing reminder in 2 hours.
               </div>
             </div>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
 
         {/* Profile Dropdown */}
         <div className="relative">

@@ -15,20 +15,20 @@ const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(null);
 
   const links = [
-    { name: "Overview", icon: <LayoutDashboard size={20} />, path: "/overview" },
+    { name: "Overview", icon: <LayoutDashboard size={20} />, path: "overview" },
     {
       name: "Case Management",
       icon: <FolderOpen size={20} />,
       submenu: [
-        { name: "All Cases", path: "/all-cases" },
-        { name: "Case Timeline", path: "/case-timeline" },
+        { name: "All Cases", path: "all-cases" },
+        { name: "Case Timeline", path: "case-timeline" },
       ],
     },
-    { name: "Final Approvals", icon: <FileCheck size={20} />, path: "/final-approval" },
-    { name: "Archive", icon: <Archive size={20} />, path: "/archive" },
-    { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "/reports" },
-    { name: "Reminders", icon: <Bell size={20} />, path: "/reminders" },
-    { name: "Team Management", icon: <Users size={20} />, path: "/team" },
+    { name: "Final Approvals", icon: <FileCheck size={20} />, path: "final-approval" },
+    { name: "Archive", icon: <Archive size={20} />, path: "archive" },
+    { name: "Reports & Analytics", icon: <BarChart3 size={20} />, path: "reports" },
+    { name: "Reminders", icon: <Bell size={20} />, path: "reminders" },
+    { name: "Team Management", icon: <Users size={20} />, path: "team" },
   ];
 
   return (
