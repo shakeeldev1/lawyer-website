@@ -1,11 +1,11 @@
 import DashboardLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../../features/dashboard/pages/AdminDashboard";
 import ReportsAnalytics from "../../features/dashboard/components/DashboardReports/ReportsAnalytics";
-import ArchivePage from "../../features/dashboard/components/DashboardArchive/ArchivePage";
 import TeamManagement from "../../features/dashboard/components/DashboardTeamManagement/TeamManagement";
 import FinalApprovals from "../../features/dashboard/pages/FinalApprovals";
 import AllCases from "../../features/dashboard/pages/AllCases";
 import RemindersPage from "../../features/dashboard/pages/RemindersPage";
+import Archive from "../../features/dashboard/pages/Archive";
 
 
 export const adminRoutes = {
