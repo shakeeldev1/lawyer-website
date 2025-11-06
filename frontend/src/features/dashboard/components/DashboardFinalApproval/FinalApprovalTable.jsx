@@ -32,13 +32,12 @@ const FinalApprovalTable = ({ cases, onView }) => {
               {/* Status Badge */}
               <td className="px-6 py-4">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    c.status === "Pending Review"
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${c.status === "Pending Review"
                       ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
                       : c.status === "Approved & Signed"
-                      ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                      : "bg-red-500/20 text-red-300 border border-red-500/30"
-                  }`}
+                        ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                        : "bg-red-500/20 text-red-300 border border-red-500/30"
+                    }`}
                 >
                   {c.status}
                 </span>
@@ -61,7 +60,7 @@ const FinalApprovalTable = ({ cases, onView }) => {
       </table>
 
       {/* Subtle Gradient Footer Bar */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00] rounded-b-2xl" />
+         <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00] rounded-b-2xl" />
     </div>
   );
 };
