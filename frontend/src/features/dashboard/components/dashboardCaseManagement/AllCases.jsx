@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Search, Eye, Filter, ChevronDown } from "lucide-react";
-import CaseTimeline from "./CaseTimeline";
+import { Search, Filter, ChevronDown, Eye } from "lucide-react";
 
 const AllCases = () => {
   const [search, setSearch] = useState("");
@@ -11,7 +10,6 @@ const AllCases = () => {
       id: 1,
       caseNumber: "C-2025-001",
       clientName: "Ahmed Ali",
-      stage: "Main Case",
       lawyer: "Ragab",
       status: "Approved",
       lastUpdate: "2025-11-02",
@@ -20,7 +18,6 @@ const AllCases = () => {
       id: 2,
       caseNumber: "C-2025-002",
       clientName: "Mariam Hassan",
-      stage: "Appeal",
       lawyer: "Sara",
       status: "Pending",
       lastUpdate: "2025-11-03",
@@ -33,19 +30,16 @@ const AllCases = () => {
       c.caseNumber.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (selectedCase) {
-    return <CaseTimeline caseData={selectedCase} onBack={() => setSelectedCase(null)} />;
-  }
-
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen border-2 mt-10">
+    <div className="p-6 mt-24 space-y-6 bg-gray-50 min-h-screen">
+      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">All Cases</h1>
         <p className="text-gray-600">Managing Director — View and track all cases</p>
       </div>
 
-      {/* Search + Filter */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+      {/* Search & Filter */}
+      <div className="bg-white p-5 rounded-2xl shadow border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="relative w-full sm:w-96">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -64,13 +58,12 @@ const AllCases = () => {
       </div>
 
       {/* Cases Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-gray-50 border-b">
             <tr>
               <th className="p-4 text-sm font-semibold text-gray-600">Case No.</th>
               <th className="p-4 text-sm font-semibold text-gray-600">Client</th>
-              <th className="p-4 text-sm font-semibold text-gray-600">Stage</th>
               <th className="p-4 text-sm font-semibold text-gray-600">Lawyer</th>
               <th className="p-4 text-sm font-semibold text-gray-600">Status</th>
               <th className="p-4 text-sm font-semibold text-gray-600">Last Update</th>
@@ -82,7 +75,6 @@ const AllCases = () => {
               <tr key={c.id} className="hover:bg-gray-50 border-b">
                 <td className="p-4 font-medium">{c.caseNumber}</td>
                 <td className="p-4">{c.clientName}</td>
-                <td className="p-4">{c.stage}</td>
                 <td className="p-4">{c.lawyer}</td>
                 <td className="p-4">
                   <span
@@ -113,6 +105,26 @@ const AllCases = () => {
           <div className="text-center py-10 text-gray-500">No cases found</div>
         )}
       </div>
+
+      {/* View Modal */}
+      {selectedCase && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-96 relative">
+            <h3 className="text-xl font-bold mb-4">Case Details</h3>
+            <p><strong>Case No:</strong> {selectedCase.caseNumber}</p>
+            <p><strong>Client:</strong> {selectedCase.clientName}</p>
+            <p><strong>Lawyer:</strong> {selectedCase.lawyer}</p>
+            <p><strong>Status:</strong> {selectedCase.status}</p>
+            <p><strong>Last Update:</strong> {selectedCase.lastUpdate}</p>
+            <button
+              className="absolute top-2 right-2 text-slate-400 hover:text-slate-800 font-bold"
+              onClick={() => setSelectedCase(null)}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
