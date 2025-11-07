@@ -38,6 +38,16 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "inactive"],
         defautl: "active"
     },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    otp: {
+        type: String
+    },
+    otpExpires: {
+        type: Date
+    }
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {
