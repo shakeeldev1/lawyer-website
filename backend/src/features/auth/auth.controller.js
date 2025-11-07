@@ -112,3 +112,24 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Account Verified Successfully" });
 })
 
+export const logout = asyncHandler(async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+    })
+    res.status(200).json({ message: "Logout successfull" })
+})
+
+export const myProfile = asyncHandler(async (req, res) => {
+    const user = req.user;
+
+    if (!user)
+        throw new customError('User not found', 404)
+
+    res.status(200).json({
+        success: true,
+        message: "Profile fetched successfully",
+        user
+    })
+})
