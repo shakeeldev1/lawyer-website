@@ -1,11 +1,11 @@
 import DashboardLayout from "../layouts/AdminLayout";
 import AdminDashboard from "../../features/dashboard/pages/AdminDashboard";
-import ReportsAnalytics from "../../features/dashboard/components/DashboardReports/ReportsAnalytics";
-import TeamManagement from "../../features/dashboard/components/DashboardTeamManagement/TeamManagement";
+import ArchivePage from "../../features/dashboard/components/DashboardArchive/ArchivePage";
 import FinalApprovals from "../../features/dashboard/pages/FinalApprovals";
 import AllCases from "../../features/dashboard/pages/AllCases";
 import RemindersPage from "../../features/dashboard/pages/RemindersPage";
-import Archive from "../../features/dashboard/pages/Archive";
+import ReportsAndAnalytics from "../../features/dashboard/pages/ReportsAndAnalytics";
+import UsersPage from "../../features/dashboard/pages/Users";
 
 
 export const adminRoutes = {
@@ -15,9 +15,9 @@ export const adminRoutes = {
         { path: "overview", element: <AdminDashboard /> },
        {path:"all-cases",element:<AllCases/>},
         { path: "final-approval", element: <FinalApprovals /> },
-        { path: "archive", element:<Archive/>},
-        { path: "reports", element: <ReportsAnalytics /> },
+        { path: "archive", element: <ArchivePage /> },
+        { path: "reports", element: <ReportsAndAnalytics /> },
         { path: "reminders", element: <RemindersPage /> },
-        { path: "team", element: <TeamManagement /> },
+        { path: "team", element: <UsersPage /> },
     ],
 };

@@ -1,14 +1,15 @@
-import RecentOrdersTable from "../components/dashboardoverview/RecentCasesTable"
-import RevenueChart from "../components/dashboardoverview/CaseStageChart"
-import StatsCard from "../components/dashboardoverview/StatsCard"
-import OverviewHeader from "../components/dashboardoverview/OverviewHeader"
-import { useEffect, useState } from "react"
+// src/pages/lawyer/LawyerOverview.jsx
+import React, { useEffect, useState } from "react";
+import OverviewCharts from "../components/LawyerOverview/OverviewCharts";
+import RecentActivitiesTable from "../components/LawyerOverview/RecentActivitiesTable";
+import StatCards from "../components/LawyerOverview/StatCards";
 
-const AdminDashboard = () => {
 
+const LawyerOverview = () => {
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   
-    // ✅ Sync with sidebar state
+
+   // ✅ Sync with sidebar state
     useEffect(() => {
       const handleResize = () => {
         const desktop = window.innerWidth >= 1024;
@@ -36,18 +37,24 @@ const AdminDashboard = () => {
     }, []);
   return (
     <div
-      className={`min-h-screen
+      className={`min-h-screen 
                  px-3 sm:px-4 md:px-6 lg:px-2
                  py-3 sm:py-4 md:py-5 
                  transition-all duration-300 ease-in-out
-              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
     >
-                  <OverviewHeader/>
-      <StatsCard />
-      <RevenueChart />
-      <RecentOrdersTable />
-    </div>
-  )
-}
+      {/* Title & Subtitle */}
+      <div className="mb-6 mt-20">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Overview</h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Track your cases, memorandums, approvals, and upcoming hearings.</p>
+      </div>
 
-export default AdminDashboard
+      {/* Components */}
+      <StatCards />
+      <OverviewCharts />
+      <RecentActivitiesTable/>
+    </div>
+  );
+};
+
+export default LawyerOverview;

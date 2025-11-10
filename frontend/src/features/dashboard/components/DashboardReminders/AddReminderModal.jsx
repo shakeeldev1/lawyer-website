@@ -21,8 +21,8 @@ const AddReminderModal = ({ onClose, onSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
-      <div className="bg-[#1C283C] text-white p-6 rounded-xl shadow-2xl w-[90%] sm:w-[400px] border border-[#fe9a00]/30">
+    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 lg:top-14">
+      <div className="bg-[#E1E1E2] text-[#162030] p-6 rounded-xl shadow-2xl w-[90%] sm:w-[400px] border border-[#fe9a00]/30">
         <h3 className="text-lg font-semibold text-[#fe9a00] mb-4">Add New Reminder</h3>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -32,7 +32,7 @@ const AddReminderModal = ({ onClose, onSubmit }) => {
             placeholder="Case Name"
             value={form.caseName}
             onChange={handleChange}
-            className="w-full p-2 rounded-lg bg-[#24344f] border border-[#fe9a00]/30 focus:outline-none"
+            className="w-full p-2 rounded-lg bg-white border border-[#fe9a00]/30 focus:outline-none"
           />
           <input
             type="text"
@@ -40,13 +40,13 @@ const AddReminderModal = ({ onClose, onSubmit }) => {
             placeholder="Lawyer"
             value={form.lawyer}
             onChange={handleChange}
-            className="w-full p-2 rounded-lg bg-[#24344f] border border-[#fe9a00]/30 focus:outline-none"
+            className="w-full p-2 rounded-lg bg-white border border-[#fe9a00]/30 focus:outline-none"
           />
           <select
             name="stage"
             value={form.stage}
             onChange={handleChange}
-            className="w-full p-2 rounded-lg bg-[#24344f] border border-[#fe9a00]/30 focus:outline-none"
+            className="w-full p-2 rounded-lg bg-white border border-[#fe9a00]/30 focus:outline-none"
           >
             <option>Main Case</option>
             <option>Appeal</option>
@@ -56,7 +56,7 @@ const AddReminderModal = ({ onClose, onSubmit }) => {
             name="type"
             value={form.type}
             onChange={handleChange}
-            className="w-full p-2 rounded-lg bg-[#24344f] border border-[#fe9a00]/30 focus:outline-none"
+            className="w-full p-2 rounded-lg bg-white border border-[#fe9a00]/30 focus:outline-none"
           >
             <option>Before Hearing</option>
             <option>Before Submission</option>
@@ -67,7 +67,7 @@ const AddReminderModal = ({ onClose, onSubmit }) => {
             name="date"
             value={form.date}
             onChange={handleChange}
-            className="w-full p-2 rounded-lg bg-[#24344f] border border-[#fe9a00]/30 focus:outline-none"
+            className="w-full p-2 rounded-lg bg-white border border-[#fe9a00]/30 focus:outline-none"
           />
 
           <div className="flex justify-end gap-3 mt-4">

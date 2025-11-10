@@ -1,4 +1,12 @@
-import { TrendingUp, Users, FileText, Calendar, Clock, ArrowUp, ArrowDown } from "lucide-react";
+import {
+  TrendingUp,
+  Users,
+  FileText,
+  Calendar,
+  Clock,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 
 const StatsCard = () => {
   const statsData = [
@@ -37,24 +45,26 @@ const StatsCard = () => {
   ];
 
   return (
-    <div className="mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 px-2 sm:px-4">
       {statsData.map((stat, index) => (
         <div
           key={index}
-          className="bg-white border border-gray-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          className="bg-white border border-gray-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between h-[150px]"
           style={{
             borderLeft: `4px solid #fe9a00`,
-            height: "150px", // reduced height for sleek look
           }}
         >
-          <div className="p-5 flex flex-col justify-between h-full">
+          <div className="p-4 sm:p-5 flex flex-col justify-between h-full">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-[#1c283c]/10">{stat.icon}</div>
-                <h3 className="text-sm font-medium text-[#1c283c]">{stat.title}</h3>
+                <h3 className="text-sm sm:text-base font-medium text-[#1c283c]">
+                  {stat.title}
+                </h3>
               </div>
+
               <div
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${
+                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
                   stat.trend === "up"
                     ? "bg-green-100 text-green-700"
                     : "bg-red-100 text-red-600"
@@ -66,8 +76,10 @@ const StatsCard = () => {
             </div>
 
             <div className="mt-3">
-              <p className="text-2xl font-bold text-[#1c283c]">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.description}</p>
+              <p className="text-xl sm:text-2xl font-bold text-[#1c283c]">
+                {stat.value}
+              </p>
+              <p className="text-xs sm:text-sm text-gray-500">{stat.description}</p>
             </div>
           </div>
         </div>

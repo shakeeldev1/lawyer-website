@@ -24,153 +24,155 @@ const AddCaseModal = ({ onCancel, onSubmit }) => {
       !formData.lawyer.trim()
     )
       return;
-
     onSubmit(formData);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+   <div className="fixed inset-0 bg-black/80 flex justify-center items-center backdrop-blur px-4 sm:px-6 z-[9999]">
+
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
-        className="relative bg-[#1c283c] text-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 border border-[#fe9a00]/20"
+        className="relative bg-[#E1E1E2] text-white rounded-2xl shadow-2xl w-full max-w-2xl 
+        overflow-y-auto scrollbar-thin scrollbar-thumb-[#fe9a00]/40 scrollbar-track-transparent max-h-[85vh]"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold flex items-center gap-2">
-            <FilePlus className="w-5 h-5 text-[#fe9a00]" />
+
+        {/* Full Colored Header */}
+        <div className="sticky top-0 z-20 bg-slate-800 text-white px-5 sm:px-8 py-4 rounded-t-2xl flex items-center justify-between shadow-md">
+          <h3 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+            <FilePlus className="w-5 h-5" />
             Add New Case
           </h3>
           <button
             onClick={onCancel}
-            className="text-gray-400 hover:text-[#fe9a00] transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#1c283c] 
+            hover:bg-white hover:text-gray-900 transition-all duration-200 shadow-md"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Case Number
-            </label>
-            <input
-              type="text"
-              name="caseNumber"
-              value={formData.caseNumber}
-              onChange={handleChange}
-              placeholder="e.g., C-2025-004"
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none placeholder-gray-400"
-            />
+        {/* Form Section */}
+        <div className="p-6 sm:p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            {[
+              {
+                label: "Case Number",
+                name: "caseNumber",
+                placeholder: "e.g., C-2025-004",
+                type: "text",
+              },
+              {
+                label: "Client Name",
+                name: "clientName",
+                placeholder: "Enter client name",
+                type: "text",
+              },
+              {
+                label: "Lawyer",
+                name: "lawyer",
+                placeholder: "Assigned lawyer",
+                type: "text",
+              },
+            ].map((input) => (
+              <div key={input.name}>
+                <label className="block text-sm text-[#1e2738] mb-1 sm:mb-2">
+                  {input.label}
+                </label>
+                <input
+                  type={input.type}
+                  name={input.name}
+                  value={formData[input.name]}
+                  onChange={handleChange}
+                  placeholder={input.placeholder}
+                  className="w-full bg-gray-50 text-gray-900 border border-gray-300 rounded-xl p-2.5 sm:p-3 text-sm 
+                  focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] focus:outline-none placeholder-gray-500 transition-all duration-200"
+                />
+              </div>
+            ))}
+
+            {/* Stage Dropdown */}
+            <div>
+              <label className="block text-sm text-[#1e2738] mb-1 sm:mb-2">
+                Stage
+              </label>
+              <select
+                name="stage"
+                value={formData.stage}
+                onChange={handleChange}
+                className="w-full bg-gray-50 text-[#1e2738] border border-gray-300 rounded-xl p-2.5 sm:p-3 text-sm 
+                focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] focus:outline-none transition-all duration-200"
+              >
+                <option>Main Case</option>
+                <option>Appeal</option>
+                <option>Cassation</option>
+              </select>
+            </div>
+
+            {/* Status Dropdown */}
+            <div>
+              <label className="block text-sm text-[#1e2738] mb-1 sm:mb-2">
+                Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full bg-gray-50 text-gray-900 border border-gray-300 rounded-xl p-2.5 sm:p-3 text-sm 
+                focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] focus:outline-none transition-all duration-200"
+              >
+                <option>Submitted</option>
+                <option>Awaiting Approval</option>
+                <option>In Progress</option>
+                <option>Closed</option>
+              </select>
+            </div>
+
+            {/* Hearing Date */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm text-[#1e2738] mb-1 sm:mb-2">
+                Hearing Date
+              </label>
+              <input
+                type="date"
+                name="hearingDate"
+                value={formData.hearingDate}
+                onChange={handleChange}
+                className="w-full bg-gray-50 text-gray-900 border border-gray-300 rounded-xl p-2.5 sm:p-3 text-sm 
+                focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] focus:outline-none transition-all duration-200"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Client Name
-            </label>
-            <input
-              type="text"
-              name="clientName"
-              value={formData.clientName}
-              onChange={handleChange}
-              placeholder="Enter client name"
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none placeholder-gray-400"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Lawyer</label>
-            <input
-              type="text"
-              name="lawyer"
-              value={formData.lawyer}
-              onChange={handleChange}
-              placeholder="Assigned lawyer"
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none placeholder-gray-400"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Stage</label>
-            <select
-              name="stage"
-              value={formData.stage}
-              onChange={handleChange}
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none"
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8 pb-2">
+            <button
+              onClick={onCancel}
+              className="px-5 py-2.5 rounded-full bg-gray-700 text-gray-200 hover:bg-gray-600 transition-all duration-200 w-full sm:w-auto"
             >
-              <option>Main Case</option>
-              <option>Appeal</option>
-              <option>Cassation</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">Status</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none"
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={
+                !formData.caseNumber.trim() ||
+                !formData.clientName.trim() ||
+                !formData.lawyer.trim()
+              }
+              className={`px-5 py-2.5 rounded-full font-semibold transition-all duration-200 shadow-md w-full sm:w-auto
+                ${
+                  formData.caseNumber.trim() &&
+                  formData.clientName.trim() &&
+                  formData.lawyer.trim()
+                    ? "bg-[#fe9a00] text-[#1c283c] hover:bg-[#ffad33]"
+                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                }`}
             >
-              <option>Submitted</option>
-              <option>Awaiting Approval</option>
-              <option>In Progress</option>
-              <option>Closed</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-300 mb-1">
-              Hearing Date
-            </label>
-            <input
-              type="date"
-              name="hearingDate"
-              value={formData.hearingDate}
-              onChange={handleChange}
-              className="w-full bg-[#162030] text-gray-200 border border-[#fe9a00]/30 rounded-xl p-3 text-sm 
-              focus:ring-2 focus:ring-[#fe9a00] focus:outline-none"
-            />
+              Add Case
+            </button>
           </div>
         </div>
-
-        {/* Buttons */}
-        <div className="flex justify-end gap-3 mt-8">
-          <button
-            onClick={onCancel}
-            className="px-5 py-2.5 rounded-full bg-gray-700 text-gray-200 hover:bg-gray-600 transition-all duration-200"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={
-              !formData.caseNumber.trim() ||
-              !formData.clientName.trim() ||
-              !formData.lawyer.trim()
-            }
-            className={`px-5 py-2.5 rounded-full font-semibold transition-all duration-200 shadow-md
-              ${
-                formData.caseNumber.trim() &&
-                formData.clientName.trim() &&
-                formData.lawyer.trim()
-                  ? "bg-[#fe9a00] text-[#1c283c] hover:bg-[#ffad33]"
-                  : "bg-gray-500 text-gray-300 cursor-not-allowed"
-              }`}
-          >
-            Add Case
-          </button>
-        </div>
-
-        {/* Accent Bar */}
-        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00] rounded-b-2xl" />
       </motion.div>
     </div>
   );
