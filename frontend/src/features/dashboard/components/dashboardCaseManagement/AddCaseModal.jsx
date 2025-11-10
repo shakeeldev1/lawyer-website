@@ -28,9 +28,8 @@ const AddCaseModal = ({ onCancel, onSubmit }) => {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center px-4 sm:px-6 z-50"
-    >
+   <div className="fixed inset-0 bg-black/80 flex justify-center items-center backdrop-blur px-4 sm:px-6 z-[9999]">
+
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

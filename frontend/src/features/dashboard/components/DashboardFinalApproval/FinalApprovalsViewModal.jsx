@@ -19,7 +19,7 @@ const FinalApprovalsViewModal = ({
   }
 
   return (
-    <div className='px-4 fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50'>
+    <div className='px-4 fixed inset-0 bg-black/50 backdrop-blur z-[9999] flex justify-center items-center'>
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

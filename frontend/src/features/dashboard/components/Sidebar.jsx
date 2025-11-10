@@ -60,7 +60,7 @@ const Sidebar = () => {
       {/* Hamburger / Close Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed top-4 z-[60] p-2 rounded-lg shadow-md
+        className={`fixed top-4 z-50 p-2 rounded-lg shadow-md
           bg-[#11408bee] text-white hover:bg-[#0f3674] transition-all duration-300
           ${isDesktop ? (isOpen ? "left-64" : "left-20") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
         `}
