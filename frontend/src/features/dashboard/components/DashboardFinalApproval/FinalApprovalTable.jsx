@@ -20,11 +20,35 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
               </tr>
             </thead>
 
+<<<<<<< HEAD
             <tbody>
               {cases.map((c) => (
                 <tr
                   key={c.id}
                   className="border-t whitespace-nowrap border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200"
+=======
+        {/* Table Body */}
+        <tbody>
+          {cases.map((c) => (
+            <tr
+              key={c.id}
+              className="border-t border-[#fe9a00]/10 hover:bg-[#2a3b58] transition-all duration-200"
+            >
+              <td className="px-6 py-4">{c.caseNumber}</td>
+              <td className="px-6 py-4">{c.clientName}</td>
+              <td className="px-6 py-4">{c.lawyer}</td>
+              <td className="px-6 py-4">{c.stage}</td>
+
+              {/* Status Badge */}
+              <td className="px-6 py-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${c.status === "Pending Review"
+                      ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
+                      : c.status === "Approved & Signed"
+                        ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                        : "bg-red-500/20 text-red-300 border border-red-500/30"
+                    }`}
+>>>>>>> 43d08e9f841dc49a25ad5be56a17c7c1f21aa728
                 >
                   <td className="px-6 py-4">{c.caseNumber}</td>
                   <td className="px-6 py-4">{c.clientName}</td>
@@ -68,6 +92,7 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
         </div>
       </div>
 
+<<<<<<< HEAD
      
 
       {/* ===== Mobile View (Card Layout) ===== */}
@@ -137,6 +162,10 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
 
       {/* Bottom Accent Line */}
       <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00]" />
+=======
+      {/* Subtle Gradient Footer Bar */}
+         <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00] rounded-b-2xl" />
+>>>>>>> 43d08e9f841dc49a25ad5be56a17c7c1f21aa728
     </div>
   );
 };
