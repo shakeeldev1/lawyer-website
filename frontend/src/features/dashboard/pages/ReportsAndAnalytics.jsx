@@ -1,10 +1,12 @@
-import RecentOrdersTable from "../components/dashboardoverview/RecentCasesTable"
-import RevenueChart from "../components/dashboardoverview/CaseStageChart"
-import StatsCard from "../components/dashboardoverview/StatsCard"
-import OverviewHeader from "../components/dashboardoverview/OverviewHeader"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
+import ReportsHeader from "../components/DashboardReports/ReportsHeader";
+import ReportsStats from "../components/DashboardReports/ReportsStats";
+import ReportsCaseCharts from "../components/DashboardReports/ReportsCaseCharts";
+import ReportsCaseTimelines from "../components/DashboardReports/ReportsCaseTimelines";
+import ReportsActivityLogs from "../components/DashboardReports/ReportsactivityLogs";
 
-const AdminDashboard = () => {
+
+const ReportsAndAnalytics = () => {
 
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   
@@ -35,19 +37,20 @@ const AdminDashboard = () => {
       };
     }, []);
   return (
-    <div
+   <div
       className={`min-h-screen
                  px-3 sm:px-4 md:px-6 lg:px-2
                  py-3 sm:py-4 md:py-5 
-                 transition-all duration-300 ease-in-out
-              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+                 transition-all duration-300 ease-in-out md:mt-20
+                  ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
     >
-                  <OverviewHeader/>
-      <StatsCard />
-      <RevenueChart />
-      <RecentOrdersTable />
+      <ReportsHeader/>
+      <ReportsStats />
+      <ReportsCaseCharts />
+      <ReportsCaseTimelines />
+      <ReportsActivityLogs />
     </div>
-  )
-}
+  );
+};
 
-export default AdminDashboard
+export default ReportsAndAnalytics;

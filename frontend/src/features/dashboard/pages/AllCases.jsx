@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AddCaseModal from "../components/dashboardCaseManagement/AddCaseModal";
 import CaseTimelineModal from "../components/dashboardCaseManagement/CaseTimelineModal";
 import CasesTable from "../components/dashboardCaseManagement/CasesTable";
 import CasesHeader from "../components/dashboardCaseManagement/CaseHeader";
+import DeleteCaseModal from "../components/dashboardCaseManagement/DeleteCaseModal";
 
 const AllCases = ({ casesData = [] }) => {
- const dummyCases = [
+  const dummyCases = [
     {
       id: 1,
       caseNumber: "C-2025-001",
@@ -56,6 +57,38 @@ const AllCases = ({ casesData = [] }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedCase, setSelectedCase] = useState(null);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [caseToDelete, setCaseToDelete] = useState(null);
+
+
+
+  // ✅ Sync with sidebar state
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      // Listen for sidebar state changes from the sidebar component
+      const sidebar = document.querySelector('aside');
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains('w-64');
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    // Check sidebar state periodically (you can use a better state management approach)
+    const interval = setInterval(handleSidebarToggle, 100);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    };
+  }, []);
 
   const filteredCases = cases.filter((c) => {
     const matchesSearch =
@@ -92,33 +125,68 @@ const AllCases = ({ casesData = [] }) => {
     setShowTimelineModal(true);
   };
 
+  const handleDeleteClick = (caseItem) => {
+  setCaseToDelete(caseItem);
+  setShowDeleteModal(true);
+};
+
+const handleConfirmDelete = (id) => {
+  setCases((prev) => prev.filter((c) => c.id !== id));
+  setShowDeleteModal(false);
+};
+
   return (
-    <div className="p-8 min-h-screen">
-      <CasesHeader
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filterStage={filterStage}
-        setFilterStage={setFilterStage}
-        onAddClick={() => setShowAddModal(true)}
-      />
+    <div
+      className={`min-h-screen 
+                 px-3 sm:px-4 md:px-6 lg:px-2
+                 py-3 sm:py-4 md:py-5 
+                 transition-all duration-300 ease-in-out
+                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+    >
+      {/* Header Section */}
+      <div className="mb-4 sm:mb-5 md:mb-6 lg:mb-8">
+        <CasesHeader
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filterStage={filterStage}
+          setFilterStage={setFilterStage}
+          onAddClick={() => setShowAddModal(true)}
+        />
+      </div>
 
       {/* Table Section */}
-      <CasesTable cases={filteredCases} onView={handleViewTimeline} />
+      <div className="w-full">
+        <CasesTable cases={filteredCases} onView={handleViewTimeline}  onDelete={handleDeleteClick}/>
+      </div>
 
       {/* Modals */}
       {showAddModal && (
-        <AddCaseModal
-          onCancel={() => setShowAddModal(false)}
-          onSubmit={handleAddCase}
-        />
+        <div className={`fixed inset-0 flex items-center justify-center z-50 px-3 sm:px-4 md:px-6
+          ${sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'} transition-all duration-300`}>
+          <AddCaseModal
+            onCancel={() => setShowAddModal(false)}
+            onSubmit={handleAddCase}
+          />
+        </div>
       )}
+
       {showTimelineModal && (
-        <CaseTimelineModal
-          isOpen={showTimelineModal}
-          onClose={() => setShowTimelineModal(false)}
-          caseData={selectedCase}
-        />
+        <div className={`fixed inset-0 flex items-center justify-center z-50 px-3 sm:px-4 md:px-6
+          ${sidebarOpen ? 'lg:pl-64' : 'lg:pl-0'} transition-all duration-300`}>
+          <CaseTimelineModal
+            isOpen={showTimelineModal}
+            onClose={() => setShowTimelineModal(false)}
+            caseData={selectedCase}
+          />
+        </div>
       )}
+      {showDeleteModal && (
+  <DeleteCaseModal
+    caseData={caseToDelete}
+    onCancel={() => setShowDeleteModal(false)}
+    onConfirm={handleConfirmDelete}
+  />
+)}
     </div>
   );
 };

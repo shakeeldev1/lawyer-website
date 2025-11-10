@@ -5,6 +5,7 @@ import FinalApprovalsViewModal from "../components/DashboardFinalApproval/FinalA
 import FeedbackModal from "../components/DashboardFinalApproval/FeedbackModal";
 import ConfirmationModal from "../components/DashboardFinalApproval/ConfirmationModal";
 import FinalApprovalHeader from "../components/DashboardFinalApproval/FinalApprovalHeader";
+import DeleteConfirmationModal from "../components/DashboardFinalApproval/DeleteConfirmationModal";
 
 const FinalApprovals = () => {
   const [cases, setCases] = useState([]);
@@ -12,6 +13,7 @@ const FinalApprovals = () => {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [confirmation, setConfirmation] = useState("");
+  const [deleteCase, setDeleteCase] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -40,6 +42,26 @@ const FinalApprovals = () => {
       ]);
       setLoading(false);
     }, 1000);
+  }, []);
+
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= 1024);
+    };
+    const interval = setInterval(() => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    }, 100);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
   const filteredCases = cases.filter(
@@ -78,6 +100,12 @@ const FinalApprovals = () => {
     setConfirmation("🔁 Case returned for changes successfully with your feedback.");
   };
 
+  const confirmDelete = (caseId) => {
+    setCases((prev) => prev.filter((c) => c.id !== caseId));
+    setDeleteCase(null);
+    setConfirmation("🗑️ Case deleted successfully.");
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-64 text-gray-500">
@@ -86,14 +114,20 @@ const FinalApprovals = () => {
     );
 
   return (
-    <div className="p-6">
-      {/* ✅ Header */}
+    <div
+      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out  ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+    >
+      {/* Header */}
       <FinalApprovalHeader onSearch={setSearchTerm} />
 
-      {/* ✅ Filtered Table */}
-      <FinalApprovalTable cases={filteredCases} onView={setSelectedCase} />
+      {/* Table */}
+      <FinalApprovalTable
+        cases={filteredCases}
+        onView={setSelectedCase}
+        onDelete={(c) => setDeleteCase(c)}
+      />
 
-      {/* ✅ Modals */}
+      {/* Modals */}
       {selectedCase && !showFeedbackModal && (
         <FinalApprovalsViewModal
           caseItem={selectedCase}
@@ -107,6 +141,14 @@ const FinalApprovals = () => {
         <FeedbackModal
           onCancel={() => setShowFeedbackModal(false)}
           onSubmit={submitFeedback}
+        />
+      )}
+
+      {deleteCase && (
+        <DeleteConfirmationModal
+          caseItem={deleteCase}
+          onCancel={() => setDeleteCase(null)}
+          onConfirm={confirmDelete}
         />
       )}
 
