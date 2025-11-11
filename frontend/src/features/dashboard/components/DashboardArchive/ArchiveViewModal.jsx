@@ -56,9 +56,7 @@ const ArchiveViewModal = ({ isOpen, archive, onClose }) => {
                 transition={{ duration: 0.25, ease: "easeOut" }}
                 className=" relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col "
             >
-                {/* Scrollable Content */}
-                <div className="overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-400/40">
-                    {/* Header */}
+                 {/* Header */}
                     <div className="flex items-center bg-[#24344f] justify-between border-b border-gray-200 p-5 rounded-t-2xl">
                         <h3 className="text-xl font-semibold flex items-center gap-2 text-white">
                             <FileText className="w-5 h-5 text-[#fe9a00]" />
@@ -71,7 +69,8 @@ const ArchiveViewModal = ({ isOpen, archive, onClose }) => {
                             <X className="w-5 h-5" />
                         </button>
                     </div>
-
+                {/* Scrollable Content */}
+                <div className="overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-400/40">
                     {/* Case Summary */}
                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -222,7 +221,7 @@ const ArchiveViewModal = ({ isOpen, archive, onClose }) => {
                 <div className="flex justify-end px-8 py-4 border-t border-gray-200 bg-gray-50 ">
                     <button
                         onClick={onClose}
-                        className="px-6 py-2.5 bg-[#24344f] text-white rounded-full hover:bg-[#fe9a00] transition-all duration-200"
+                        className="px-6 py-2.5 bg-[#24344f] text-white rounded-lg hover:bg-[#fe9a00] transition-all duration-200"
                     >
                         Close
                     </button>
