@@ -53,7 +53,6 @@ const ArchiveFilters = ({ filters, onFilterChange, onClearFilters, showFilters }
         >
           <option value="">All Status</option>
           <option value="Approved">Approved</option>
-          <option value="Pending">Pending</option>
           <option value="Rejected">Rejected</option>
         </select>
 
