@@ -70,28 +70,31 @@ const RecentCasesTable = () => {
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mt-20 transition-all duration-300 hover:shadow-xl">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:mt-20 mt-10 transition-all duration-300 hover:shadow-xl">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-        <h2 className="text-2xl font-bold text-[#1c283c]">Recent Cases</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-[#1c283c]">
+          Recent Cases
+        </h2>
 
         <div className="relative w-full sm:w-64">
           <Search
-            className="absolute left-3 top-2.5 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#fe9a00] opacity-80"
             size={18}
           />
           <input
             type="text"
             placeholder="Search cases..."
-            className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] transition-all"
+            className="w-full bg-[#E1E1E2] text-black placeholder-gray-500 border border-[#fe9a00]/40 rounded-lg py-2 pl-10 pr-4 text-sm 
+                       focus:outline-none focus:ring-2 focus:ring-[#fe9a00] transition-all duration-300"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden border border-gray-100 rounded-xl">
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-hidden border border-gray-100 rounded-xl">
         <table className="w-full text-sm">
           <thead className="bg-[#1c283c] text-white">
             <tr>
@@ -137,8 +140,41 @@ const RecentCasesTable = () => {
         </table>
       </div>
 
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {filteredCases.map((caseItem, index) => (
+          <div
+            key={index}
+            className="border border-gray-100 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-mono text-sm font-semibold text-[#1c283c]/80">
+                {caseItem.id}
+              </span>
+              <span
+                className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(
+                  caseItem.status
+                )}`}
+              >
+                {caseItem.status}
+              </span>
+            </div>
+            <p className="font-semibold text-[#1c283c]">
+              {caseItem.caseName}
+            </p>
+            <p className="text-xs text-gray-500 mb-2">{caseItem.client}</p>
+            <div className="flex items-center justify-between mt-2 text-sm">
+              <span className="text-[#1c283c]/70">{caseItem.type}</span>
+              <button className="text-[#fe9a00] hover:text-[#1c283c] text-xs font-medium flex items-center gap-1">
+                View <ArrowRight size={12} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Footer */}
-      <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-2">
         <p className="text-sm text-gray-500">
           Showing <b>{filteredCases.length}</b> of{" "}
           <b>{recentCases.length}</b> cases

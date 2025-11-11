@@ -12,8 +12,8 @@ const CaseStageChart = () => {
   const caseDistribution = [
     { name: "Main Case", value: 60, color: "#1c283c" },
     { name: "Appeal", value: 35, color: "#fe9a00" },
-    { name: "Cassation", value: 15, color: "#6b7280" }, // muted gray for contrast
-    { name: "Closed", value: 30, color: "#d1d5db" }, // light gray tone
+    { name: "Cassation", value: 15, color: "#6b7280" },
+    { name: "Closed", value: 30, color: "#d1d5db" },
   ];
 
   const lawyerPerformance = [
@@ -24,29 +24,30 @@ const CaseStageChart = () => {
   ];
 
   return (
-    <div className="bg-white mt-20 p-8 rounded-2xl shadow-md border border-gray-100 w-full space-y-8">
+    <div className="bg-white mt-10 p-5 sm:p-6 md:p-8 rounded-2xl shadow-md border border-gray-100 w-full space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-[#1c283c]">Managing Director Overview</h2>
-        <button className="flex items-center gap-2 text-sm bg-[#1c283c] text-white hover:bg-[#fe9a00] px-4 py-2 rounded-lg transition-colors duration-300 shadow-sm">
-          <Download size={16} /> Export Report
-        </button>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#1c283c]">
+          Managing Director Overview
+        </h2>
       </div>
 
       {/* Charts */}
-      <div className="grid md:grid-cols-2 gap-10 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mt-6">
         {/* Left - Donut Chart */}
-        <div className="bg-[#f9fafb] p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-[#1c283c] mb-4">Case Distribution</h3>
-          <div className="flex items-center justify-center">
-            <ResponsiveContainer width="100%" height={240}>
+        <div className="bg-[#f9fafb] p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center">
+          <h3 className="text-base sm:text-lg font-semibold text-[#1c283c] mb-4">
+            Case Distribution
+          </h3>
+          <div className="w-full h-[250px] sm:h-[280px] md:h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={caseDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={65}
-                  outerRadius={100}
+                  innerRadius="40%"
+                  outerRadius="80%"
                   paddingAngle={3}
                   dataKey="value"
                 >
@@ -66,14 +67,15 @@ const CaseStageChart = () => {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-y-2">
+          {/* Legend */}
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 gap-y-2 sm:gap-y-3 w-full">
             {caseDistribution.map((item, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-3 h-3 rounded-full flex-shrink-0"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="text-sm text-[#1c283c]">
+                <span className="text-xs sm:text-sm text-[#1c283c] truncate">
                   {item.name} – <b>{item.value}</b>
                 </span>
               </div>
@@ -82,24 +84,25 @@ const CaseStageChart = () => {
         </div>
 
         {/* Right - Lawyer Performance */}
-        <div className="bg-[#f9fafb] p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-semibold text-[#1c283c] mb-6">Lawyers Performance</h3>
-          <div className="space-y-5">
+        <div className="bg-[#f9fafb] p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 className="text-base sm:text-lg font-semibold text-[#1c283c] mb-6">
+            Lawyers Performance
+          </h3>
+          <div className="space-y-4 sm:space-y-5">
             {lawyerPerformance.map((lawyer, i) => (
               <div key={i}>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-xs sm:text-sm mb-1">
                   <span className="font-medium text-[#1c283c]">{lawyer.name}</span>
                   <span className="text-gray-600">
                     <CountUp end={lawyer.cases} duration={1.5} /> Cases
                   </span>
                 </div>
-                <div className="h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-2 sm:h-2.5 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-2.5 rounded-full transition-all duration-1000"
+                    className="h-full rounded-full transition-all duration-1000"
                     style={{
                       width: `${(lawyer.cases / 30) * 100}%`,
-                      background:
-                        "linear-gradient(to right, #fe9a00, #1c283c)",
+                      background: "linear-gradient(to right, #fe9a00, #1c283c)",
                     }}
                   ></div>
                 </div>

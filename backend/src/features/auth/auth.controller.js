@@ -112,3 +112,54 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Account Verified Successfully" });
 })
 
+export const logout = asyncHandler(async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+    })
+    res.status(200).json({ message: "Logout successfull" })
+})
+
+export const myProfile = asyncHandler(async (req, res) => {
+    const user = req.user;
+
+    if (!user)
+        throw new customError('User not found', 404)
+
+    res.status(200).json({
+        success: true,
+        message: "Profile fetched successfully",
+        user
+    })
+})
+
+export const changePassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+        throw new customError("All fields are required", 400);
+    }
+
+    if (newPassword !== confirmPassword) {
+        throw new customError("New password and confirm password do not match", 400);
+    }
+
+    const user = await User.findById(req.user._id).select("+password");
+    if (!user) {
+        throw new customError("User not found", 404);
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+        throw new customError("Old password is incorrect", 400);
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Password changed successfully",
+    });
+});
