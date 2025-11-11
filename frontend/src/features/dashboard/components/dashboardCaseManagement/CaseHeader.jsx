@@ -73,9 +73,9 @@ const CasesHeader = ({
         {/* Add Button */}
         <button
           onClick={onAddClick}
-          className="bg-[#FE9A00] text-[#1C283C] 
+          className="bg-slate-700 text-white 
                      px-5 py-2 rounded-lg font-semibold 
-                     hover:bg-[#ffb733] shadow-sm 
+                     hover:bg-slate-800 shadow-sm 
                      transition-all duration-200 
                      w-full sm:w-auto"
         >

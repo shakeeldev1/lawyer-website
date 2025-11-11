@@ -1,108 +1,93 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-import { Bell } from "lucide-react";
+// src/pages/MyCases.jsx
+import React, { useEffect, useState } from "react";
 import CasesTable from "../components/LawyerCases/CasesTable";
 import CaseDetails from "../components/LawyerCases/CaseDetails";
 
-// Dummy Data
+// Dummy cases data
 const dummyCases = [
   {
-    id: "C-001",
-    clientName: "Ahmed Ali",
-    caseNumber: "2025-M-001",
-    stage: "Main",
-    status: "Pending",
-    documents: ["Contract.pdf", "Evidence1.pdf"],
-    memorandums: [{ version: 1, approved: null, comments: "" }],
+    id: 1,
+    clientName: "John Doe",
+    caseNumber: "C123",
     stages: [
-      { stage: "Main", status: "Pending", hearingDate: "2025-11-20" },
-      { stage: "Appeal", status: "Pending" },
-      { stage: "Cassation", status: "Pending" },
+      {
+        stage: "Main",
+        secretaryDocuments: ["ClientForm.pdf", "Evidence1.pdf"],
+        memorandum: { status: "Approved", file: "MemoMain.pdf", ragabFeedback: "Approved", mdSigned: true },
+        hearingDate: "2025-11-15",
+      },
+      {
+        stage: "Appeal",
+        applied: true,
+        secretaryDocuments: ["AppealForm.pdf", "EvidenceAppeal.pdf"],
+        memorandum: { status: "Submitted", file: "MemoAppeal.pdf", ragabFeedback: "Pending", mdSigned: false },
+        hearingDate: "2025-12-01",
+      },
+      {
+        stage: "Cassation",
+        applied: false,
+        secretaryDocuments: [],
+        memorandum: { status: "Locked", file: null, ragabFeedback: null, mdSigned: false },
+        hearingDate: "2026-01-15",
+      },
     ],
   },
   {
-    id: "C-002",
-    clientName: "Sara Khan",
-    caseNumber: "2025-A-001",
-    stage: "Appeal",
-    status: "Sent to Ragab",
-    documents: ["AppealDoc.pdf"],
-    memorandums: [
-      { version: 1, approved: false, comments: "Update points 2 and 3" },
-    ],
+    id: 2,
+    clientName: "Jane Smith",
+    caseNumber: "C124",
     stages: [
-      { stage: "Main", status: "Approved", hearingDate: "2025-11-10" },
-      { stage: "Appeal", status: "Pending", hearingDate: "2025-11-25" },
-      { stage: "Cassation", status: "Pending" },
+      {
+        stage: "Main",
+        secretaryDocuments: ["FormA.pdf", "EvidenceX.pdf"],
+        memorandum: { status: "Approved", file: "MemoA.pdf", ragabFeedback: "Approved", mdSigned: true },
+        hearingDate: "2025-10-20",
+      },
+      {
+        stage: "Appeal",
+        applied: true,
+        secretaryDocuments: ["AppealFormB.pdf"],
+        memorandum: { status: "Pending", file: null, ragabFeedback: null, mdSigned: false },
+        hearingDate: "2025-11-15",
+      },
     ],
   },
 ];
 
-const MyCases = () => {
-  const [cases, setCases] = useState([]);
+export default function MyCases() {
+  const [cases, setCases] = useState(dummyCases);
   const [selectedCase, setSelectedCase] = useState(null);
-  const [notifications, setNotifications] = useState([]);
-    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-  
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-    // ✅ Sync with sidebar state
-    useEffect(() => {
-      const handleResize = () => {
-        const desktop = window.innerWidth >= 1024;
-        setSidebarOpen(desktop);
-      };
-  
-      const handleSidebarToggle = () => {
-        // Listen for sidebar state changes from the sidebar component
-        const sidebar = document.querySelector('aside');
-        if (sidebar) {
-          const isOpen = sidebar.classList.contains('w-64');
-          setSidebarOpen(isOpen);
-        }
-      };
-  
-      window.addEventListener('resize', handleResize);
-      
-      // Check sidebar state periodically (you can use a better state management approach)
-      const interval = setInterval(handleSidebarToggle, 100);
-      
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        clearInterval(interval);
-      };
-    }, []);
-
+  // Sync sidebar state
   useEffect(() => {
-    setCases(dummyCases);
-    setNotifications([
-      { id: 1, message: "New case assigned: Ahmed Ali - Main" },
-      { id: 2, message: "Feedback received: Sara Khan - Appeal" },
-    ]);
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
-  const handleSelectCase = (caseItem) => setSelectedCase(caseItem);
-  const handleBack = () => setSelectedCase(null);
-
-  const handleSubmitMemorandum = (caseId, text) => {
-    const updatedCases = cases.map((c) =>
-      c.id === caseId
-        ? {
-            ...c,
-            memorandums: [
-              ...c.memorandums,
-              {
-                version: c.memorandums.length + 1,
-                approved: null,
-                comments: text,
-              },
-            ],
-            status: "Sent to Ragab",
-          }
-        : c
-    );
-    setCases(updatedCases);
-    alert("Memorandum submitted to Ragab successfully!");
+  // Delete case function
+  const handleDeleteCase = (id) => {
+    setCases((prev) => prev.filter((c) => c.id !== id));
+    if (selectedCase?.id === id) setSelectedCase(null); // Close modal if deleting selected case
   };
 
   return (
@@ -111,53 +96,34 @@ const MyCases = () => {
                  px-3 sm:px-4 md:px-6 lg:px-2
                  py-3 sm:py-4 md:py-5 
                  transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
     >
-      {/* Header */}
-      <header className="flex justify-between items-center mb-8 border-b border-[#E1E1E2] pb-4 mt-20">
-        <h1 className="text-3xl font-semibold text-slate-800">My Cases</h1>
-        <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl shadow">
-          <Bell className="text-slate-700 w-5 h-5" />
-          <span className="text-slate-700 font-medium">
-            {notifications.length} Notifications
-          </span>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="flex flex-1 gap-6 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {!selectedCase ? (
-            <motion.div
-              key="cases"
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.3 }}
-              className="flex-1"
-            >
-              <CasesTable cases={cases} onSelectCase={handleSelectCase} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="details"
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 40 }}
-              transition={{ duration: 0.3 }}
-              className="flex-1"
-            >
-              <CaseDetails
-                selectedCase={selectedCase}
-                onSubmitMemorandum={handleSubmitMemorandum}
-                onBack={handleBack}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Page Header */}
+      <div className="text-center md:text-left mt-20 mb-5">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+          My Cases
+        </h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">
+          Manage case stages, documents, and client updates.
+        </p>
       </div>
+
+      {/* Cases Table */}
+      <CasesTable
+        cases={cases}
+        onSelectCase={setSelectedCase}
+        onDeleteCase={handleDeleteCase}
+      />
+
+      {/* Case Details Modal */}
+      {selectedCase && (
+        <CaseDetails
+          selectedCase={selectedCase}
+          onClose={() => setSelectedCase(null)}
+          updateCases={setCases}
+          cases={cases}
+        />
+      )}
     </div>
   );
-};
-
-export default MyCases;
+}

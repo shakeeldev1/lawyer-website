@@ -7,6 +7,7 @@ export const LawyerRoutes = {
     element: <LawyerLayout />,
     children: [
         { index: true, element: <LawyerOverview /> },
-        { path: 'my-cases', element: <MyCases /> }
+        { path: 'my-cases', element: <MyCases /> },
+
     ]
 }

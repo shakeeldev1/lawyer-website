@@ -1,182 +1,230 @@
-import React, { useState, useEffect } from "react";
-import CaseTimeline from "./CaseTimeline";
-import DocumentViewerModal from "./DocumentViewerModal";
-import { ArrowLeft, FileText, Send, FileArchive, CheckCircle, Clock } from "lucide-react";
+// src/components/CaseDetails.jsx
+import React, { useState } from "react";
+import {
+  X,
+  Upload,
+  Download,
+  Calendar,
+  FileText,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  UploadCloud,
+  Lock,
+} from "lucide-react";
 
-const CaseDetails = ({ selectedCase, onSubmitMemorandum, onBack }) => {
-  const [memorandumText, setMemorandumText] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalDoc, setModalDoc] = useState({ name: "", url: "" });
+const statusColors = {
+  Pending: "bg-amber-100 text-amber-800 border-amber-200",
+  Submitted: "bg-blue-100 text-blue-800 border-blue-200",
+  Approved: "bg-emerald-100 text-emerald-800 border-emerald-200",
+  Locked: "bg-slate-100 text-slate-800 border-slate-200",
+};
 
-  useEffect(() => {
-    if (selectedCase?.memorandums?.length > 0) {
-      const lastMemo = selectedCase.memorandums[selectedCase.memorandums.length - 1];
-      setMemorandumText(lastMemo.comments || "");
-    } else {
-      setMemorandumText("");
-    }
-  }, [selectedCase]);
+const statusIcons = {
+  Pending: <AlertCircle size={16} className="text-amber-600" />,
+  Submitted: <UploadCloud size={16} className="text-blue-600" />,
+  Approved: <CheckCircle size={16} className="text-emerald-600" />,
+  Locked: <Lock size={16} className="text-slate-600" />,
+};
 
-  const handleSubmit = () => {
-    if (!memorandumText.trim()) return alert("Please enter the memorandum text.");
-    onSubmitMemorandum(selectedCase.id, memorandumText);
-    setMemorandumText("");
+export default function CaseDetails({ selectedCase, onClose, updateCases, cases }) {
+  const [memoFile, setMemoFile] = useState(null);
+
+  const handleUploadMemo = (caseId, stageIndex) => {
+    if (!memoFile) return alert("Select a file first");
+    const updatedCases = cases.map((c) => {
+      if (c.id === caseId) {
+        const updatedStages = c.stages.map((s, i) => {
+          if (i === stageIndex && s.memorandum.status === "Pending") {
+            return {
+              ...s,
+              memorandum: { 
+                ...s.memorandum, 
+                file: memoFile.name, 
+                status: "Submitted", 
+                ragabFeedback: "Pending" 
+              },
+            };
+          }
+          return s;
+        });
+        return { ...c, stages: updatedStages };
+      }
+      return c;
+    });
+    updateCases(updatedCases);
+    setMemoFile(null);
   };
 
-  const handleViewDocument = (docName) => {
-    const docUrl = `/documents/${docName}`;
-    setModalDoc({ name: docName, url: docUrl });
-    setModalOpen(true);
-  };
-
-  if (!selectedCase) return null;
-
-  // Determine status style and icon
-  const getStatusBadge = (status) => {
-    const base = "inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium";
-    switch (status) {
-      case "Approved":
-        return (
-          <span className={`${base} bg-green-100 text-green-700`}>
-            <CheckCircle className="w-4 h-4" /> Approved
-          </span>
-        );
-      case "Pending":
-        return (
-          <span className={`${base} bg-yellow-100 text-yellow-700`}>
-            <Clock className="w-4 h-4" /> Pending
-          </span>
-        );
-      default:
-        return (
-          <span className={`${base} bg-slate-100 text-slate-700`}>
-            <Clock className="w-4 h-4" /> In Progress
-          </span>
-        );
-    }
-  };
+  // Filter stages to show Main always, others if previous stage approved/submitted or applied
+  const visibleStages = selectedCase.stages.filter((s, i, arr) => {
+    if (i === 0) return true; // Main always visible
+    const prevStage = arr[i - 1];
+    return (
+      prevStage.memorandum.status === "Submitted" ||
+      prevStage.memorandum.status === "Approved" ||
+      s.applied // client applied for this stage
+    );
+  });
 
   return (
-    <div className="bg-[#F9FAFB] rounded-2xl shadow-lg border border-[#E1E1E2] p-8 mt-6 transition-all duration-300">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center justify-center bg-slate-100 hover:bg-slate-200 transition p-2 rounded-lg"
-          >
-            <ArrowLeft className="w-5 h-5 text-slate-800" />
-          </button>
-          <div>
-            <h2 className="text-2xl font-semibold text-slate-800">{selectedCase.clientName}</h2>
-            <p className="text-sm text-gray-500">
-              Case #: {selectedCase.caseNumber} — Stage: {selectedCase.stage}
-            </p>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+        onClick={onClose}
+      ></div>
+
+      {/* Modal */}
+      <div className="relative bg-white w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl z-10 flex flex-col">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-2xl font-bold text-slate-800 truncate">
+              Case: {selectedCase.caseNumber}
+            </h3>
+            <p className="text-slate-600 mt-1 truncate">{selectedCase.clientName}</p>
           </div>
+          <button 
+            onClick={onClose}
+            className="flex-shrink-0 ml-4 p-2 hover:bg-slate-100 rounded-full transition-colors duration-200"
+          >
+            <X size={24} className="text-slate-500" />
+          </button>
         </div>
-        {getStatusBadge(selectedCase.status)}
-      </div>
 
-      <hr className="border-gray-200 my-4" />
-
-      {/* Documents Section */}
-      <section className="mb-10">
-        <h3 className="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2">
-          <FileArchive className="w-5 h-5 text-slate-600" /> Attached Documents
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {selectedCase.documents?.length > 0 ? (
-            selectedCase.documents.map((doc, idx) => (
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="space-y-6">
+            {visibleStages.map((stage, index) => (
               <div
-                key={idx}
-                className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex justify-between items-center"
+                key={index}
+                className="relative border border-slate-200 rounded-xl bg-white p-6 shadow-sm hover:shadow-md transition-all duration-200"
               >
-                <span className="text-gray-700 font-medium truncate">{doc}</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleViewDocument(doc)}
-                    className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 text-sm"
-                  >
-                    View
-                  </button>
-                  <a
-                    href={`/documents/${doc}`}
-                    download
-                    className="bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 text-sm"
-                  >
-                    Download
-                  </a>
+                {/* Stage indicator */}
+                <div className="absolute -left-3 top-6 w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white">
+                  {index + 1}
                 </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 col-span-3">No documents uploaded yet.</p>
-          )}
-        </div>
-      </section>
 
-      {/* Draft Memorandum Section */}
-      <section className="mb-10">
-        <h3 className="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2">
-          <FileText className="w-5 h-5 text-slate-600" /> Draft New Memorandum
-        </h3>
-        <textarea
-          rows={6}
-          className="w-full border border-gray-300 bg-white p-4 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          placeholder="Write your draft memorandum here..."
-          value={memorandumText}
-          onChange={(e) => setMemorandumText(e.target.value)}
-        />
-        <button
-          className="mt-4 px-6 py-2.5 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 transition flex items-center gap-2"
-          onClick={handleSubmit}
-        >
-          <Send className="w-4 h-4" /> Submit to Ragab
-        </button>
-      </section>
+                <div className="ml-2">
+                  {/* Stage header */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-blue-50 rounded-lg">
+                        <FileText size={20} className="text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg text-slate-800">{stage.stage} Stage</p>
+                        <div className="flex items-center gap-2 mt-1 text-slate-600">
+                          <Calendar size={16} />
+                          <span className="text-sm">Hearing: {stage.hearingDate}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:items-end gap-2">
+                      <span
+                        className={`px-3 py-1.5 rounded-full text-sm font-semibold border flex items-center gap-2 ${statusColors[stage.memorandum.status]}`}
+                      >
+                        {statusIcons[stage.memorandum.status]}
+                        <span>{stage.memorandum.status}</span>
+                      </span>
+                    </div>
+                  </div>
 
-      {/* Previous Memorandums */}
-      <section className="mb-10">
-        <h3 className="text-lg font-semibold text-slate-800 mb-3">Previous Memorandums</h3>
-        {selectedCase.memorandums?.length > 0 ? (
-          <div className="space-y-3">
-            {selectedCase.memorandums.map((m, idx) => (
-              <div
-                key={idx}
-                className="p-4 border border-gray-200 bg-white rounded-lg shadow-sm hover:shadow-md transition"
-              >
-                <p className="font-semibold text-slate-800">Version {m.version}</p>
-                <p className="text-sm text-gray-600">
-                  Status:{" "}
-                  {m.approved === null
-                    ? "Pending Approval"
-                    : m.approved
-                    ? "Approved"
-                    : "Modification Requested"}
-                </p>
-                {m.comments && (
-                  <p className="mt-2 text-gray-700 text-sm">Comments: {m.comments}</p>
-                )}
+                  {/* Documents */}
+                  <div className="mb-4">
+                    <h4 className="font-medium text-slate-700 mb-2 flex items-center gap-2">
+                      <FileText size={16} />
+                      Secretary Documents
+                    </h4>
+                    {stage.secretaryDocuments.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {stage.secretaryDocuments.map((doc, docIndex) => (
+                          <button
+                            key={docIndex}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm transition-colors duration-150"
+                          >
+                            <Download size={14} />
+                            {doc}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-slate-500 text-sm italic">No documents available</p>
+                    )}
+                  </div>
+
+                  {/* Status details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                      <MessageSquare size={18} className="text-slate-600" />
+                      <div>
+                        <p className="text-sm text-slate-600">Ragab Feedback</p>
+                        <p className="font-medium text-slate-800">
+                          {stage.memorandum.ragabFeedback || "Waiting for feedback"}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                      <CheckCircle size={18} className="text-slate-600" />
+                      <div>
+                        <p className="text-sm text-slate-600">MD Signed</p>
+                        <p className={`font-medium ${stage.memorandum.mdSigned ? 'text-emerald-600' : 'text-amber-600'}`}>
+                          {stage.memorandum.mdSigned ? "Approved and Signed" : "Pending Signature"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Upload Memo */}
+                  {stage.memorandum.status === "Pending" && (
+                    <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                      <h4 className="font-medium text-amber-800 mb-3 flex items-center gap-2">
+                        <Upload size={18} />
+                        Upload Memorandum
+                      </h4>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          type="file"
+                          onChange={(e) => setMemoFile(e.target.files[0])}
+                          className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                        />
+                        <button
+                          onClick={() => handleUploadMemo(selectedCase.id, index)}
+                          disabled={!memoFile}
+                          className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-6 py-2 rounded-lg font-medium flex items-center gap-2 transition-all duration-200 shadow-sm hover:shadow disabled:cursor-not-allowed"
+                        >
+                          <Upload size={18} />
+                          Upload File
+                        </button>
+                      </div>
+                      {memoFile && (
+                        <p className="text-sm text-slate-600 mt-2">
+                          Selected: <span className="font-medium">{memoFile.name}</span>
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                </div>
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-gray-500">No previous memorandums found.</p>
-        )}
-      </section>
+        </div>
 
-      {/* Case Timeline */}
-      <CaseTimeline stages={selectedCase.stages} />
-
-      {/* Document Viewer Modal */}
-      <DocumentViewerModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        documentName={modalDoc.name}
-        documentUrl={modalDoc.url}
-      />
+        {/* Footer */}
+        <div className="border-t border-slate-200 p-4 bg-slate-50">
+          <button
+            onClick={onClose}
+            className="w-full bg-slate-800 hover:bg-slate-900 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow"
+          >
+            Close Case Details
+          </button>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default CaseDetails;
+}
