@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     profile: null
-}
+};
 
 const userSlice = createSlice({
     name: "user",
@@ -12,11 +12,11 @@ const userSlice = createSlice({
             state.profile = action.payload;
         },
         clearProfile: (state) => {
-            state.profile = null
+            state.profile = null;
         }
     }
-})
+});
 
 export const selectUserProfile = (state) => state.user.profile;
-export const { setProfile, clearProfile } = userSlice.action;
-export default userSlice.reducer; 
+export const { setProfile, clearProfile } = userSlice.actions;
+export default userSlice.reducer;

@@ -43,9 +43,8 @@ export const loginUser = asyncHandler(async (req, res, next) => {
 })
 
 export const signupUser = asyncHandler(async (req, res) => {
-    const { name, email, phone, password } = req.body;
-
-    if (!name || !email || !phone || !password) {
+    const { fullName, email, phone, password } = req.body;
+    if (!fullName || !email || !password) {
         throw new customError('Please provide all required fields', 400);
     }
 
@@ -57,14 +56,14 @@ export const signupUser = asyncHandler(async (req, res) => {
     const otp = generateOtp(6);
     const otpExpires = Date.now() + 10 * 60 * 1000;
 
+    const user = await User.create({
+        name: fullName, email, phone, password, otp, otpExpires
+    })
+
     await sendMail({
         email: user.email,
         subject: 'Your Law Firm OTP Verification',
-        html: otpTemplate(user.name, otp)
-    })
-
-    const user = await User.create({
-        name, email, phone, password, otp, otpExpires
+        html: otpTemplate(user.fullName, otp)
     })
 
     res.status(201).json({

@@ -13,9 +13,9 @@ export const adminRoutes = {
     element: <DashboardLayout />,
     children: [
         { path: "overview", element: <AdminDashboard /> },
-       {path:"all-cases",element:<AllCases/>},
+        { path: "all-cases", element: <AllCases /> },
         { path: "final-approval", element: <FinalApprovals /> },
-        { path: "archive", element: <Archive/> },
+        { path: "archive", element: <Archive /> },
         { path: "reports", element: <ReportsAndAnalytics /> },
         { path: "reminders", element: <RemindersPage /> },
         { path: "team", element: <UsersPage /> },
