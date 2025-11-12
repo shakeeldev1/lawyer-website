@@ -1,4 +1,4 @@
-export const otpTemplate = (name, otp) => {
+export const otpTemplate = ({name, otp}) => {
   return `
   <html>
     <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; padding: 20px;">
