@@ -1,16 +1,14 @@
 import React from "react";
-import { Eye, Edit, Trash } from "lucide-react";
+import { Eye, Trash, Download } from "lucide-react";
 
-const ArchiveTable = ({ archives, onView, onEdit, onDelete, sidebarOpen }) => {
-  if (archives.length === 0) {
+const ArchiveTable = ({ archives, onView, onDelete, sidebarOpen }) => {
+  if (!archives.length) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="p-8 text-center text-slate-500">
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-4xl mb-2">📁</div>
-            <p className="text-lg font-medium">No archived cases found</p>
-            <p className="text-sm">Try adjusting your filters or search terms</p>
-          </div>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden p-8 text-center text-slate-500">
+        <div className="flex flex-col items-center justify-center">
+          <div className="text-4xl mb-2">📁</div>
+          <p className="text-lg font-medium">No archived cases found</p>
+          <p className="text-sm">Try adjusting your filters or search terms</p>
         </div>
       </div>
     );
@@ -18,30 +16,45 @@ const ArchiveTable = ({ archives, onView, onEdit, onDelete, sidebarOpen }) => {
 
   return (
     <div
-      className={`bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300
-        ${sidebarOpen ? "max-w-4xl " : "max-w-6xl"}`}
+      className={`bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? "max-w-[960px]" : "max-w-6xl"
+      }`}
     >
-      {/* ===== Desktop View ===== */}
-      <div className="hidden lg:block">
-        <div className="overflow-x-auto whitespace-nowrap">
-          <table className="min-w-full text-sm">
-            <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide  text-xs font-semibold">
-              <tr className="widespace-nowrap">
-                <th className="px-6 py-4 text-left">Archive ID</th>
-                <th className="px-6 py-4 text-left">Case ID</th>
-                <th className="px-6 py-4 text-left">Client</th>
-                <th className="px-6 py-4 text-left">Case Type</th>
-                <th className="px-6 py-4 text-left">Stage</th>
-                <th className="px-6 py-4 text-left">Lawyer</th>
-                <th className="px-6 py-4 text-left">Approved By</th>
-                <th className="px-6 py-4 text-left">Date Archived</th>
-                <th className="px-6 py-4 text-left">Status</th>
-                <th className="px-6 py-4 text-center">Actions</th>
-              </tr>
-            </thead>
+      {/* Desktop/Tablet Table */}
+      <div className="hidden md:block overflow-x-auto whitespace-nowrap">
+        <table className="min-w-full text-sm">
+          <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
+            <tr>
+              <th className="px-6 py-4 text-left">Archive ID</th>
+              <th className="px-6 py-4 text-left">Case ID</th>
+              <th className="px-6 py-4 text-left">Client</th>
+              <th className="px-6 py-4 text-left">Stage</th>
+              <th className="px-6 py-4 text-left">Lawyer</th>
+              <th className="px-6 py-4 text-left">Approved By</th>
+              <th className="px-6 py-4 text-left">Submitted On</th>
+              <th className="px-6 py-4 text-left">Status</th>
+              <th className="px-6 py-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {archives.map((a) => {
+              const finalStage = a.stages[a.stages.length - 1];
 
-            <tbody>
-              {archives.map((a) => (
+              const stageBadge =
+                finalStage.stage === "Main"
+                  ? "bg-blue-100 text-blue-800 border border-blue-200"
+                  : finalStage.stage === "Appeal"
+                  ? "bg-purple-100 text-purple-800 border border-purple-200"
+                  : "bg-orange-100 text-orange-800 border border-orange-200";
+
+              const statusBadge =
+                a.status === "Approved"
+                  ? "bg-green-100 text-green-800 border border-green-200"
+                  : a.status === "Pending"
+                  ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+                  : "bg-red-100 text-red-800 border border-red-200";
+
+              return (
                 <tr
                   key={a.id}
                   className="border-t border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200"
@@ -49,130 +62,137 @@ const ArchiveTable = ({ archives, onView, onEdit, onDelete, sidebarOpen }) => {
                   <td className="px-6 py-4 font-medium">{a.archiveId}</td>
                   <td className="px-6 py-4 font-medium">{a.id}</td>
                   <td className="px-6 py-4">{a.client}</td>
-                  <td className="px-6 py-4">{a.caseType}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium
-                        ${a.stage === "Main"
-                          ? "bg-blue-500/20 text-blue-800 border border-blue-500/30"
-                          : a.stage === "Appeal"
-                          ? "bg-purple-500/20 text-purple-800 border border-purple-500/30"
-                          : "bg-orange-500/20 text-orange-800 border border-orange-500/30"
-                        }`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${stageBadge}`}
                     >
-                      {a.stage}
+                      {finalStage.stage}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{a.lawyer}</td>
-                  <td className="px-6 py-4">{a.approvedBy || "Ragab"}</td>
-                  <td className="px-6 py-4">{a.archivedOn}</td>
+                  <td className="px-6 py-4">{a.lawyers.join(", ")}</td>
+                  <td className="px-6 py-4">{finalStage.approvedBy}</td>
+                  <td className="px-6 py-4">{finalStage.submittedOn}</td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold border
-                        ${a.status === "Approved"
-                          ? "bg-green-500/20 text-green-800 border-green-500/30"
-                          : a.status === "Pending"
-                          ? "bg-yellow-500/20 text-yellow-800 border-yellow-500/30"
-                          : "bg-red-500/20 text-red-800 border-red-500/30"
-                        }`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadge}`}
                     >
                       {a.status}
                     </span>
                   </td>
-
-                  <td className="px-6 py-4 text-center flex justify-center gap-3">
+                  <td className="px-6 py-4 text-center flex justify-center gap-3 flex-nowrap">
                     <button
                       onClick={() => onView(a)}
-                      className="flex items-center justify-center gap-2 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                      className="flex items-center gap-2 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                     >
                       <Eye className="w-4 h-4" /> View
                     </button>
-
-                    <button
-                      onClick={() => onEdit(a)}
-                      className="flex items-center justify-center gap-2 text-[#24344f] hover:text-white hover:bg-[#24344f]/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
-                    >
-                      <Edit className="w-4 h-4" /> Edit
-                    </button>
-
                     <button
                       onClick={() => onDelete(a)}
-                      className="flex items-center justify-center gap-2 text-red-600 hover:text-white hover:bg-red-600/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                      className="flex items-center gap-2 text-red-600 hover:text-white hover:bg-red-600/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                     >
                       <Trash className="w-4 h-4" /> Delete
                     </button>
+                    {a.downloadFile && (
+                      <a
+                        href={a.downloadFile.url}
+                        download={a.downloadFile.name}
+                        className="flex items-center gap-2 text-blue-600 hover:text-white hover:bg-blue-600/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                      >
+                        <Download className="w-4 h-4" />
+                      </a>
+                    )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
-      {/* ===== Mobile View (Card Layout) ===== */}
-      <div className="lg:hidden flex flex-col gap-4 ">
-        {archives.map((a) => (
-          <div
-            key={a.id}
-            className="bg-[#E1E1E2] w-[300px] ml-7 mt-5 border border-[#fe9a00]/30 rounded-2xl shadow-lg p-3 transition-all duration-300 hover:shadow-xl hover:border-[#fe9a00]/60"
-          >
-            {/* Header: Archive ID + Status */}
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-bold text-slate-800 tracking-wide">
-                #{a.archiveId}
-              </h2>
-              <span
-                className={`px-2.5 py-1 rounded-full text-xs font-medium
-                  ${a.status === "Approved"
-                    ? "bg-green-500/20 text-green-600 border border-green-500/30"
-                    : a.status === "Pending"
-                    ? "bg-yellow-500/20 text-yellow-600 border border-yellow-500/30"
-                    : "bg-red-500/20 text-red-600 border border-red-500/30"
-                  }`}
-              >
-                {a.status}
-              </span>
+      {/* Mobile Cards */}
+      <div className="md:hidden flex flex-col gap-4 pt-10 bg-gray-100">
+        {archives.map((a) => {
+          const finalStage = a.stages[a.stages.length - 1];
+
+          const stageBadge =
+            finalStage.stage === "Main"
+              ? "bg-blue-100 text-blue-800 border border-blue-200"
+              : finalStage.stage === "Appeal"
+              ? "bg-purple-100 text-purple-800 border border-purple-200"
+              : "bg-orange-100 text-orange-800 border border-orange-200";
+
+          const statusBadge =
+            a.status === "Approved"
+              ? "bg-green-100 text-green-800 border border-green-200"
+              : a.status === "Pending"
+              ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
+              : "bg-red-100 text-red-800 border border-red-200";
+
+          return (
+            <div
+              key={a.id}
+              className="bg-white shadow-lg rounded-2xl p-4 border border-[#fe9a00]/20 mx-4"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold text-lg">{a.client}</h3>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadge}`}
+                >
+                  {a.status}
+                </span>
+              </div>
+              <div className="mb-2">
+                <p>
+                  <span className="font-semibold">Archive ID:</span> {a.archiveId}
+                </p>
+                <p>
+                  <span className="font-semibold">Case ID:</span> {a.id}
+                </p>
+                <p>
+                  <span className="font-semibold">Stage:</span>{" "}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${stageBadge}`}
+                  >
+                    {finalStage.stage}
+                  </span>
+                </p>
+                <p>
+                  <span className="font-semibold">Lawyer:</span> {a.lawyers.join(", ")}
+                </p>
+                <p>
+                  <span className="font-semibold">Approved By:</span> {finalStage.approvedBy}
+                </p>
+                <p>
+                  <span className="font-semibold">Submitted On:</span> {finalStage.submittedOn}
+                </p>
+              </div>
+              <div className="flex justify-between gap-2 flex-wrap">
+                <button
+                  onClick={() => onView(a)}
+                  className="flex items-center gap-1 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                >
+                  <Eye className="w-4 h-4" /> View
+                </button>
+                <button
+                  onClick={() => onDelete(a)}
+                  className="flex items-center gap-1 text-red-600 hover:text-white hover:bg-red-600/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                >
+                  <Trash className="w-4 h-4" /> Delete
+                </button>
+                {a.downloadFile && (
+                  <a
+                    href={a.downloadFile.url}
+                    download={a.downloadFile.name}
+                    className="flex items-center gap-1 text-blue-600 hover:text-white hover:bg-blue-600/80 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
+                  >
+                    <Download className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
             </div>
-
-            {/* Details */}
-            <div className="grid grid-cols-1 gap-2 text-sm text-gray-800">
-              <p><span className="font-semibold">Client:</span> {a.client}</p>
-              <p><span className="font-semibold">Case Type:</span> {a.caseType}</p>
-              <p><span className="font-semibold">Stage:</span> {a.stage}</p>
-              <p><span className="font-semibold">Lawyer:</span> {a.lawyer}</p>
-              <p><span className="font-semibold">Approved By:</span> {a.approvedBy || "Ragab"}</p>
-              <p><span className="font-semibold">Archived On:</span> {a.archivedOn}</p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end mt-4 gap-2">
-              <button
-                onClick={() => onView(a)}
-                className="flex items-center gap-2 bg-[#fe9a00]/10 text-[#fe9a00] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#fe9a00]/20 hover:text-white transition-all duration-200"
-              >
-                <Eye className="w-4 h-4" /> View
-              </button>
-
-              <button
-                onClick={() => onEdit(a)}
-                className="flex items-center gap-2 bg-[#24344f]/10 text-[#24344f] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-[#24344f]/20 hover:text-white transition-all duration-200"
-              >
-                <Edit className="w-4 h-4" /> Edit
-              </button>
-
-              <button
-                onClick={() => onDelete(a)}
-                className="flex items-center gap-2 bg-red-600/10 text-red-400 px-4 py-1.5 rounded-full text-sm font-medium hover:bg-red-600/20 hover:text-gray-800 transition-all duration-200"
-              >
-                <Trash className="w-4 h-4" /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
-      {/* Accent Line */}
-      <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00]" />
     </div>
   );
 };
