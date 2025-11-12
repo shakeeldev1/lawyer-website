@@ -63,7 +63,7 @@ export const signupUser = asyncHandler(async (req, res) => {
     await sendMail({
         email: user.email,
         subject: 'Your Law Firm OTP Verification',
-        text: otpTemplate({name:user.name, otp})
+        text: otpTemplate({ name: user.name, otp })
     })
 
     res.status(201).json({
@@ -103,7 +103,7 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
@@ -122,7 +122,6 @@ export const logout = asyncHandler(async (req, res) => {
 
 export const myProfile = asyncHandler(async (req, res) => {
     const user = req.user;
-
     if (!user)
         throw new customError('User not found', 404)
 

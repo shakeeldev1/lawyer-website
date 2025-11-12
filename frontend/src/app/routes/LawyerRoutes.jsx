@@ -3,10 +3,15 @@ import LawyerNotifications from "../../features/lawyer/pages/Lawyernotifications
 import LawyerOverview from "../../features/lawyer/pages/LawyerOverview";
 import MyCases from "../../features/lawyer/pages/MyCases";
 import LawyerLayout from "../layouts/LawyerLayout";
+import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
 export const LawyerRoutes = {
     path: 'lawyer',
-    element: <LawyerLayout />,
+    element: (
+        <RoleProtectedRoute>
+            <LawyerLayout />
+        </RoleProtectedRoute>
+    ),
     children: [
         { index: true, element: <LawyerOverview /> },
         { path: 'my-cases', element: <MyCases /> },

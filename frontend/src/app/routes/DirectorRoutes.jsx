@@ -6,11 +6,15 @@ import RemindersPage from "../../features/dashboard/pages/RemindersPage";
 import ReportsAndAnalytics from "../../features/dashboard/pages/ReportsAndAnalytics";
 import UsersPage from "../../features/dashboard/pages/Users";
 import Archive from "../../features/dashboard/pages/Archive";
+import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
 
 export const adminRoutes = {
     path: "director",
-    element: <DashboardLayout />,
+    element: (
+        <RoleProtectedRoute allowedRoles={['director']}>
+            <DashboardLayout />
+        </RoleProtectedRoute>),
     children: [
         { path: "overview", element: <AdminDashboard /> },
         { path: "all-cases", element: <AllCases /> },
