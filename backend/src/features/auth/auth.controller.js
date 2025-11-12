@@ -63,7 +63,7 @@ export const signupUser = asyncHandler(async (req, res) => {
     await sendMail({
         email: user.email,
         subject: 'Your Law Firm OTP Verification',
-        html: otpTemplate(user.fullName, otp)
+        text: otpTemplate({name:user.name, otp})
     })
 
     res.status(201).json({

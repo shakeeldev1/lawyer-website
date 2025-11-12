@@ -24,7 +24,7 @@ const Signup = () => {
       toast.success(res?.message || "Signup successful!", {
         position: "bottom-right",
       });
-      navigate("/auth/login")
+      navigate("/auth/verify-account",{state:{email:formData.email}})
     } catch (error) {
       toast.error(error?.data?.message || "Signup failed!", {
         position: "bottom-right",
@@ -89,11 +89,10 @@ const Signup = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white py-2 rounded-lg transition-colors ${
-              isLoading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
+            className={`w-full text-white py-2 rounded-lg transition-colors ${isLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+              }`}
           >
             {isLoading ? "Creating..." : "Sign Up"}
           </button>
