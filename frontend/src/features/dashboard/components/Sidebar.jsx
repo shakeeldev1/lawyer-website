@@ -32,7 +32,7 @@ const Sidebar = () => {
   }, []);
 
   const links = [
-    { name: "Overview", icon: <LayoutDashboard size={22} />, path: "overview" },
+    { name: "Overview", icon: <LayoutDashboard size={22} />, },
     { name: "All Cases", icon: <FolderOpen size={22} />, path: "all-cases" },
     { name: "Final Approvals", icon: <FileCheck size={22} />, path: "final-approval" },
     { name: "Archive", icon: <Archive size={22} />, path: "archive" },
