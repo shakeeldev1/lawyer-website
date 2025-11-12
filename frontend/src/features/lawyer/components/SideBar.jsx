@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
- 
   Bell,
   Scale,
   Home,
@@ -10,7 +9,11 @@ import {
   FileText,
   Calendar,
   User,
+  Archive,
+  ChevronLeft,
+  ChevronRight, // ← added for Archive/Archieve page
 } from "lucide-react";
+
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
@@ -31,9 +34,8 @@ const Sidebar = () => {
  const links = [
     { name: "Overview", icon: <Home size={20} /> },
     { name: "My Cases", icon: <FileText size={20} />, path: "my-cases" },
-    { name: "Upcoming Hearings", icon: <Calendar size={20} />, path: "hearings" },
+    { name: "Archieve", icon: <Archive size={20} />, path: "archieve" },
     { name: "Notifications", icon: <Bell size={20} />, path: "notifications" },
-    { name: "Profile", icon: <User size={20} />, path: "profile" },
   ];
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
@@ -59,12 +61,12 @@ const Sidebar = () => {
       {/* Hamburger / Close Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed top-4 z-50 p-2 rounded-lg shadow-md
+        className={`fixed top-4  p-2 rounded-full shadow-md  z-[9999]
           bg-[#11408bee] text-white hover:bg-[#0f3674] transition-all duration-300
-          ${isDesktop ? (isOpen ? "left-64" : "left-20") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
+          ${isDesktop ? (isOpen ? "left-60" : "left-16") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
         `}
       >
-        {isOpen ? <X size={22} /> : <Menu size={22} />}
+        {isOpen ? <ChevronLeft size={22} /> : < ChevronRight size={22} />}
       </button>
 
       {/* Sidebar */}

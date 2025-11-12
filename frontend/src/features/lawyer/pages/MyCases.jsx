@@ -9,6 +9,7 @@ const dummyCases = [
     id: 1,
     clientName: "John Doe",
     caseNumber: "C123",
+    caseType: "Civil Litigation",
     stages: [
       {
         stage: "Main",
@@ -36,6 +37,7 @@ const dummyCases = [
     id: 2,
     clientName: "Jane Smith",
     caseNumber: "C124",
+    caseType: "Corporate Law",
     stages: [
       {
         stage: "Main",
@@ -58,8 +60,7 @@ export default function MyCases() {
   const [cases, setCases] = useState(dummyCases);
   const [selectedCase, setSelectedCase] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-
-  // Sync sidebar state
+  // ✅ Sync with sidebar state
   useEffect(() => {
     const handleResize = () => {
       const desktop = window.innerWidth >= 1024;
@@ -67,38 +68,38 @@ export default function MyCases() {
     };
 
     const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
+      // Listen for sidebar state changes from the sidebar component
+      const sidebar = document.querySelector('aside');
       if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
+        const isOpen = sidebar.classList.contains('w-64');
         setSidebarOpen(isOpen);
       }
     };
 
-    window.addEventListener("resize", handleResize);
-
+    window.addEventListener('resize', handleResize);
+    
+    // Check sidebar state periodically (you can use a better state management approach)
     const interval = setInterval(handleSidebarToggle, 100);
-
+    
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
       clearInterval(interval);
     };
   }, []);
 
-  // Delete case function
   const handleDeleteCase = (id) => {
     setCases((prev) => prev.filter((c) => c.id !== id));
-    if (selectedCase?.id === id) setSelectedCase(null); // Close modal if deleting selected case
+    if (selectedCase?.id === id) setSelectedCase(null);
   };
 
   return (
-    <div
+     <div
       className={`min-h-screen 
                  px-3 sm:px-4 md:px-6 lg:px-2
                  py-3 sm:py-4 md:py-5 
                  transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
     >
-      {/* Page Header */}
       <div className="text-center md:text-left mt-20 mb-5">
         <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
           My Cases
@@ -108,14 +109,12 @@ export default function MyCases() {
         </p>
       </div>
 
-      {/* Cases Table */}
       <CasesTable
         cases={cases}
         onSelectCase={setSelectedCase}
         onDeleteCase={handleDeleteCase}
       />
 
-      {/* Case Details Modal */}
       {selectedCase && (
         <CaseDetails
           selectedCase={selectedCase}

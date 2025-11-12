@@ -1,9 +1,138 @@
-const Sidebar = () => {
-  return (
-    <div>
-        <h1>Sidebaar</h1>
-    </div>
-  )
-}
+import React, { useState, useEffect } from "react";
+import {
+  Users,
+  FolderOpen,
+  Bell,
+  FolderArchive,
+  BarChart3,
+  Globe,
+  LogOut,
+  Scale,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
 
-export default Sidebar
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(window.innerWidth >= 768 ? true : false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 768;
+      setIsDesktop(desktop);
+      setIsOpen(desktop ? true : false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // ✅ Secretary-specific menu items
+  const links = [
+    { name: "Clients", icon: <Users size={22} />, path: "clients" },
+    { name: "Cases", icon: <Scale size={22} />, path: "cases" },
+    { name: "Reminders", icon: <Bell size={22} />, path: "reminders" },
+    { name: "Archive", icon: <FolderArchive size={22} />, path: "archive" },
+    { name: "Reports", icon: <BarChart3 size={22} />, path: "reports" },
+    { name: "Language", icon: <Globe size={22} />, path: "language" },
+  ];
+
+  const toggleSidebar = () => setIsOpen((prev) => !prev);
+  const handleLinkClick = () => {
+    if (!isDesktop) setIsOpen(false);
+  };
+  const handleLogout = () => {
+    console.log("Logging out...");
+  };
+
+  return (
+    <>
+      {/* Overlay for Mobile */}
+      {!isDesktop && isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+        ></div>
+      )}
+
+      {/* Sidebar Toggle Button */}
+      <button
+        onClick={toggleSidebar}
+        className={`fixed top-4 z-[9999] p-2 rounded-full shadow-md text-white transition-all duration-300
+          bg-[#11408bee] hover:bg-[#0f3674]
+          ${isDesktop ? (isOpen ? "left-60" : "left-16") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
+        `}
+      >
+        {isOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-full border-r border-blue-100
+          bg-gradient-to-b from-blue-50 to-indigo-50/80 backdrop-blur-xl
+          text-slate-700 shadow-lg transition-all duration-300 ease-in-out z-50
+          ${isDesktop ? (isOpen ? "w-64" : "w-20") : isOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
+          flex flex-col
+        `}
+      >
+        {/* Header */}
+        <div
+          className={`flex items-center gap-3 px-5 py-6 border-b border-blue-100 ${
+            isOpen ? "justify-start" : "justify-center"
+          }`}
+        >
+          <div className="p-2 bg-[#11408bee] rounded-xl shadow-md">
+            <Scale size={24} className="text-white" />
+          </div>
+          {isOpen && (
+            <div className="transition-all">
+              <h2 className="text-base font-semibold text-slate-800">
+                Secretary Panel
+              </h2>
+              <p className="text-xs text-slate-500">Justice Law Firm</p>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          {links.map((link, i) => (
+            <NavLink
+              key={i}
+              to={link.path}
+              onClick={handleLinkClick}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-5 py-3 rounded-lg mx-2 my-1 transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-medium border border-blue-200 shadow-sm"
+                      : "text-slate-700 hover:bg-white/80 hover:text-blue-600 hover:shadow-sm"
+                  }
+                  ${isOpen || !isDesktop ? "justify-start" : "justify-center"}
+                `
+              }
+            >
+              {link.icon}
+              {(isOpen || !isDesktop) && <span className="text-sm">{link.name}</span>}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Logout Button */}
+        <div className="px-5 mt-auto mb-4">
+          <button
+            onClick={handleLogout}
+            className={`flex items-center ${
+              isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
+            } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
+          >
+            <LogOut size={22} />
+            {isOpen && <span className="text-sm font-medium">Logout</span>}
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+export default Sidebar;
