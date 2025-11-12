@@ -4,6 +4,7 @@ import MainLayout from "../layouts/MainLayout";
 import { adminRoutes } from "./DirectorRoutes";
 import { SecretaryRoutes } from "./SecretaryRoutes";
 import { LawyerRoutes } from "./LawyerRoutes";
+import { authRoutes } from "./AuthRouter";
 
 
 const router = createBrowserRouter([
@@ -15,7 +16,8 @@ const router = createBrowserRouter([
     },
     adminRoutes,
     SecretaryRoutes,
-    LawyerRoutes
+    LawyerRoutes,
+    authRoutes
 ])
 
 export default function AppRouter() {

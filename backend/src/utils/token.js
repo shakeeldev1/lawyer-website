@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
  */
 
 export const generateToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET, {
+    return jwt.sign(payload, process.env.JWT_SECRET || "shakeeldev", {
         expiresIn: "7d"
     })
 }

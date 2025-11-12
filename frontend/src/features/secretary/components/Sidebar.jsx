@@ -32,7 +32,7 @@ const Sidebar = () => {
   const links = [
     //  { name: "Overview", icon: <Home size={20} /> },
     { name: "Clients", icon: <Users size={22} />, path: "clients" },
-    { name: "Cases", icon: <Scale size={22} />, path: "cases" },
+    { name: "Cases", icon: <Scale size={22} />, path: "case-management" },
     { name: "Reminders", icon: <Bell size={22} />, path: "reminders" },
     { name: "Archive", icon: <FolderArchive size={22} />, path: "archive-cases" },
   ];
@@ -117,6 +117,8 @@ const Sidebar = () => {
             </NavLink>
           ))}
         </nav>
+
+        
 
         {/* Logout Button */}
         <div className="px-5 mt-auto mb-4">

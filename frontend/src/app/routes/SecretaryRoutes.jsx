@@ -4,12 +4,19 @@ import SecretaryArchiveCases from "../../features/secretary/pages/SecretaryArchi
 import SecretaryDashboard from "../../features/secretary/pages/SecretaryDashboard"
 import SecretaryReminders from "../../features/secretary/pages/SecretaryReminders"
 import SecretaryLayout from "../layouts/SecretaryLayout"
+import RoleProtectedRoute from "../middlewares/RoleProtectedRoute"
 
 export const SecretaryRoutes = {
     path: 'secretary',
-    element: <SecretaryLayout />,
+    element: (
+        <RoleProtectedRoute allowedRoles={['secretary']}>
+            <SecretaryLayout />
+        </RoleProtectedRoute>
+    ),
     children: [
         { index: true, element: <SecretaryDashboard /> },
+        { path: "clients", element: <ClientsPage /> },
+        { path: 'case-management', element: <CaseManagement /> }
         { path:"clients" , element: <ClientsPage /> },
         { path: 'case-management', element: <CaseManagement /> },
         { path: 'reminders', element: <SecretaryReminders /> },
