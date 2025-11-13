@@ -1,5 +1,5 @@
 import { asyncHandler } from "../../middleware/asyncHandler.js";
-import User from "../../models/User.model.js";
+import User from "./User.model.js";
 import { customError } from "../../utils/customError.js";
 import { otpTemplate } from "../../utils/emailTemplates/otpTemplate.js";
 import { generateOtp } from "../../utils/generateOtp.js";
@@ -159,5 +159,51 @@ export const changePassword = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         message: "Password changed successfully",
+    });
+});
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, search } = req.query;
+
+    const query = {};
+    if (search) {
+        query.$or = [
+            { name: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } },
+        ];
+    }
+
+    const totalUsers = await User.countDocuments(query);
+
+    const users = await User.find(query)
+        .limit(Number(limit))
+        .skip((page - 1) * Number(limit))
+        .sort({ createdAt: -1 });
+
+    res.status(200).json({
+        success: true,
+        page: Number(page),
+        totalPages: Math.ceil(totalUsers / limit),
+        totalUsers,
+        users,
+    });
+});
+
+export const updateUserRole = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    if (!role) throw new customError('Role is required', 400);
+
+    const user = await User.findById(id);
+    if (!user) throw new customError('User not found!', 404);
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: "User role updated successfully",
+        user,
     });
 });
