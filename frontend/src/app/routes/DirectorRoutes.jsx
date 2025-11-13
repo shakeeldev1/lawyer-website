@@ -8,7 +8,6 @@ import UsersPage from "../../features/dashboard/pages/Users";
 import Archive from "../../features/dashboard/pages/Archive";
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
-
 export const adminRoutes = {
     path: "director",
     element: (
@@ -17,7 +16,7 @@ export const adminRoutes = {
         </RoleProtectedRoute>),
     children: [
         { index: true, element: <AdminDashboard /> },
-       {path:"all-cases",element:<AllCases/>},
+        { path: "all-cases", element: <AllCases /> },
         { path: "final-approval", element: <FinalApprovals /> },
         { path: "archive", element: <Archive /> },
         { path: "reports", element: <ReportsAndAnalytics /> },

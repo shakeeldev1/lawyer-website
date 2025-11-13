@@ -30,13 +30,13 @@ const Login = () => {
       switch (role) {
         case "director":
         case "admin":
-          navigate("/director/overview", { replace: true });
+          navigate("/director", { replace: true });
           break;
         case "secretary":
-          navigate("/secretary/dashboard", { replace: true });
+          navigate("/secretary", { replace: true });
           break;
         case "lawyer":
-          navigate("/lawyer/dashboard", { replace: true });
+          navigate("/lawyer", { replace: true });
           break;
         default:
           navigate("/auth/login", { replace: true });
