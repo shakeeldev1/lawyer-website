@@ -16,8 +16,8 @@ export const adminRoutes = {
             <DashboardLayout />
         </RoleProtectedRoute>),
     children: [
-        { path: "overview", element: <AdminDashboard /> },
-        { path: "all-cases", element: <AllCases /> },
+        { index: true, element: <AdminDashboard /> },
+       {path:"all-cases",element:<AllCases/>},
         { path: "final-approval", element: <FinalApprovals /> },
         { path: "archive", element: <Archive /> },
         { path: "reports", element: <ReportsAndAnalytics /> },
