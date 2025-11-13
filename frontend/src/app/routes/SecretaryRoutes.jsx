@@ -16,7 +16,7 @@ export const SecretaryRoutes = {
     children: [
         { index: true, element: <SecretaryDashboard /> },
         { path: "clients", element: <ClientsPage /> },
-        { path: 'case-management', element: <CaseManagement /> }
+        { path: 'case-management', element: <CaseManagement /> },
         { path:"clients" , element: <ClientsPage /> },
         { path: 'case-management', element: <CaseManagement /> },
         { path: 'reminders', element: <SecretaryReminders /> },
