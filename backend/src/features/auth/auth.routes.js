@@ -15,6 +15,6 @@ router.get('/all-users', loginRequired, allowedRoles(['director']), getAllUsers)
 router.put('/update-user-role/:id', loginRequired, allowedRoles(['director']), updateUserRole);
 router.delete("/delete-user/:id", loginRequired, allowedRoles(['director']), deleteUser);
 router.post("/addUser", loginRequired, allowedRoles(["director"]), addUser);
-router.post("/user-stats", loginRequired, allowedRoles(['director']), userStats);
+router.get("/stats", loginRequired, allowedRoles(['director']), userStats);
 
 export default router;
