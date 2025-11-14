@@ -1,5 +1,5 @@
 import { Case, ActivityLog, Reminder } from "../secretary/secretary.model.js";
-import User from "../../models/User.model.js";
+import User from "../auth/User.model.js";
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { customError } from "../../utils/customError.js";
 

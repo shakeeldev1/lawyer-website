@@ -191,19 +191,63 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 
 export const updateUserRole = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { role } = req.body;
-
-    if (!role) throw new customError('Role is required', 400);
+    const { role, status } = req.body;
 
     const user = await User.findById(id);
     if (!user) throw new customError('User not found!', 404);
 
-    user.role = role;
+    if (role) user.role = role;
+    if (status) user.status = status;
+
     await user.save();
 
     res.status(200).json({
         success: true,
-        message: "User role updated successfully",
-        user,
+        message: "User updated successfully",
+        user: {
+            id: user._id,
+            role: user.role,
+            status: user.status,
+        },
+    });
+});
+
+export const deleteUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const user = await User.find(id);
+    if (!user) {
+        throw new customError('User not found', 404);
+    }
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "User deleted successfully" });
+})
+
+export const addUser = asyncHandler(async (req, res) => {
+    const { name, email, phone, password, role } = req.body;
+
+    if (!name || !email || !phone || !password || !role) {
+        throw new customError("All fields are required", 400);
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        throw new customError("User with this email already exists. Please try another email.", 400);
+    }
+
+    const isVerified = true;
+
+    const newUser = await User.create({ name, email, phone, password, role, isVerified });
+
+    res.status(201).json({
+        success: true,
+        message: "User created successfully",
+        user: {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            phone: newUser.phone,
+            role: newUser.role,
+            isVerified: newUser.isVerified
+        }
     });
 });
