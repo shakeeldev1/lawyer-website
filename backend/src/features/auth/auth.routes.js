@@ -1,5 +1,5 @@
 import express from 'express';
-import { addUser, changePassword, deleteUser, getAllUsers, loginUser, logout, myProfile, signupUser, updateUserRole, verifyOtp } from './auth.controller.js';
+import { addUser, changePassword, deleteUser, getAllUsers, loginUser, logout, myProfile, signupUser, updateUserRole, userStats, verifyOtp } from './auth.controller.js';
 import { loginRequired } from '../../utils/loginRequired.js';
 import { allowedRoles } from '../../utils/allowedRoles.js';
 const router = express.Router();
@@ -11,9 +11,10 @@ router.post('/logout', loginRequired, logout);
 router.get('/my-profile', loginRequired, myProfile);
 router.put('/change-password', loginRequired, changePassword)
 
-router.get('/all-users', loginRequired, allowedRoles(['admin']), getAllUsers);
-router.put('/update-user-role/:id', loginRequired, allowedRoles(['admin']), updateUserRole);
-router.delete("/delete-user/:id", loginRequired, allowedRoles(['admin']), deleteUser);
-router.post("/addUser", loginRequired, allowedRoles(["admin"]), addUser);
+router.get('/all-users', loginRequired, allowedRoles(['director']), getAllUsers);
+router.put('/update-user-role/:id', loginRequired, allowedRoles(['director']), updateUserRole);
+router.delete("/delete-user/:id", loginRequired, allowedRoles(['director']), deleteUser);
+router.post("/addUser", loginRequired, allowedRoles(["director"]), addUser);
+router.post("/user-stats", loginRequired, allowedRoles(['director']), userStats);
 
 export default router;

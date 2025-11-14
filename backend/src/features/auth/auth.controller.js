@@ -251,3 +251,16 @@ export const addUser = asyncHandler(async (req, res) => {
         }
     });
 });
+
+export const userStats = asyncHandler(async (req, res) => {
+    const totalUsers = await User.countDocuments();
+    const lawyers = await User.countDocuments({ role: "lawyer" });
+    const approvingLawyers = await User.countDocuments({ role: "approvingLawyer" });
+    const activeUsers = await User.countDocuments({ status: "active" });
+    res.status(200).json({
+        success: true,
+        data: {
+            totalUsers, lawyers, approvingLawyers, activeUsers
+        }
+    })
+})
