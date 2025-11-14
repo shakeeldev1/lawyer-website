@@ -12,9 +12,10 @@ import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 export const adminRoutes = {
     path: "director",
     element: (
-        <RoleProtectedRoute allowedRoles={['director']}>
+        // <RoleProtectedRoute allowedRoles={['director']}>
             <DashboardLayout />
-        </RoleProtectedRoute>),
+        // </RoleProtectedRoute>
+    ),
     children: [
         { index: true, element: <AdminDashboard /> },
        {path:"all-cases",element:<AllCases/>},

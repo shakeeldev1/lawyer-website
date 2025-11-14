@@ -1,7 +1,7 @@
 import React from "react";
-import { FileText, File, PlusCircle, Archive } from "lucide-react";
+import { Archive, Eye, Trash2, Edit } from "lucide-react";
 
-const CaseTable = ({ cases, onAddStage, onArchive, onUploadDocs, sidebarOpen }) => {
+const CaseTable = ({ cases, onAddStage, onArchive, sidebarOpen, onEditCase,onViewCase }) => {
 
   // Badge helpers
   const getStageBadge = (stage) => {
@@ -45,56 +45,87 @@ const CaseTable = ({ cases, onAddStage, onArchive, onUploadDocs, sidebarOpen }) 
   }
 
   return (
- 
-   <div
-      className={`bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 transition-all duration-300
-       ${
-        sidebarOpen ? "lg:w-[920px] md:w-[400px]" : "lg:w-full md:w-[480px]"
-      }`}>
+
+    <div
+      className={`bg-white rounded-2xl text-[#24344f] w-[360px] shadow-2xl  border border-[#fe9a00]/20 sm:w- transition-all duration-300
+        
+       ${sidebarOpen ? "lg:w-[960px] md:w-[500px]" : "lg:w-[1130px] md:w-[690px]"
+        }`}>
       {/* Desktop/Tablet Table */}
-      <div className="overflow-x-auto">
-        <table className="text-sm ">
-          <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
+      <div className="overflow-x-auto rounded-2xl custom-scrollbar">
+        <table className="text-sm  ">
+          <thead className=" bg-[#11408bee]  text-white/90 uppercase tracking-wide text-xs font-semibold whitespace-nowrap">
             <tr>
               <th className="px-6 py-4 text-left">Case ID</th>
               <th className="px-6 py-4 text-left">Client</th>
+              <th className="px-6 py-4 text-left">Contact</th>
+              <th className="px-6 py-4 text-left">Email</th>
+              <th className="px-6 py-4 text-left">Case Type</th>
               <th className="px-6 py-4 text-left">Stage</th>
               <th className="px-6 py-4 text-left">Status</th>
               <th className="px-6 py-4 text-left">Lawyer</th>
-              <th className="px-6 py-4 text-left">Lawyer</th>
               <th className="px-6 py-4 text-left">Hearing Date</th>
-            
               <th className="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {cases.map((c) => (
-              <tr key={c.id} className="border-t border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200">
-                <td className="px-6 py-4 font-medium">{c.id}</td>
-                <td className="px-6 py-4">{c.client}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStageBadge(c.stage)}`}>{c.stage}</span>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(c.status)}`}>{c.status}</span>
-                </td>
-                <td className="px-6 py-4">{c.lawyer}</td>
-                <td className="px-6 py-4">{c.lawyer}</td>
-                <td className="px-6 py-4">{c.hearingDate}</td> 
-                <td className="px-6 py-4 flex justify-center gap-2 flex-nowrap">
-                  <button onClick={() => onUploadDocs(c.id)} className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700">
-                    <FileText size={16} /> Upload
-                  </button>
-                  <button onClick={() => onAddStage(c.id)} className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700" disabled={c.status !== "Submitted"}>
-                    <PlusCircle size={16} /> Stage
-                  </button>
-                  <button onClick={() => onArchive(c.id)} className="flex items-center gap-1 bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700" disabled={c.status !== "Submitted"}>
-                    <Archive size={16} /> Archive
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {cases.map((c) => {
+              const lastStage =
+                c.case.stages && c.case.stages.length > 0
+                  ? c.case.stages[c.case.stages.length - 1].stage
+                  : c.case.stage || "N/A";
+              return (
+                <tr key={c.id} className="border-t border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200 whitespace-nowrap">
+                  <td className="px-6 py-4 font-medium">{c.id}</td>
+                  <td className="px-6 py-4">{c.client.name}</td>
+                  <td className="px-6 py-4">{c.client.contact}</td>
+                  <td className="px-6 py-4">{c.client.email}</td>
+                  <td className="px-6 py-4">{c.case.caseType}</td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${getStageBadge(
+                        lastStage
+                      )}`}
+                    >
+                      {lastStage}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(c.case.status)}`}>
+                      {c.case.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">{c.case.assignedLawyer}</td>
+                  <td className="px-6 py-4">{c.case.hearingDate}</td>
+                  <td className="px-4 py-4 flex justify-center gap-2 flex-nowrap">
+                    <button
+                      onClick={() => onViewCase?.(c.id)}  // <-- call parent handler
+                      className="flex items-center gap-1 bg-[#24344f] text-white px-2 py-1.5 rounded hover:bg-indigo-700"
+                    >
+                      <Eye size={16} />
+                    </button>
+                    {/* Edit Button */}
+                    <button
+                      onClick={() => onEditCase?.(c.id)}   // <-- call onEditCase here
+                      className="flex items-center gap-1 bg-green-600 text-white px-2 py-1.5 rounded hover:bg-green-700"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    {/* <button onClick={() => onAddStage(c.id)} className="flex items-center gap-1 bg-green-600 text-white px-2 py-1.5 rounded hover:bg-green-700" >
+                      <Edit size={16} />
+                    </button> */}
+                    <button onClick={() => onArchive(c.id)} className="flex items-center gap-1 bg-gray-500 text-white px-2 py-1.5 rounded hover:bg-gray-700" disabled={c.case.status !== "Submitted"}>
+                      <Archive size={16} />
+                    </button>
+                    <button onClick={() => onDelete(c.id)} className="flex items-center gap-1 bg-red-500 text-white px-2 py-1.5 rounded hover:bg-red-700" >
+                      <Trash2 size={16} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
+
         </table>
       </div>
     </div>
