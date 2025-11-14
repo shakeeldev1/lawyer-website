@@ -10,6 +10,7 @@ import {
   Scale,
   ChevronLeft,
   ChevronRight,
+  Home,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -29,12 +30,11 @@ const Sidebar = () => {
 
   // ✅ Secretary-specific menu items
   const links = [
+    //  { name: "Overview", icon: <Home size={20} /> },
     { name: "Clients", icon: <Users size={22} />, path: "clients" },
-    { name: "Cases", icon: <Scale size={22} />, path: "cases" },
+    { name: "Cases", icon: <Scale size={22} />, path: "case-management" },
     { name: "Reminders", icon: <Bell size={22} />, path: "reminders" },
-    { name: "Archive", icon: <FolderArchive size={22} />, path: "archive" },
-    { name: "Reports", icon: <BarChart3 size={22} />, path: "reports" },
-    { name: "Language", icon: <Globe size={22} />, path: "language" },
+    { name: "Archive", icon: <FolderArchive size={22} />, path: "archive-cases" },
   ];
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
@@ -117,6 +117,8 @@ const Sidebar = () => {
             </NavLink>
           ))}
         </nav>
+
+        
 
         {/* Logout Button */}
         <div className="px-5 mt-auto mb-4">

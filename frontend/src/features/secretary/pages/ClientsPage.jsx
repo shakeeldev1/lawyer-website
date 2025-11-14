@@ -1,73 +1,96 @@
-// src/pages/SecretaryDashboard/ClientsPage.jsx
-import React, { useState } from "react";
-
+// src/features/secretary/clients/ClientsPage.jsx
+import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import Clienttable from "../components/ClientsPage/ClientTable";
-import ClientTable from "../components/ClientsPage/ClientTable";
+import ClientTable from './../components/ClientsPage/ClientTable';
+import ClientForm from "../components/ClientsPage/ClientForm";
 
 const ClientsPage = () => {
-  const [clients, setClients] = useState([]);
+  // Dummy client data
+  const [clients, setClients] = useState([
+    { id: 1, name: "John Doe", contact: "+923001234567", caseType: "Civil" },
+    { id: 2, name: "Sarah Ali", contact: "+923009876543", caseType: "Criminal" },
+    { id: 3, name: "Ahmed Khan", contact: "+923001112233", caseType: "Family" },
+  ]);
+
   const [showForm, setShowForm] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
-  const [assignModalOpen, setAssignModalOpen] = useState(false);
 
-  const handleAddClient = (newClient) => {
-    setClients((prev) => [...prev, { ...newClient, id: Date.now() }]);
-    setShowForm(false);
-  };
-
-  const handleAssignLawyer = (clientId, lawyerName) => {
-    setClients((prev) =>
-      prev.map((c) =>
-        c.id === clientId ? { ...c, assignedLawyer: lawyerName } : c
-      )
-    );
-    setAssignModalOpen(false);
-  };
-
-  const handleDeleteClient = (id) => {
-    setClients((prev) => prev.filter((c) => c.id !== id));
-  };
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+    // ✅ Sync with sidebar state
+    useEffect(() => {
+      const handleResize = () => {
+        const desktop = window.innerWidth >= 1024;
+        setSidebarOpen(desktop);
+      };
+  
+      const handleSidebarToggle = () => {
+        // Listen for sidebar state changes from the sidebar component
+        const sidebar = document.querySelector('aside');
+        if (sidebar) {
+          const isOpen = sidebar.classList.contains('w-64');
+          setSidebarOpen(isOpen);
+        }
+      };
+  
+      window.addEventListener('resize', handleResize);
+      
+      // Check sidebar state periodically (you can use a better state management approach)
+      const interval = setInterval(handleSidebarToggle, 100);
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        clearInterval(interval);
+      };
+    }, []);
+  
 
   return (
-    <div className="p-4">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Clients</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
-        >
-          <Plus size={18} /> Add Client
-        </button>
+     <div
+      className={`min-h-screen  mt-20
+                 px-3 sm:px-4 md:px-6 lg:px-2
+                 py-3 sm:py-4 md:py-5 
+                 transition-all duration-300 ease-in-out
+                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+    >
+      <div className="p-5 space-y-4">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Client Management</h2>
+          <button
+            className="flex items-center gap-2 bg-[#FE9A00] hover:bg-orange-500 text-white px-4 py-2 rounded-lg transition"
+            onClick={() => {
+              setSelectedClient(null);
+              setShowForm(true);
+            }}
+          >
+            <Plus size={18} /> Add Client
+          </button>
+        </div>
+
+        {/* Client Table */}
+        <ClientTable
+          clients={clients}
+          setClients={setClients}
+          setSelectedClient={setSelectedClient}
+          setShowForm={setShowForm}
+        />
+
+        {/* Client Form Modal */}
+        {showForm && (
+          <ClientForm
+            client={selectedClient}
+            onClose={() => setShowForm(false)}
+            onSave={(clientData) => {
+              if (selectedClient) {
+                setClients(clients.map(c => (c.id === selectedClient.id ? { ...c, ...clientData } : c)));
+              } else {
+                setClients([...clients, { ...clientData, id: Date.now() }]);
+              }
+              setShowForm(false);
+            }}
+          />
+        )}
       </div>
-
-      {/* Table */}
-      <ClientTable
-        clients={clients}
-        onDelete={handleDeleteClient}
-        onAssign={(client) => {
-          setSelectedClient(client);
-          setAssignModalOpen(true);
-        }}
-      />
-
-      {/* Add Client Form Modal */}
-      {showForm && (
-        <ClientForm
-          onClose={() => setShowForm(false)}
-          onSave={handleAddClient}
-        />
-      )}
-
-      {/* Assign Lawyer Modal */}
-      {assignModalOpen && selectedClient && (
-        <AssignLawyerModal
-          client={selectedClient}
-          onClose={() => setAssignModalOpen(false)}
-          onAssign={handleAssignLawyer}
-        />
-      )}
     </div>
   );
 };

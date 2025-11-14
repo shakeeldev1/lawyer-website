@@ -16,8 +16,8 @@ const ArchiveTable = ({ archives, onView, onDelete, sidebarOpen }) => {
 
   return (
     <div
-      className={`bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
-        sidebarOpen ? "max-w-[960px]" : "max-w-6xl"
+      className={`bg-white w-[300px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? "lg:w-[980px] md:w-[400px]" : "lg:w-full md:w-[480px]"
       }`}
     >
       {/* Desktop/Tablet Table */}

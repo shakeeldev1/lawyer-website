@@ -28,8 +28,14 @@ export const authApi = createApi({
                 method: 'POST',
                 body: { otp, email }
             })
+        }),
+        myProfile: builder.query({
+            query: () => ({
+                url: "/my-profile",
+                method: 'GET'
+            })
         })
     })
 })
 
-export const { useLoginMutation, useSignupMutation, useVerifyAccountMutation } = authApi;
+export const { useLoginMutation, useSignupMutation, useVerifyAccountMutation,useMyProfileQuery } = authApi;
