@@ -33,7 +33,7 @@ const Login = () => {
           navigate("/director", { replace: true });
           break;
         case "secretary":
-          navigate("/secretary", { replace: true });
+          navigate("/", { replace: true });
           break;
         case "lawyer":
           navigate("/lawyer", { replace: true });
