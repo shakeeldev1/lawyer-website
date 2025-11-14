@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { selectUserProfile } from "../../features/auth/authSlice";
 
 const RoleProtectedRoute = ({ allowedRoles, children }) => {
   const user = useSelector(selectUserProfile);
   const location = useLocation();
-
+const navigate = useNavigate();
   console.log("user in middleware", user);
 
   if (user === null || user === undefined) {
@@ -19,11 +19,11 @@ const RoleProtectedRoute = ({ allowedRoles, children }) => {
   if (!allowedRoles.includes(user.role)) {
     switch (user.role) {
       case "director":
-        return <Navigate to="/director/overview" replace />;
+        return navigate("/director");
       case "secretary":
-        return <Navigate to="/secretary/dashboard" replace />;
+        return navigate("/secretary");
       case "lawyer":
-        return <Navigate to="/lawyer/dashboard" replace />;
+        return navigate("/lawyer");
       default:
         return <Navigate to="/auth/login" state={{ from: location }} replace />;
     }

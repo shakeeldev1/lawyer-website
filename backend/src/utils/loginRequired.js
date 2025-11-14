@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { customError } from "../utils/customError.js";
-import User from "../models/User.model.js";
+import User from "../features/auth/User.model.js";
 
 export const loginRequired = asyncHandler(async (req, res, next) => {
     const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];

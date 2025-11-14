@@ -22,11 +22,30 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await login(formData).unwrap();
-      console.log("Login data:", res);
-      toast.success(res?.data?.message || "Login successful!", { position: "bottom-right" });
-      navigate("/")
+
+      toast.success(res?.data?.message || "Login successful!", {
+        position: "bottom-right",
+      });
+      const role = res?.user?.role;
+      switch (role) {
+        case "director":
+        case "admin":
+          navigate("/director", { replace: true });
+          break;
+        case "secretary":
+          navigate("/", { replace: true });
+          break;
+        case "lawyer":
+          navigate("/lawyer", { replace: true });
+          break;
+        default:
+          navigate("/auth/login", { replace: true });
+      }
     } catch (error) {
-      toast.error(error?.data?.message || "Invalid email or password!", { position: "bottom-right" });
+      toast.error(
+        error?.data?.message || "Invalid email or password!",
+        { position: "bottom-right" }
+      );
     }
   };
 
