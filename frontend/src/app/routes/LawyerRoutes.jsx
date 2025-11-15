@@ -8,9 +8,9 @@ import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 export const LawyerRoutes = {
     path: 'lawyer',
     element: (
-        <RoleProtectedRoute allowedRoles={['lawyer']}>
+        // <RoleProtectedRoute allowedRoles={['lawyer']}>
             <LawyerLayout />
-        </RoleProtectedRoute>
+        // {/* </RoleProtectedRoute> */}
     ),
     children: [
         { index: true, element: <LawyerOverview /> },

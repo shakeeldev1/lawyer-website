@@ -37,12 +37,17 @@ const SecretaryArchiveCases = () => {
         };
       }, []);
 
-useEffect(() => {
+
+      useEffect(() => {
   setArchivedCases([
     {
       id: "ARC-001",
       client: "Ahmed Ali",
       clientNumber: "0234167181",
+      email: "ahmed.ali@example.com",
+      nationalId: "12345678901234",
+      address:"-",
+      additionalInfo: "VIP client, priority case",
       caseNumber: "C-1001",
       caseType: "Civil Litigation",
       lawyer: "Lawyer Hina",
@@ -58,6 +63,10 @@ useEffect(() => {
       id: "ARC-002",
       client: "Omar Malik",
       clientNumber: "728112892",
+      email: "omar.malik@example.com",
+      nationalId: "98765432101234",
+      address:"",
+      additionalInfo: "Corporate client",
       caseNumber: "C-1002",
       caseType: "Corporate Dispute",
       lawyer: "Lawyer Sara",
@@ -68,22 +77,11 @@ useEffect(() => {
         { stage: "Appeal", hearingDate: "2025-11-15", documents: [{ name: "AppealSummary.pdf" }] },
       ],
     },
-    {
-      id: "ARC-003",
-      client: "Hassan Raza",
-      clientNumber: "034562717",
-      caseNumber: "C-1003",
-      caseType: "Criminal Defense",
-      lawyer: "Lawyer Ayesha",
-      date: "2025-09-22",
-      archived: true,
-      stages: [
-        { stage: "Main Case", hearingDate: "2025-09-22", documents: [{ name: "MainCaseReport.pdf" }] },
-        { stage: "Appeal", hearingDate: "2025-09-28", documents: [{ name: "AppealPetition.pdf" }] },
-      ],
-    },
   ]);
 }, []);
+
+
+
 
 
 

@@ -1,12 +1,13 @@
 // src/components/ArchivePage.jsx
 import React, { useState, useEffect } from "react";
 
-import { fetchArchivedCases } from "../components/LawyerArchive/MockData";
+
 import ArchiveHeader from "../components/LawyerArchive/ArchiveHeader";
 import ArchiveSearch from "../components/LawyerArchive/ArchiveSearch";
 import ArchiveTable from "../components/LawyerArchive/ArchiveTable";
 import ArchiveModal from "../components/LawyerArchive/ArchiveModal";
 import ArchiveDeleteModal from "../components/LawyerArchive/ArchiveDeleteModal";
+import { fetchArchivedCases } from "../components/LawyerArchive/MockData";
 
 export default function LawyerArchive() {
   const [archivedCases, setArchivedCases] = useState([]);
