@@ -39,18 +39,18 @@ const UserTable = ({ users, updateStatus, updateRole, onView, onDelete, roles })
                     </select>
                   </td>
                   <td className="py-3 px-4">{u.email}</td>
-                  <td className="py-3 px-4">{u.phone}</td>
+                  <td className="py-3 px-4">{u.phone?u.phone:'NP'}</td>
                   <td className="py-3 px-4">
                     <select
                       value={u.status}
                       onChange={(e) => updateStatus(u._id, e.target.value)}
                       className="border rounded px-2 py-1 text-sm w-full"
                     >
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
                     </select>
                   </td>
-                  <td className="py-3 px-4 text-center">{u.assignedCases}</td>
+                  <td className="py-3 px-4 text-center">{u.assignedCases?u.assignedCases:'NP'}</td>
                   <td className="py-3 px-4 flex gap-2 justify-center">
                     <button
                       onClick={() => onView(u)}
@@ -93,7 +93,7 @@ const UserTable = ({ users, updateStatus, updateRole, onView, onDelete, roles })
 
             </div>
             <p><strong>Email:</strong> {u.email}</p>
-            <p><strong>Phone:</strong> {u.phone}</p>
+            <p><strong>Phone:</strong> {u.phone?u.phone:'NP'}</p>
             <div className="flex items-center justify-between mt-2 gap-2">
               <select
                 value={u.status}
