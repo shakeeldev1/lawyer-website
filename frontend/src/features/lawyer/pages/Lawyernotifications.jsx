@@ -1,74 +1,7 @@
 // src/pages/LawyerNotificationsPage.jsx
 import React, { useState, useMemo, useEffect } from "react";
 import { Search, CheckCircle, Circle, FileText } from "lucide-react";
-import CaseDetails from "../components/LawyerCases/CaseDetails";
 
-// Dummy cases (like MyCases)
-const dummyCases = [
-  {
-    id: 1,
-    clientName: "John Doe",
-    caseNumber: "C123",
-    caseType: "Civil Litigation",
-    stages: [
-      {
-        stage: "Main",
-        secretaryDocuments: ["ClientForm.pdf", "Evidence1.pdf"],
-        memorandum: { status: "Approved", file: "MemoMain.pdf", ragabFeedback: "Approved", mdSigned: true },
-        hearingDate: "2025-11-15",
-      },
-      {
-        stage: "Appeal",
-        applied: true,
-        secretaryDocuments: ["AppealForm.pdf", "EvidenceAppeal.pdf"],
-        memorandum: { status: "Submitted", file: "MemoAppeal.pdf", ragabFeedback: "Pending", mdSigned: false },
-        hearingDate: "2025-12-01",
-      },
-      {
-        stage: "Cassation",
-        applied: false,
-        secretaryDocuments: [],
-        memorandum: { status: "Locked", file: null, ragabFeedback: null, mdSigned: false },
-        hearingDate: "2026-01-15",
-      },
-    ],
-  },
-  {
-    id: 2,
-    clientName: "Jane Smith",
-    caseNumber: "C124",
-    caseType: "Corporate Law",
-    stages: [
-      {
-        stage: "Main",
-        secretaryDocuments: ["FormA.pdf", "EvidenceX.pdf"],
-        memorandum: { status: "Approved", file: "MemoA.pdf", ragabFeedback: "Approved", mdSigned: true },
-        hearingDate: "2025-10-20",
-      },
-      {
-        stage: "Appeal",
-        applied: true,
-        secretaryDocuments: ["AppealFormB.pdf"],
-        memorandum: { status: "Pending", file: null, ragabFeedback: null, mdSigned: false },
-        hearingDate: "2025-11-15",
-      },
-    ],
-  },
-  {
-    id: 3,
-    clientName: "Ali Khan",
-    caseNumber: "C125",
-    caseType: "Criminal Law",
-    stages: [
-      {
-        stage: "Main",
-        secretaryDocuments: ["CriminalForm.pdf", "EvidenceY.pdf"],
-        memorandum: { status: "Pending", file: null, ragabFeedback: null, mdSigned: false },
-        hearingDate: "2025-11-20",
-      },
-    ],
-  },
-];
 
 // Dummy notifications (covering all types and stages)
 const dummyNotifications = [
@@ -289,12 +222,7 @@ export default function LawyerNotifications() {
                     Mark Read
                   </button>
                 )}
-                <button
-                  onClick={() => setSelectedNotification(n)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-                >
-                  View Case
-                </button>
+              
               </div>
             </div>
           ))}
@@ -306,15 +234,7 @@ export default function LawyerNotifications() {
         </div>
       )}
 
-      {/* Case Details Modal */}
-      {selectedNotification && (
-        <CaseDetails
-          selectedCase={dummyCases.find((c) => c.id === selectedNotification.caseId)}
-          onClose={() => setSelectedNotification(null)}
-          updateCases={() => {}}
-          cases={dummyCases}
-        />
-      )}
+     
     </div>
   );
 }
