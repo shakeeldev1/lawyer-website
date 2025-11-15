@@ -7,14 +7,14 @@ import SecretaryLayout from "../layouts/SecretaryLayout"
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute"
 
 export const SecretaryRoutes = {
-    path: 'secretary',
+    path: '',
     element: (
         // <RoleProtectedRoute allowedRoles={['secretary']}>
             <SecretaryLayout />
         // </RoleProtectedRoute>
     ),
     children: [
-        { index: true, element: <SecretaryDashboard /> },
+        { index: true, element: <ClientsPage /> },
         { path: "clients", element: <ClientsPage /> },
         { path: 'case-management', element: <CaseManagement /> },
         { path:"clients" , element: <ClientsPage /> },

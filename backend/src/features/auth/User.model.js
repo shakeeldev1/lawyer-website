@@ -30,13 +30,13 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["director", "secretary", "lawyer"],
+        enum: ["director", "secretary", "lawyer","approvingLawyer"],
         default: "secretary"
     },
     status: {
         type: String,
         enum: ["active", "inactive"],
-        defautl: "active"
+        default: "active"
     },
     isVerified:{
         type:Boolean,

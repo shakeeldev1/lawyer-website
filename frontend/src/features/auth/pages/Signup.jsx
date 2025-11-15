@@ -24,7 +24,7 @@ const Signup = () => {
       toast.success(res?.message || "Signup successful!", {
         position: "bottom-right",
       });
-      navigate("/auth/verify-account",{state:{email:formData.email}})
+      navigate("/verify-account",{state:{email:formData.email}})
     } catch (error) {
       toast.error(error?.data?.message || "Signup failed!", {
         position: "bottom-right",

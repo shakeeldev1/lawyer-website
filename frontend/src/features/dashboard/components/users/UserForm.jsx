@@ -53,11 +53,13 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
             <FaUserTag className="absolute top-3 left-3 text-gray-400" />
             <select
               value={formData.role}
-              onChange={e => setFormData({ ...formData, role: e.target.value })}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
-              {roles.map(r => (
-                <option key={r}>{r}</option>
+              {roles.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
               ))}
             </select>
           </div>

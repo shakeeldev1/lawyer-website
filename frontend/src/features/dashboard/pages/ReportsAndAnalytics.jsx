@@ -3,8 +3,7 @@ import ReportsHeader from "../components/DashboardReports/ReportsHeader";
 import ReportsStats from "../components/DashboardReports/ReportsStats";
 import ReportsCaseCharts from "../components/DashboardReports/ReportsCaseCharts";
 import ReportsCaseTimelines from "../components/DashboardReports/ReportsCaseTimelines";
-import ReportsActivityLogs from "../components/DashboardReports/ReportsactivityLogs";
-
+import ReportsActivityLogs from "../components/DashboardReports/ReportsactivityLogs.jsx";
 
 const ReportsAndAnalytics = () => {
 
