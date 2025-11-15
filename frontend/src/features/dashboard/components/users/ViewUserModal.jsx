@@ -1,4 +1,3 @@
-import React from "react";
 
 const ViewUserModal = ({ user, onClose }) => {
   if (!user) return null;
