@@ -5,8 +5,7 @@ import { selectUserProfile } from "../../features/auth/authSlice";
 const RoleProtectedRoute = ({ allowedRoles, children }) => {
   const user = useSelector(selectUserProfile);
   const location = useLocation();
-const navigate = useNavigate();
-  console.log("user in middleware", user);
+  const navigate = useNavigate();
 
   if (user === null || user === undefined) {
     return (

@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useLoginMutation } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setProfile } from "../authSlice";
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,11 +21,12 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await login(formData).unwrap();
-
+      dispatch(setProfile(res?.user));
       toast.success(res?.data?.message || "Login successful!", {
         position: "bottom-right",
       });
