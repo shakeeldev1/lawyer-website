@@ -12,8 +12,6 @@ import path from "path";
 
 const app = express();
 
-connectDB();
-
 app.use(express.json())
 app.use(cookieParser())
 
@@ -34,4 +32,10 @@ app.use("/api", routes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+connectDB()
+    .then(() => {
+        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    })
+    .catch((err) => {
+        console.error("Failed to connect to DB, server not started", err);
+    });
