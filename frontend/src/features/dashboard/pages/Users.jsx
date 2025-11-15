@@ -4,7 +4,8 @@ import UserStats from "../components/users/UserStats";
 import UsersHeader from "../components/users/UsersHeader";
 import UserTable from "../components/users/UserTable";
 import UserForm from "../components/users/UserForm";
-import ViewUserModal from "../components/users/ViewuserModal";
+// import ViewUserModal from "../components/users/ViewuserModal";
+import ViewUserModel from "../components/users/ViewUserModal";
 import UserDeleteModal from "../components/users/UserDeleteModal";
 import {
   useAllUsersQuery,
@@ -129,7 +130,7 @@ const UsersPage = () => {
       <UserTable users={users} updateStatus={updateStatus} updateRole={updateRole} roles={roles} onView={setSelectedUser} onDelete={handleDelete} />
 
       <UserForm show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddUser} formData={formData} setFormData={setFormData} roles={roles} />
-      <ViewUserModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+      <ViewUserModel user={selectedUser} onClose={() => setSelectedUser(null)} />
       <UserDeleteModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} onDelete={confirmDelete} />
     </div>
   );
