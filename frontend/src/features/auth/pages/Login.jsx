@@ -39,7 +39,7 @@ const Login = () => {
           navigate("/lawyer", { replace: true });
           break;
         default:
-          navigate("/auth/login", { replace: true });
+          navigate("/login", { replace: true });
       }
     } catch (error) {
       toast.error(

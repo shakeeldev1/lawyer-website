@@ -25,7 +25,7 @@ const navigate = useNavigate();
       case "lawyer":
         return navigate("/lawyer");
       default:
-        return <Navigate to="/auth/login" state={{ from: location }} replace />;
+        return <Navigate to="/login" state={{ from: location }} replace />;
     }
   }
 
