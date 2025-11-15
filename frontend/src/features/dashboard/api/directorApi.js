@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
+console.log("backend url....",BACKEND_URL);
 export const directorApi = createApi({
     reducerPath: "directorApi",
     baseQuery: fetchBaseQuery({
