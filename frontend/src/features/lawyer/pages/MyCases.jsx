@@ -13,16 +13,6 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 
-/**
- * Professional Lawyer Cases Page (full workflow simulation)
- * - Tailwind classes assume Tailwind is configured.
- * - Accent color: orange '#fe9a00' (used inline).
- * - Primary text color uses 'text-slate-800'.
- */
-
-/* -------------------------
-   Dummy dataset (multiple cases)
--------------------------*/
 const initialCases = [
   {
     id: "C-2024-001",
