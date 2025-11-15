@@ -1,72 +1,49 @@
-// src/components/ArchivePage.jsx
 import React, { useState, useEffect } from "react";
-
 
 import ArchiveHeader from "../components/LawyerArchive/ArchiveHeader";
 import ArchiveSearch from "../components/LawyerArchive/ArchiveSearch";
 import ArchiveTable from "../components/LawyerArchive/ArchiveTable";
 import ArchiveModal from "../components/LawyerArchive/ArchiveModal";
 import ArchiveDeleteModal from "../components/LawyerArchive/ArchiveDeleteModal";
-import { fetchArchivedCases } from "../components/LawyerArchive/MockData";
+
+import { useGetLawyerArchieveQuery } from "../api/lawyerApi";
 
 export default function LawyerArchive() {
-  const [archivedCases, setArchivedCases] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
+  const { data, isLoading, isError } = useGetLawyerArchieveQuery(search);
+  const archivedCases = data?.data || [];
 
   useEffect(() => {
-    const loadCases = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchArchivedCases();
-        setArchivedCases(data);
-      } catch (error) {
-        console.error("Error loading archived cases:", error);
-      } finally {
-        setLoading(false);
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+
+    window.addEventListener("resize", handleResize);
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        setSidebarOpen(sidebar.classList.contains("w-64"));
       }
     };
-    loadCases();
+
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
   const filteredCases = archivedCases.filter(
     (c) =>
       c.caseNumber.toLowerCase().includes(search.toLowerCase()) ||
       c.clientName.toLowerCase().includes(search.toLowerCase()) ||
-      c.archiveReference.toLowerCase().includes(search.toLowerCase())
+      (c.archiveReference && c.archiveReference.toLowerCase().includes(search.toLowerCase()))
   );
-
-   // ✅ Sync with sidebar state
-   useEffect(() => {
-     const handleResize = () => {
-       const desktop = window.innerWidth >= 1024;
-       setSidebarOpen(desktop);
-     };
- 
-     const handleSidebarToggle = () => {
-       // Listen for sidebar state changes from the sidebar component
-       const sidebar = document.querySelector('aside');
-       if (sidebar) {
-         const isOpen = sidebar.classList.contains('w-64');
-         setSidebarOpen(isOpen);
-       }
-     };
- 
-     window.addEventListener('resize', handleResize);
-     
-     // Check sidebar state periodically (you can use a better state management approach)
-     const interval = setInterval(handleSidebarToggle, 100);
-     
-     return () => {
-       window.removeEventListener('resize', handleResize);
-       clearInterval(interval);
-     };
-   }, []);
 
   const handleDeleteClick = (c) => {
     setCaseToDelete(c);
@@ -75,7 +52,9 @@ export default function LawyerArchive() {
 
   const handleConfirmDelete = () => {
     if (caseToDelete) {
-      setArchivedCases(prev => prev.filter(c => c.id !== caseToDelete.id));
+      // Optimistically update UI
+      // Note: You might also want to call a delete API here
+      archivedCases.splice(archivedCases.indexOf(caseToDelete), 1);
     }
     setDeleteModalOpen(false);
     setCaseToDelete(null);
@@ -84,26 +63,23 @@ export default function LawyerArchive() {
   return (
     <div
       className={`min-h-screen 
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
+                 px-3 sm:px-4 md:px-6 lg:px-4
+                 py-3 sm:py-4 md:py-5
                  transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
     >
       <ArchiveHeader caseCount={filteredCases.length} />
-      
-      <ArchiveSearch
-        search={search} 
-        onSearchChange={setSearch} 
-      />
+
+      <ArchiveSearch search={search} onSearchChange={setSearch} />
 
       <ArchiveTable
         cases={filteredCases}
-        loading={loading}
+        loading={isLoading}
         onViewCase={setSelectedCase}
         onDeleteCase={handleDeleteClick}
       />
 
-      {/* Modals */}
+      {/* View Modal */}
       {selectedCase && (
         <ArchiveModal
           caseData={selectedCase}
@@ -111,12 +87,19 @@ export default function LawyerArchive() {
         />
       )}
 
+      {/* Delete Modal */}
       {deleteModalOpen && (
         <ArchiveDeleteModal
           caseToDelete={caseToDelete}
           onClose={() => setDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
         />
+      )}
+
+      {isError && (
+        <p className="text-red-500 mt-4 text-center">
+          Failed to load archived cases.
+        </p>
       )}
     </div>
   );

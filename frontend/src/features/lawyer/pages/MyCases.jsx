@@ -8,35 +8,38 @@ import DeleteModal from "../components/LawyerCases/DeleteModal";
 import { useLawyerCasesQuery } from "../api/lawyerApi";
 
 export default function MyCases() {
-  const currentUserId = "lawyer1"; // replace with dynamic user ID if needed
+  const currentUserId = "lawyer1";
   const [cases, setCases] = useState([]);
+  const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
   const [activeTab, setActiveTab] = useState("Details");
   const [selectedStage, setSelectedStage] = useState("Main");
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-  const [search, setSearch] = useState("");
-
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
 
-  // API Query
+  // Fetch cases from API
   const { data, isLoading, isError } = useLawyerCasesQuery(search);
 
-  // Update cases from API
   useEffect(() => {
-    if (data?.success) {
-      setCases(data.data);
-    }
+    if (data?.success) setCases(data.data);
   }, [data]);
 
-  // Responsive sidebar
+  // Sidebar responsive handling
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+    const interval = setInterval(() => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) setSidebarOpen(sidebar.classList.contains("w-64"));
+    }, 100);
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
-  // Open/Close case modal
+  // Open/close case modal
   const openCase = (c) => {
     setSelectedCase(c);
     setActiveTab("Details");
@@ -86,7 +89,7 @@ export default function MyCases() {
 
   return (
     <div
-      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
+      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-4 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
         sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
       }`}
     >
