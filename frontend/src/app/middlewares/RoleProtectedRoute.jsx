@@ -23,6 +23,8 @@ const RoleProtectedRoute = ({ allowedRoles, children }) => {
         return navigate("/secretary");
       case "lawyer":
         return navigate("/lawyer");
+           case "approvedlawyer":
+        return navigate("/approvedlawyer");
       default:
         return <Navigate to="/login" state={{ from: location }} replace />;
     }

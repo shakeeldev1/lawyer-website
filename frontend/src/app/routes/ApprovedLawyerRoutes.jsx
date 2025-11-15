@@ -3,7 +3,7 @@ import ApprovedLawyerLayout from "../layouts/ApprovedLawyerLayout";
 
 
 export const ApprovedLawyerRoutes = {
-    path: 'lawyer',
+    path: 'approvedlawyer',
     element: (
         // <RoleProtectedRoute allowedRoles={['lawyer']}>
             <ApprovedLawyerLayout />

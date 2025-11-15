@@ -39,6 +39,9 @@ const Login = () => {
         case "secretary":
           navigate("/", { replace: true });
           break;
+            case "approvedlawyer":
+          navigate("/approvedlawyer", { replace: true });
+          break;
         case "lawyer":
           navigate("/lawyer", { replace: true });
           break;
