@@ -46,16 +46,17 @@ const Topbar = () => {
   }, []);
 
   return (
-   <header
-  className={`fixed top-0 left-0 right-0 h-16 sm:h-20
-    bg-gradient-to-r from-blue-50 to-indigo-50/90
-    shadow-md border-b border-blue-100
-    flex items-center justify-between
-    px-4 sm:px-6 md:px-10
-    transition-all duration-300 ease-in-out
-   lg:ml- ${sidebarOpen ? "64" : "20"} lg:right-0
-  `}
->
+ <header
+      className={`fixed top-0 left-0 right-0 h-16 sm:h-20
+      bg-gradient-to-r from-blue-50 to-indigo-50/90
+      shadow-md border-b border-blue-100
+      flex items-center justify-between
+      px-4 sm:px-6 md:px-10 md:z-[40]
+      transition-all duration-300 ease-in-out
+      lg:left-${sidebarOpen ? "64" : "20"} lg:right-0
+      `}
+    >
+
       {/* Left Quick Stats */}
       <div className={`flex items-center gap-6 sm:gap-8  ${sidebarOpen ? "ml-20 md:ml-[300px]" : "ml-14 md:ml-[130px]"}`}>
         <div className="text-right">

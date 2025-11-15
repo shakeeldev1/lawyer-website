@@ -3,7 +3,7 @@ import React from "react";
 const ViewUserModal = ({ user, onClose }) => {
   if (!user) return null;
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur  flex items-center justify-center z-70 p-4">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur  flex items-center justify-center z-[9999] p-4">
       <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-xl border border-gray-200">
         <h3 className="text-2xl font-bold mb-4 text-[#162030]">User Details</h3>
         <div className="space-y-2 text-slate-800">

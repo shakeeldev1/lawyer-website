@@ -9,14 +9,14 @@ import RoleProtectedRoute from "../middlewares/RoleProtectedRoute"
 export const SecretaryRoutes = {
     path: 'secretary',
     element: (
-        <RoleProtectedRoute allowedRoles={['secretary']}>
+        // <RoleProtectedRoute allowedRoles={['secretary']}>
             <SecretaryLayout />
-        </RoleProtectedRoute>
+        // </RoleProtectedRoute>
     ),
     children: [
         { index: true, element: <SecretaryDashboard /> },
         { path: "clients", element: <ClientsPage /> },
-        { path: 'case-management', element: <CaseManagement /> }
+        { path: 'case-management', element: <CaseManagement /> },
         { path:"clients" , element: <ClientsPage /> },
         { path: 'case-management', element: <CaseManagement /> },
         { path: 'reminders', element: <SecretaryReminders /> },

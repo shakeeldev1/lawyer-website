@@ -1,11 +1,41 @@
 // src/features/secretary/clients/ClientTable.jsx
-import React, { useState } from "react";
-import { Trash2, Edit } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Trash2, Edit, FileText } from "lucide-react";
 import DeleteModal from "./DeleteModal";
 
-export default function ClientTable({ clients = [], setClients, setSelectedClient, setShowForm }) {
+export default function ClientTable({
+  clients = [],
+  setClients,
+  setSelectedClient,
+  setShowForm,
+}) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [clientToDelete, setClientToDelete] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  // ✅ Sync sidebar width responsiveness (same logic as ArchiveTable)
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleEditClick = (client) => {
     setSelectedClient(client);
@@ -18,109 +48,99 @@ export default function ClientTable({ clients = [], setClients, setSelectedClien
   };
 
   const handleConfirmDelete = () => {
-    setClients(clients.filter(c => c.id !== clientToDelete.id));
+    setClients(clients.filter((c) => c.id !== clientToDelete.id));
     setDeleteModalOpen(false);
     setClientToDelete(null);
   };
 
+  if (!clients.length)
+    return (
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+        <FileText className="w-10 h-10 text-blue-500 mx-auto mb-3" />
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          No Clients Found
+        </h3>
+        <p className="text-gray-500 text-sm">
+          Clients will appear here once added.
+        </p>
+      </div>
+    );
+
+  const TableRow = ({ c, idx }) => (
+    <tr
+      className={`transition-all duration-200 hover:bg-slate-50 ${
+        idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+      }`}
+    >
+      <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
+        {c.id}
+      </td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">{c.name}</td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">{c.email}</td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">
+        {c.contactNumber}
+      </td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">{c.nationalId}</td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">{c.address}</td>
+      <td className="p-4 text-slate-800 whitespace-nowrap">
+        {c.additionalInfo}
+      </td>
+      <td className="p-4 text-right flex justify-end mt-4 gap-2">
+        <button
+          className="inline-flex items-center justify-center w-8 h-8 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition-colors duration-200 shadow-sm"
+          onClick={() => handleEditClick(c)}
+        >
+          <Edit size={14} />
+        </button>
+        <button
+          className="inline-flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 shadow-sm"
+          onClick={() => handleDeleteClick(c)}
+        >
+          <Trash2 size={14} />
+        </button>
+      </td>
+    </tr>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      {/* ✅ Responsive container width based on sidebar */}
+     <div
+  className={`overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-[330px] text-left border-collapse ${
+    sidebarOpen
+      ? "md:w-[489px] lg:w-[1050px]"
+      : "md:w-[680px] lg:w-[1220px]"
+  }`}
+>
 
-      {/* Desktop Table */}
-      <div className="hidden lg:block bg-white rounded-xl shadow border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left">
-            <thead className="bg-[#162030] text-[#FE9A00] uppercase text-sm font-semibold">
-              <tr>
-                <th className="p-4">Name</th>
-                <th className="p-4">Contact</th>
-                <th className="p-4">Case Type</th>
-                <th className="p-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {clients.length > 0 ? clients.map(c => (
-                <tr key={c.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="p-4 font-medium text-gray-800">{c.name}</td>
-                  <td className="p-4 text-gray-700">{c.contact}</td>
-                  <td className="p-4 text-gray-700">{c.caseType}</td>
-                  <td className="p-4 text-center flex justify-center gap-3">
-                    <button
-                      onClick={() => handleEditClick(c)}
-                      className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2 transition shadow-md hover:shadow-lg"
-                    >
-                      <Edit size={16} /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(c)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-2 transition shadow-md hover:shadow-lg"
-                    >
-                      <Trash2 size={16} /> Delete
-                    </button>
-                  </td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan={4} className="text-center p-6 text-gray-500">No clients found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Tablet Cards */}
-      <div className="hidden md:flex lg:hidden flex-col space-y-4">
-        {clients.map(c => (
-          <div key={c.id} className="bg-white rounded-2xl border border-gray-200 p-5 shadow hover:shadow-lg transition">
-            <div className="mb-4">
-              <h3 className="font-bold text-gray-800 text-xl">{c.name}</h3>
-              <p className="text-gray-600 mt-1">{c.contact}</p>
-              <p className="text-gray-500 text-sm mt-1 font-medium">Type: {c.caseType}</p>
-            </div>
-            <div className="flex justify-between gap-3">
-              <button
-                onClick={() => handleEditClick(c)}
-                className="flex-1 bg-slate-700/20 hover:bg-slate-800 text-white py-2 rounded-xl font-medium flex items-center justify-center gap-2 transition shadow-md hover:shadow-lg"
-              >
-                <Edit size={16} /> Edit
-              </button>
-              <button
-                onClick={() => handleDeleteClick(c)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-medium flex items-center justify-center gap-2 transition shadow-md hover:shadow-lg"
-              >
-                <Trash2 size={16} /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-3">
-        {clients.map(c => (
-          <div key={c.id} className="bg-white rounded-xl shadow border border-gray-200 p-4 hover:shadow-md transition">
-            <div className="flex flex-col gap-1 mb-3">
-              <h3 className="font-bold text-gray-800">{c.name}</h3>
-              <p className="text-gray-600 text-sm">{c.contact}</p>
-              <p className="text-gray-500 text-xs font-medium">Type: {c.caseType}</p>
-            </div>
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <button
-                onClick={() => handleEditClick(c)}
-                className="flex-1 bg-slate-700 hover:bg-slate-800 text-white py-2 rounded-2xl font-medium flex items-center justify-center gap-2 transition shadow"
-              >
-                <Edit size={16} /> Edit
-              </button>
-              <button
-                onClick={() => handleDeleteClick(c)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-2xl font-medium flex items-center justify-center gap-2 transition shadow"
-              >
-                <Trash2 size={16} /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
+        <table className="w-full min-w-[1000px] text-left border-collapse">
+          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
+            <tr>
+              {[
+                "Client ID",
+                "Name",
+                "Email",
+                "Contact Number",
+                "National ID",
+                "Address",
+                "Additional Info",
+                "Actions",
+              ].map((h) => (
+                <th
+                  key={h}
+                  className="p-4 text-sm font-semibold tracking-wide text-white uppercase whitespace-nowrap"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {clients.map((c, idx) => (
+              <TableRow key={c.id} c={c} idx={idx} />
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Delete Modal */}
