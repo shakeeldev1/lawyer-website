@@ -26,7 +26,7 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -192,7 +192,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const updateUserRole = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { role, status } = req.body;
-console.log(id)
+    console.log(id)
     const user = await User.findById(id);
     if (!user) throw new customError('User not found!', 404);
 
