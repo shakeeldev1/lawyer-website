@@ -20,7 +20,7 @@ const RoleProtectedRoute = ({ allowedRoles, children }) => {
       case "director":
         return navigate("/director");
       case "secretary":
-        return navigate("/secretary");
+        return navigate("/");
       case "lawyer":
         return navigate("/lawyer");
            case "approvedlawyer":

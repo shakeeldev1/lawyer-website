@@ -13,6 +13,7 @@ const userSlice = createSlice({
         },
         clearProfile: (state) => {
             state.profile = null;
+            
         }
     }
 });

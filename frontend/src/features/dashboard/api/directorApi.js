@@ -64,14 +64,14 @@ export const directorApi = createApi({
 
         getAllArchieve: builder.query({
             query: (search) => ({
-                url: `/lawyer/director-archive?search=${encodeURIComponent(search)}`,
+                url: `/director-archive?search=${encodeURIComponent(search)}`,
                 method: 'GET'
             })
         }),
 
         getAllReminders: builder.query({
             query: () => ({
-                url: `/secretary/reminders`,
+                url: `/reminders`,
                 method: "GET"
             })
         }),
