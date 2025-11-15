@@ -1,76 +1,12 @@
+// src/pages/Archive.jsx
 import React, { useState, useEffect } from 'react';
 import ArchiveFilters from '../components/DashboardArchive/ArchiveFilters';
 import ArchiveTable from '../components/DashboardArchive/ArchiveTable';
 import ArchiveViewModal from '../components/DashboardArchive/ArchiveViewModal';
 import ArchiveDeleteModal from '../components/DashboardArchive/ArchiveDeleteModal';
+import { useGetAllArchieveQuery } from '../api/directorApi';
 
 const Archive = () => {
-  const [archives, setArchives] = useState([
-    {
-      archiveId: "A-2025-001",
-      id: "C-101",
-      client: "Ali Khan",
-      status: "Approved",
-      lawyers: ["Sara Ahmed"],
-      archivedOn: "2025-11-01",
-      downloadFile: { name: "Case_A-2025-001.pdf", url: "/uploads/case_A-2025-001.pdf" },
-      stages: [
-        {
-          stage: "Main",
-          submittedOn: "2025-10-10",
-          approvedBy: "Ragab",
-          description: "Client dispute resolved amicably after mediation.",
-          outcome: "Partial settlement.",
-          memorandum: { name: "Memorandum_A-2025-001.pdf", url: "/uploads/memorandum_A-2025-001.pdf" },
-          evidence: [{ name: "Contract.pdf", url: "/uploads/contract.pdf" }],
-        },
-        {
-          stage: "Appeal",
-          submittedOn: "2025-10-20",
-          approvedBy: "Ragab",
-          description: "Appeal resolved in favor of client.",
-          outcome: "Case approved.",
-          memorandum: { name: "Memorandum_A-2025-002.pdf", url: "/uploads/memorandum_A-2025-002.pdf" },
-          evidence: [{ name: "WitnessStatement.docx", url: "/uploads/witness.docx" }],
-        },
-      ],
-    },
-    {
-      archiveId: "A-2025-002",
-      id: "C-102",
-      client: "Fatima Noor",
-      status: "Approved",
-      lawyers: ["Zain Malik"],
-      archivedOn: "2025-10-20",
-      downloadFile: { name: "Case_A-2025-002.pdf", url: "/uploads/case_A-2025-002.pdf" },
-      stages: [
-        {
-          stage: "Main",
-          submittedOn: "2025-09-05",
-          approvedBy: "Ragab",
-          description: "Client accused in a minor fraud case; evidence under review.",
-          outcome: "Initial hearing completed.",
-          memorandum: { name: "Memorandum_A-2025-004.pdf", url: "/uploads/memorandum_A-2025-004.pdf" },
-          evidence: [{ name: "Invoice.pdf", url: "/uploads/invoice.pdf" }],
-        },
-        {
-          stage: "Appeal",
-          submittedOn: "2025-09-20",
-          approvedBy: "Ragab",
-          description: "Appeal submitted against initial verdict.",
-          outcome: "Appeal under review.",
-          memorandum: { name: "Memorandum_A-2025-005.pdf", url: "/uploads/memorandum_A-2025-005.pdf" },
-          evidence: [{ name: "WitnessStatement.docx", url: "/uploads/witness2.docx" }],
-        },
-      ],
-    },
-  ]);
-
-  const [selectedArchive, setSelectedArchive] = useState(null);
-  const [archiveToDelete, setArchiveToDelete] = useState(null);
-  const [isViewModalOpen, setViewModalOpen] = useState(false);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
   const [filters, setFilters] = useState({
     searchClient: "",
     searchCaseId: "",
@@ -78,12 +14,28 @@ const Archive = () => {
     date: "",
     status: ""
   });
-  const [filteredArchives, setFilteredArchives] = useState(archives);
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  // API Query with search & filters
+  const { data, isLoading, isError, refetch } = useGetAllArchieveQuery({
+    page,
+    limit,
+    search: filters.searchClient || filters.searchCaseId
+  });
+
+  const archives = data?.data || [];
+  const totalPages = data?.totalPages || 1;
+
+  const [selectedArchive, setSelectedArchive] = useState(null);
+  const [archiveToDelete, setArchiveToDelete] = useState(null);
+  const [isViewModalOpen, setViewModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [showFilters, setShowFilters] = useState(false);
 
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-
-  // Sidebar resize handling
+  // Responsive sidebar
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
     const handleSidebarToggle = () => {
@@ -97,38 +49,6 @@ const Archive = () => {
       clearInterval(interval);
     };
   }, []);
-
-  // ✅ Filter logic with useEffect
-  useEffect(() => {
-    const filtered = archives.filter((archive) => {
-      const finalStage =
-        Array.isArray(archive.stages) && archive.stages.length > 0
-          ? archive.stages[archive.stages.length - 1]
-          : {};
-
-      const clientName = archive.client?.toLowerCase() || "";
-      const caseId = archive.id?.toLowerCase() || "";
-      const stageName = finalStage.stage?.toLowerCase() || "";
-      const statusName = archive.status?.toLowerCase() || "";
-      const submittedDate = finalStage.submittedOn || "";
-
-      const searchClient = filters.searchClient?.toLowerCase() || "";
-      const searchCaseId = filters.searchCaseId?.toLowerCase() || "";
-      const filterStage = filters.stage?.toLowerCase() || "";
-      const filterStatus = filters.status?.toLowerCase() || "";
-      const filterDate = filters.date || "";
-
-      return (
-        clientName.includes(searchClient) &&
-        caseId.includes(searchCaseId) &&
-        (!filterStage || stageName === filterStage) &&
-        (!filterStatus || statusName === filterStatus) &&
-        (!filterDate || submittedDate === filterDate)
-      );
-    });
-
-    setFilteredArchives(filtered);
-  }, [archives, filters]);
 
   // Modals
   const openViewModal = (archive) => {
@@ -147,8 +67,9 @@ const Archive = () => {
   };
   const handleDeleteConfirm = () => {
     if (archiveToDelete) {
-      setArchives(archives.filter(a => a.id !== archiveToDelete.id));
+      // You may call API to delete from backend
       closeModals();
+      refetch(); // Refresh data after delete
     }
   };
 
@@ -161,17 +82,17 @@ const Archive = () => {
     const headers = ["Archive ID", "Case ID", "Client", "Stage", "Lawyer", "Submitted On", "Status", "Description"];
     const csvContent = [
       headers.join(","),
-      ...filteredArchives.map(archive => {
-        const finalStage = archive.stages[archive.stages.length - 1];
+      ...archives.map(archive => {
+        const finalStage = archive.stages?.[archive.stages.length - 1] || {};
         return [
           archive.archiveId,
           archive.id,
           `"${archive.client}"`,
-          finalStage.stage,
-          `"${archive.lawyers.join(", ")}"`,
-          finalStage.submittedOn,
-          archive.status,
-          `"${finalStage.description}"`
+          finalStage.stage || "",
+          `"${archive.lawyers?.join(", ") || ""}"`,
+          finalStage.submittedOn || "",
+          archive.status || "",
+          `"${finalStage.description || ""}"`
         ].join(",");
       })
     ].join("\n");
@@ -187,13 +108,16 @@ const Archive = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  if (isLoading) return <p className="text-center text-slate-700 mt-20">Loading archived cases...</p>;
+  if (isError) return <p className="text-center text-red-500 mt-20">Failed to load archived cases.</p>;
+
   return (
     <div className={`max-w-6xl min-h-screen transition-all duration-300 ease-in-out mt-16 sm:px-2 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 pl-5">
         <div>
           <h2 className="text-4xl font-extrabold text-[#1c283c]">Archived Cases</h2>
-          <p className="text-slate-600 mt-1">{filteredArchives.length} case{filteredArchives.length !== 1 ? 's' : ''} found</p>
+          <p className="text-slate-600 mt-1">{archives.length} case{archives.length !== 1 ? 's' : ''} found</p>
         </div>
         <div className="flex gap-3 mt-4 lg:mt-0">
           <button onClick={exportToCSV} className="flex items-center gap-2 px-4 py-2 bg-[#1C2B4A] text-white font-medium rounded-lg border border-transparent hover:border-amber-500 transition-all duration-300">
@@ -209,11 +133,30 @@ const Archive = () => {
       <ArchiveFilters filters={filters} onFilterChange={handleFilterChange} onClearFilters={clearFilters} showFilters={showFilters} />
 
       {/* Table */}
-      <ArchiveTable archives={filteredArchives} onView={openViewModal} onDelete={openDeleteModal} sidebarOpen={sidebarOpen} />
+      <ArchiveTable archives={archives} onView={openViewModal} onDelete={openDeleteModal} sidebarOpen={sidebarOpen} />
 
       {/* Modals */}
       <ArchiveViewModal isOpen={isViewModalOpen} archive={selectedArchive} onClose={closeModals} />
       <ArchiveDeleteModal isOpen={isDeleteModalOpen} archive={archiveToDelete} onClose={closeModals} onConfirm={handleDeleteConfirm} />
+
+      {/* Pagination */}
+      <div className="flex justify-end gap-2 mt-6">
+        <button
+          disabled={page <= 1}
+          onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2">{page} / {totalPages}</span>
+        <button
+          disabled={page >= totalPages}
+          onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

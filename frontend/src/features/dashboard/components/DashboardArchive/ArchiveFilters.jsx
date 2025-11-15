@@ -1,9 +1,9 @@
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 
 const ArchiveFilters = ({ filters, onFilterChange, onClearFilters, showFilters }) => {
   return (
     <div className={`rounded-2xl shadow-lg p-4 mb-6 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6  gap-6">
         
         {/* Search Client */}
         <div className="relative">
@@ -17,20 +17,6 @@ const ArchiveFilters = ({ filters, onFilterChange, onClearFilters, showFilters }
             focus:outline-none  focus:ring-1 focus:ring-amber-500"
           />
         </div>
-
-        {/* Search Case ID */}
-        <div className="relative">
-          <Search className="absolute left-3 top-3 text-amber-500" size={18} />
-          <input
-            type="text"
-            placeholder="Search Case ID"
-            value={filters.searchCaseId}
-            onChange={(e) => onFilterChange("searchCaseId", e.target.value)}
-            className="w-full p-2 pl-10 bg-gray-200  text-gray-500 rounded-lg border border-amber-500
-            focus:outline-none  focus:ring-1 focus:ring-amber-500"
-          />
-        </div>
-
         {/* Stage Select */}
         <select
           value={filters.stage}

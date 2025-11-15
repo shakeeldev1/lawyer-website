@@ -1,5 +1,4 @@
-// src/components/lawyer/OverviewCharts.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 
 const COLORS = ["#1e293b", "#475569", "#64748b", "#94a3b8"];
@@ -59,9 +58,9 @@ export const PieChartCard = ({ title, data }) => {
             animationEasing="ease-out"
           >
             {data.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={COLORS[index % COLORS.length]} 
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
                 stroke="#fff"
                 strokeWidth={2}
               />
@@ -79,17 +78,17 @@ export const BarChartCard = ({ title, data }) => {
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
       <h2 className="text-xl font-semibold text-slate-800 mb-6">{title}</h2>
       <ResponsiveContainer width="100%" height={250}>
-        <BarChart 
-          data={data} 
+        <BarChart
+          data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
         >
-          <CartesianGrid 
-            strokeDasharray="3 3" 
-            stroke="#f1f5f9" 
-            vertical={false} 
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#f1f5f9"
+            vertical={false}
           />
-          <XAxis 
-            dataKey="status" 
+          <XAxis
+            dataKey="status"
             stroke="#64748b"
             fontSize={12}
             angle={-30}
@@ -97,15 +96,15 @@ export const BarChartCard = ({ title, data }) => {
             height={50}
             interval={0}
           />
-          <YAxis 
+          <YAxis
             stroke="#64748b"
             fontSize={12}
             width={40}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Bar 
-            dataKey="count" 
+          <Bar
+            dataKey="count"
             fill="#1e293b"
             radius={[4, 4, 0, 0]}
             barSize={50}

@@ -23,8 +23,14 @@ export const lawyerApi = createApi({
             })
         }),
 
+        lawyerDashboardStats: builder.query({
+            query: () => ({
+                url: `/lawyer/dashboard/stats`,
+                method: "GET"
+            })
+        })
 
     })
 })
 
-export const { useLawyerCasesQuery,useGetLawyerArchieveQuery } = lawyerApi; 
+export const { useLawyerCasesQuery, useGetLawyerArchieveQuery,useLawyerDashboardStatsQuery } = lawyerApi; 

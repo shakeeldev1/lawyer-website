@@ -6,7 +6,6 @@ import {
   updateClient,
   deleteClient,
   createCase,
-  getAllCases,
   getCaseById,
   updateCase,
   uploadCaseDocuments,
@@ -18,7 +17,6 @@ import {
   archiveCase,
   getArchivedCases,
   addCaseNote,
-  getAllReminders,
   getActivityLogs,
   getDashboardStats,
   getLawyers,
@@ -43,7 +41,6 @@ router.put("/clients/:id", updateClient);
 router.delete("/clients/:id", deleteClient);
 
 router.post("/cases", createCase);
-router.get("/cases", getAllCases);
 router.get("/cases/:id", getCaseById);
 router.put("/cases/:id", updateCase);
 router.post("/cases/:id/documents", uploadCaseDocuments);
@@ -71,7 +68,6 @@ router.post("/cases/:id/archive", archiveCase);
 router.post("/cases/:id/notes", addCaseNote);
 
 router.get("/archive", getArchivedCases);
-router.get("/reminders", getAllReminders);
 router.get("/activity-logs", getActivityLogs);
 router.get("/dashboard/stats", getDashboardStats);
 router.get("/lawyers", getLawyers);

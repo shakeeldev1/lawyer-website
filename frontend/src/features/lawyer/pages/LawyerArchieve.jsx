@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import ArchiveHeader from "../components/LawyerArchive/ArchiveHeader";
 import ArchiveSearch from "../components/LawyerArchive/ArchiveSearch";
