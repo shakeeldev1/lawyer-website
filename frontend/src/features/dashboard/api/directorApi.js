@@ -3,21 +3,21 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const directorApi = createApi({
     reducerPath: "directorApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5000/api/auth",
+        baseUrl: "http://localhost:5000/api",
         credentials: "include",
     }),
-    tagTypes: ["Users"], // ✅ Define tag types
+    tagTypes: ["Users"],
     endpoints: (builder) => ({
         userStats: builder.query({
             query: () => ({
-                url: "/stats",
+                url: "/auth/stats",
                 method: "GET",
             }),
-            providesTags: ["Users"], // ✅ Tag for stats (optional)
+            providesTags: ["Users"],
         }),
         allUsers: builder.query({
             query: (search = "") => ({
-                url: `/all-users?search=${encodeURIComponent(search)}`,
+                url: `/auth/all-users?search=${encodeURIComponent(search)}`,
                 method: "GET",
             }),
             providesTags: (result) =>
@@ -30,27 +30,36 @@ export const directorApi = createApi({
         }),
         updateRole: builder.mutation({
             query: ({ id, data }) => ({
-                url: `/update-user-role/${id}`,
+                url: `/auth/update-user-role/${id}`,
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: (result, error, { id }) => [{ type: "Users", id }],
+            providesTags: ["Users"],
         }),
         addUser: builder.mutation({
             query: (data) => ({
-                url: "/addUser",
+                url: "/auth/addUser",
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: [{ type: "Users", id: "LIST" }],
+            providesTags: ["Users"],
         }),
+
+
         deleteUser: builder.mutation({
             query: (id) => ({
-                url: `/delete-user/${id}`,
+                url: `/auth/delete-user/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: (result, error, id) => [{ type: "Users", id }, { type: "Users", id: "LIST" }],
+            providesTags: ["Users"],
         }),
+
+        getAllCases: builder.query({
+            query: (search = "") => ({
+                url: `/secretary/cases?search=${search}`,
+                method: 'GET',
+            })
+        })
     }),
 });
 
@@ -60,4 +69,5 @@ export const {
     useUpdateRoleMutation,
     useAddUserMutation,
     useDeleteUserMutation,
+    useGetAllCasesQuery
 } = directorApi;

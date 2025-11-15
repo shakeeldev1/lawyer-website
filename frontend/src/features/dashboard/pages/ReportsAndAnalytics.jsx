@@ -5,7 +5,6 @@ import ReportsCaseCharts from "../components/DashboardReports/ReportsCaseCharts"
 import ReportsCaseTimelines from "../components/DashboardReports/ReportsCaseTimelines";
 import ReportsActivityLogs from "../components/DashboardReports/ReportsactivityLogs";
 
-
 const ReportsAndAnalytics = () => {
 
     const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
