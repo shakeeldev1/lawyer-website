@@ -4,9 +4,9 @@ import FinalApprovals from "../../features/dashboard/pages/FinalApprovals";
 import AllCases from "../../features/dashboard/pages/AllCases";
 import RemindersPage from "../../features/dashboard/pages/RemindersPage";
 import ReportsAndAnalytics from "../../features/dashboard/pages/ReportsAndAnalytics";
-import UsersPage from "../../features/dashboard/pages/Users";
 import Archive from "../../features/dashboard/pages/Archive";
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
+import UsersPage from "../../features/dashboard/pages/Users.jsx";
 
 export const adminRoutes = {
     path: "director",
