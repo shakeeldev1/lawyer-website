@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
   const user = useSelector(selectUserProfile);
-  console.log(user)
   const dispatch = useDispatch();
   const { data } = useMyProfileQuery();
   useEffect(() => {
