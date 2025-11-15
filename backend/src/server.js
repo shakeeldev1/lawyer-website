@@ -12,18 +12,16 @@ import path from "path";
 
 const app = express();
 
+connectDB();
 
 app.use(express.json())
 app.use(cookieParser())
-
-console.log("frontend url",process.env.FRONTEND_URL);
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
 }));
 
-connectDB();
 
 app.get("/api-docs", (req, res) => {
     const docPath = path.join(process.cwd(), "src", "routes.md");
