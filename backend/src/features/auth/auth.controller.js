@@ -192,7 +192,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const updateUserRole = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { role, status } = req.body;
-
+console.log(id)
     const user = await User.findById(id);
     if (!user) throw new customError('User not found!', 404);
 
@@ -214,7 +214,8 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 
 export const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const user = await User.find(id);
+    console.log(id)
+    const user = await User.findById(id);
     if (!user) {
         throw new customError('User not found', 404);
     }
