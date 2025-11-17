@@ -63,6 +63,7 @@ export default function ApprovedLawyerPage() {
   
   const [cases, setCases] = useState(dummyCases);
   const [selectedCase, setSelectedCase] = useState(null);
+  const [caseToDelete, setCaseToDelete] = useState(null);
 
   const [isModificationModalOpen, setIsModificationModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -127,13 +128,15 @@ export default function ApprovedLawyerPage() {
   };
 
   const closeModificationModal = () => setIsModificationModalOpen(false);
+const openDeleteModal = (c) => {
+  setCaseToDelete(c); // separate from selectedCase
+  setIsDeleteModalOpen(true);
+};
 
-  const openDeleteModal = (c) => {
-    setSelectedCase(c);
-    setIsDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
+const closeDeleteModal = () => {
+  setCaseToDelete(null);
+  setIsDeleteModalOpen(false);
+};
 
   // ACTION HANDLERS
  // APPROVE, LOCK, SUBMIT OR SEND MODIFICATION REQUEST
@@ -250,12 +253,13 @@ const sendModificationRequest = () => {
       />
 
       {/* DELETE MODAL */}
-      <DeleteModal
-        selectedCase={selectedCase}
-        isOpen={isDeleteModalOpen}
-        closeModal={closeDeleteModal}
-        handleDelete={handleDelete}
-      />
+     <DeleteModal
+  selectedCase={caseToDelete}
+  isOpen={isDeleteModalOpen}
+  closeModal={closeDeleteModal}
+  handleDelete={handleDelete}
+/>
+
     </div>
   );
 }
