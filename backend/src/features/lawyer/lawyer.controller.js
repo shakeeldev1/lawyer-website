@@ -123,9 +123,8 @@ export const submitMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -171,9 +170,8 @@ export const uploadMemorandumFile = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum file submitted for stage ${
-      parseInt(stageIndex) + 1
-    } of case ${caseData.caseNumber}`,
+    description: `Memorandum file submitted for stage ${parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
   });
 
   res.status(200).json({
@@ -219,9 +217,8 @@ export const updateMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_UPDATED",
-    description: `Memorandum updated for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum updated for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -268,9 +265,8 @@ export const approveMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_APPROVED",
-    description: `Memorandum approved for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    } by ${req.user.name}`,
+    description: `Memorandum approved for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      } by ${req.user.name}`,
   });
 
   res.status(200).json({
@@ -315,9 +311,8 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_REJECTED",
-    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -393,6 +388,7 @@ export const getMyArchive = asyncHandler(async (req, res) => {
     currentPage: page,
   });
 });
+
 
 export const getUpcomingHearings = asyncHandler(async (req, res) => {
   const cases = await Case.find({

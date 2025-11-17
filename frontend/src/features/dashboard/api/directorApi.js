@@ -4,21 +4,21 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const directorApi = createApi({
     reducerPath: "directorApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/api`,
+        baseUrl: `${BACKEND_URL}/api/director`,
         credentials: "include",
     }),
     tagTypes: ["Users"],
     endpoints: (builder) => ({
         userStats: builder.query({
             query: () => ({
-                url: "/auth/stats",
+                url: "/stats",
                 method: "GET",
             }),
             providesTags: ["Users"],
         }),
         allUsers: builder.query({
             query: (search = "") => ({
-                url: `/auth/all-users?search=${encodeURIComponent(search)}`,
+                url: `/all-users?search=${encodeURIComponent(search)}`,
                 method: "GET",
             }),
             providesTags: (result) =>
@@ -31,7 +31,7 @@ export const directorApi = createApi({
         }),
         updateRole: builder.mutation({
             query: ({ id, data }) => ({
-                url: `/auth/update-user-role/${id}`,
+                url: `/update-user-role/${id}`,
                 method: "PUT",
                 body: data,
             }),
@@ -39,7 +39,7 @@ export const directorApi = createApi({
         }),
         addUser: builder.mutation({
             query: (data) => ({
-                url: "/auth/addUser",
+                url: "/addUser",
                 method: "POST",
                 body: data,
             }),
@@ -49,7 +49,7 @@ export const directorApi = createApi({
 
         deleteUser: builder.mutation({
             query: (id) => ({
-                url: `/auth/delete-user/${id}`,
+                url: `/delete-user/${id}`,
                 method: "DELETE",
             }),
             providesTags: ["Users"],
@@ -57,10 +57,24 @@ export const directorApi = createApi({
 
         getAllCases: builder.query({
             query: (search = "") => ({
-                url: `/secretary/cases?search=${search}`,
+                url: `/cases?search=${search}`,
                 method: 'GET',
             })
-        })
+        }),
+
+        getAllArchieve: builder.query({
+            query: (search) => ({
+                url: `/director-archive?search=${encodeURIComponent(search)}`,
+                method: 'GET'
+            })
+        }),
+
+        getAllReminders: builder.query({
+            query: () => ({
+                url: `/reminders`,
+                method: "GET"
+            })
+        }),
     }),
 });
 
@@ -70,5 +84,7 @@ export const {
     useUpdateRoleMutation,
     useAddUserMutation,
     useDeleteUserMutation,
-    useGetAllCasesQuery
+    useGetAllCasesQuery,
+    useGetAllArchieveQuery,
+    useGetAllRemindersQuery,
 } = directorApi;

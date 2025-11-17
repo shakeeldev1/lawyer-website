@@ -152,36 +152,6 @@ export const createCase = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: newCase });
 });
 
-export const getAllCases = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, status, search } = req.query;
-
-  const query = {};
-  if (status) query.status = status;
-  if (search) {
-    query.$or = [
-      { caseNumber: { $regex: search, $options: "i" } },
-      { caseType: { $regex: search, $options: "i" } },
-    ];
-  }
-
-  const cases = await Case.find(query)
-    .populate("clientId", "name contactNumber email")
-    .populate("assignedLawyer", "name email")
-    .populate("secretary", "name email")
-    .limit(limit * 1)
-    .skip((page - 1) * limit)
-    .sort({ createdAt: -1 });
-
-  const count = await Case.countDocuments(query);
-
-  res.status(200).json({
-    success: true,
-    data: cases,
-    totalPages: Math.ceil(count / limit),
-    currentPage: page,
-  });
-});
-
 export const getCaseById = asyncHandler(async (req, res) => {
   const caseData = await Case.findById(req.params.id)
     .populate("clientId")
@@ -507,23 +477,6 @@ export const addCaseNote = asyncHandler(async (req, res) => {
   await caseData.save();
 
   res.status(200).json({ success: true, data: caseData });
-});
-
-export const getAllReminders = asyncHandler(async (req, res) => {
-  const { upcoming } = req.query;
-
-  const query = {};
-  if (upcoming === "true") {
-    query.reminderDate = { $gte: new Date() };
-    query.sent = false;
-  }
-
-  const reminders = await Reminder.find(query)
-    .populate("caseId", "caseNumber caseType")
-    .populate("recipients", "name email")
-    .sort({ reminderDate: 1 });
-
-  res.status(200).json({ success: true, data: reminders });
 });
 
 export const getActivityLogs = asyncHandler(async (req, res) => {
