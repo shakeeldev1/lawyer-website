@@ -108,8 +108,8 @@ export default function ClientTable({
      <div
   className={`overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-[330px] text-left border-collapse ${
     sidebarOpen
-      ? "md:w-[489px] lg:w-[1050px]"
-      : "md:w-[680px] lg:w-[1220px]"
+      ? "md:min-w-[489px] lg:min-w-[1050px]"
+      : "md:min-w-[680px] lg:min-w-[1220px]"
   }`}
 >
 
