@@ -79,20 +79,25 @@ const CaseManagement = () => {
     setViewCase(caseToView);
   };
 
+
   const handleFilterChange = (filters) => {
     const filtered = cases.filter((c) => {
       const matchesSearch =
         !filters.search ||
         c.client.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-        c.id.toLowerCase().includes(filters.search.toLowerCase());
+        c.id.toLowerCase().includes(filters.search.toLowerCase()) ||
+        c.case.assignedLawyer.toLowerCase().includes(filters.search.toLowerCase()) ||
+        c.case.caseType.toLowerCase().includes(filters.search.toLowerCase());
+
       const matchesStatus = !filters.status || c.case.status === filters.status;
       const matchesLawyer = !filters.lawyer || c.case.assignedLawyer === filters.lawyer;
+
       return matchesSearch && matchesStatus && matchesLawyer;
     });
     setFilteredCases(filtered);
   };
-
   const handleClearFilters = () => setFilteredCases(cases);
+
 
   // Open Add Modal
   const handleOpenAddModal = () => {
@@ -169,11 +174,11 @@ const CaseManagement = () => {
         onConfirm={handleConfirmDelete}
       />
       <ArchiveCaseModal
-      isOpen={!!archiveCase}
-      caseItem={archiveCase}
-      onClose={()=> setarchiveCase(null)}
-      onConfirm={handleConfirmArchive}
-      
+        isOpen={!!archiveCase}
+        caseItem={archiveCase}
+        onClose={() => setarchiveCase(null)}
+        onConfirm={handleConfirmArchive}
+
       />
 
       <AddCase
