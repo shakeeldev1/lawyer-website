@@ -7,14 +7,10 @@ import {
   FaCamera,
   FaEnvelope,
   FaPhone,
-  FaUser,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MyProfilePage = () => {
-  // -------------------------
-  // Dummy User Data (Replace later with API)
-  // -------------------------
   const profile = {
     name: "Michael Smith",
     role: "Approved Lawyer",
@@ -31,7 +27,6 @@ const MyProfilePage = () => {
     confirmPassword: "",
   });
 
-  // Image Preview
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -42,10 +37,21 @@ const MyProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+
       {/* CARD */}
       <div className="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden">
 
-        {/* HEADER / BANNER */}
+        {/* ❌ CLOSE PROFILE PAGE BUTTON */}
+        <button
+          onClick={() => window.history.back()} // OR: navigate("/dashboard")
+          className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center 
+                     bg-gray-100 rounded-full shadow hover:bg-gray-200 text-gray-600 
+                     hover:text-red-600 transition-all"
+        >
+          <FaTimes size={20} />
+        </button>
+
+        {/* HEADER */}
         <div className="h-40 bg-slate-700"></div>
 
         {/* Profile Image */}
@@ -61,7 +67,6 @@ const MyProfilePage = () => {
               <FaUserCircle className="w-28 h-28 text-gray-200 bg-gray-50 rounded-full border-4 border-white shadow-xl" />
             )}
 
-            {/* Camera Upload */}
             <label
               htmlFor="profile-upload"
               className="absolute bottom-1 right-1 bg-slate-700 text-white p-2 rounded-full shadow-md cursor-pointer hover:bg-slate-600 transition"
@@ -82,10 +87,7 @@ const MyProfilePage = () => {
         {/* DETAILS */}
         <div className="mt-24 px-6 pb-10 text-center">
           <h2 className="text-2xl font-bold text-slate-800">{profile.name}</h2>
-
-          <p className="text-slate-600 font-medium text-sm mt-1">
-            {profile.role}
-          </p>
+          <p className="text-slate-600 font-medium text-sm mt-1">{profile.role}</p>
 
           <div className="mt-4 space-y-2 text-sm text-slate-600">
             <div className="flex justify-center gap-2 items-center">
@@ -100,15 +102,13 @@ const MyProfilePage = () => {
           <div className="mt-8 flex flex-col gap-3 items-center">
             <button
               onClick={() => setShowModal(true)}
-              className="bg-slate-700 text-white px-6 py-2 rounded-full shadow-md 
-                         hover:bg-slate-800 transition w-auto"
+              className="bg-slate-700 text-white px-6 py-2 rounded-full shadow-md hover:bg-slate-800 transition"
             >
               Change Password
             </button>
 
             <button
-              className="flex items-center gap-2 text-sm text-red-600 font-medium 
-                         border border-red-500 px-6 py-2 rounded-full hover:bg-red-50 transition"
+              className="flex items-center gap-2 text-sm text-red-600 font-medium border border-red-500 px-6 py-2 rounded-full hover:bg-red-50 transition"
             >
               <FaSignOutAlt size={14} /> Logout
             </button>
@@ -131,7 +131,7 @@ const MyProfilePage = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
-              {/* Close */}
+              {/* Close Modal */}
               <button
                 className="absolute top-4 right-4 text-gray-500 hover:text-red-500"
                 onClick={() => setShowModal(false)}
@@ -159,15 +159,14 @@ const MyProfilePage = () => {
                         setPasswords({ ...passwords, [field.name]: e.target.value })
                       }
                       required
-                      className="w-full pl-10 pr-4 py-2 border rounded-lg bg-gray-50
-                                 focus:ring-2 focus:ring-slate-700 outline-none"
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-slate-700 outline-none"
                     />
                   </div>
                 ))}
+
                 <button
                   type="submit"
-                  className="w-full bg-slate-700 text-white py-2.5 rounded-lg 
-                             font-medium shadow hover:bg-slate-800 transition"
+                  className="w-full bg-slate-700 text-white py-2.5 rounded-lg font-medium shadow hover:bg-slate-800 transition"
                 >
                   Save Changes
                 </button>

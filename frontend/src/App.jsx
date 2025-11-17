@@ -17,7 +17,7 @@ function App() {
   }, [dispatch, data])
 
   return (
-    <div>
+    <div className='overflow-hidden'>
       <ToastContainer />
       <AppRouter />
       

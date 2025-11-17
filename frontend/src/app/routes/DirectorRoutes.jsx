@@ -11,9 +11,9 @@ import UsersPage from "../../features/dashboard/pages/Users.jsx";
 export const adminRoutes = {
     path: "director",
     element: (
-        <RoleProtectedRoute allowedRoles={['director']}>
+        // <RoleProtectedRoute allowedRoles={['director']}>
             <DashboardLayout />
-         </RoleProtectedRoute>
+        //  </RoleProtectedRoute>
     ),
     children: [
         { index: true, element: <AdminDashboard /> },

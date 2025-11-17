@@ -138,9 +138,9 @@ const TopBar = () => {
             </div>
 
             <div className="py-2">
-              <button className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+              <NavLink to="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
                 <User size={16} /> My Profile
-              </button>
+              </NavLink>
             </div>
 
             <div className="border-t border-blue-100 pt-2">

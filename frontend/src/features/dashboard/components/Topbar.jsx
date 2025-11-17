@@ -3,7 +3,7 @@ import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearProfile, selectUserProfile } from "../../auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../auth/api/authApi";
 
 const Topbar = () => {
@@ -98,8 +98,8 @@ const Topbar = () => {
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-blue-300 shadow-sm object-cover"
           />
           <div className="hidden sm:block text-left">
-            <p className="text-sm font-semibold text-slate-800">{user.name?user.name:""}</p>
-            <p className="text-xs text-slate-500">{user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}</p>
+            <p className="text-sm font-semibold text-slate-800">{user?.name?user.name:""}</p>
+            <p className="text-xs text-slate-500">{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}</p>
           </div>
           <ChevronDown
             size={14}
@@ -117,14 +117,14 @@ const Topbar = () => {
             <div className="px-4 py-2 border-b border-blue-100">
               <p className="text-xs text-slate-500">Signed in as</p>
               <p className="text-sm font-semibold text-slate-800 truncate">
-                {user.email}
+                {user?.email}
               </p>
             </div>
 
             <div className="py-2">
-              <button className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+              <NavLink to ="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
                 <User size={16} /> My Profile
-              </button>
+              </NavLink>
             </div>
 
             <div className="border-t border-blue-100 pt-2">
