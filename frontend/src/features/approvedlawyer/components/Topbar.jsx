@@ -1,6 +1,7 @@
 
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 const Topbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -50,23 +51,13 @@ const Topbar = () => {
       className={`fixed top-0 left-0 right-0 h-16 sm:h-20
       bg-gradient-to-r from-blue-50 to-indigo-50/90
       shadow-md border-b border-blue-100
-      flex items-center justify-between
+      flex  justify-end items-center
       px-4 sm:px-6 md:px-10 md:z-[40]
       transition-all duration-300 ease-in-out
       lg:left-${sidebarOpen ? "64" : "20"} lg:right-0
       `}
     >
-      {/* Left Quick Stats */}
-      <div className={`flex items-center gap-6 sm:gap-8  ${sidebarOpen ? "ml-20 md:ml-[300px]" : "ml-14 md:ml-[130px]"}`}>
-        <div className="text-right">
-          <p className="text-xs text-slate-500">Active Cases</p>
-          <p className="text-lg font-semibold text-slate-800">24</p>
-        </div>
-        <div className="text-right whitespace-nowrap">
-          <p className="text-xs text-slate-500">Today's Hearings</p>
-          <p className="text-lg font-semibold text-slate-800">3</p>
-        </div>
-      </div>
+     
 
 
 {/* Profile Dropdown */}
@@ -80,13 +71,13 @@ const Topbar = () => {
                transition-all duration-200"
   >
     <img
-      src="https://ui-avatars.com/api/?name=John+Doe&background=3b82f6&color=fff&bold=true&size=128"
+      src="https://ui-avatars.com/api/?name=Michael+Smith&background=3b82f6&color=fff&bold=true&size=128"
       alt="Director Avatar"
       className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-blue-300 shadow-sm object-cover"
     />
     <div className="hidden sm:block text-left">
       <p className="text-sm font-semibold text-slate-800">Michael Smith</p>
-      <p className="text-xs text-slate-500">Lawyer</p>
+      <p className="text-xs text-slate-500">Approved Lawyer</p>
     </div>
     <ChevronDown
       size={14}
@@ -110,9 +101,9 @@ const Topbar = () => {
       </div>
 
       <div className="py-2">
-        <button className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+        <NavLink to="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
           <User size={16} /> My Profile
-        </button>
+        </NavLink>
       </div>
 
       <div className="border-t border-blue-100 pt-2">

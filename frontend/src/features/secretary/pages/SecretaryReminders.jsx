@@ -94,7 +94,7 @@ const SecretaryReminders = () => {
     >
        {/* Title & Subtitle */}
       <div className="mb-6 text-center md:text-left">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center justify-center md:justify-start gap-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight flex items-center justify-center md:justify-start gap-2">
           <Bell className="text-[#fe9a00]" /> Secretary Reminders
         </h2>
         <p className="text-gray-500 mt-1 text-sm md:text-base">

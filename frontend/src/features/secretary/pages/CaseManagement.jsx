@@ -93,7 +93,7 @@ const CaseManagement = () => {
       {/* Header - Updated to match Archive styling */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 pl-5">
         <div>
-          <h2 className="text-4xl font-extrabold text-[#1c283c]">Case Management</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Case Management</h2>
           <p className="text-slate-600 mt-1">{filteredCases.length} case{filteredCases.length !== 1 ? 's' : ''} found</p>
         </div>
         <div className="flex gap-3 mt-4 lg:mt-0">

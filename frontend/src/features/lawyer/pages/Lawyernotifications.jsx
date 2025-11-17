@@ -155,7 +155,7 @@ export default function LawyerNotifications() {
                  transition-all duration-300 ease-in-out
                  ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
     >
-      <h1 className="text-2xl font-bold mb-6 mt-20">Notifications</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight mb-6 mt-20">Notifications</h1>
 
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">

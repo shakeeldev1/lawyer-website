@@ -1,19 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Bell,
-  Scale,
-  Home,
-  Menu,
-  X,
-  LogOut,
-  FileText,
-  Calendar,
-  User,
-  Archive,
-  ChevronLeft,
-  ChevronRight, // ← added for Archive/Archieve page
-} from "lucide-react";
-
+import { Bell, Scale, FileText, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
@@ -31,19 +17,17 @@ const Sidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
- const links = [
-    { name: "Overview", icon: <Home size={20} /> },
-    { name: "My Cases", icon: <FileText size={20} />, path: "my-cases" },
-    { name: "Archieve", icon: <Archive size={20} />, path: "archieve" },
+  // Sidebar links: only two pages
+  const links = [
+    { name: "Cases Memorandums", icon: <FileText size={20} /> },
     { name: "Notifications", icon: <Bell size={20} />, path: "notifications" },
   ];
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
   const handleLinkClick = () => {
     if (!isDesktop) setIsOpen(false);
- 
-
   };
+
   const handleLogout = () => {
     console.log("Logging out...");
   };
@@ -61,12 +45,12 @@ const Sidebar = () => {
       {/* Hamburger / Close Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed top-4  p-2 rounded-full shadow-md  z-[9999]
+        className={`fixed top-4 p-2 rounded-full shadow-md z-[9999]
           bg-[#11408bee] text-white hover:bg-[#0f3674] transition-all duration-300
           ${isDesktop ? (isOpen ? "left-60" : "left-16") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
         `}
       >
-        {isOpen ? <ChevronLeft size={22} /> : < ChevronRight size={22} />}
+        {isOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
       </button>
 
       {/* Sidebar */}
@@ -93,7 +77,7 @@ const Sidebar = () => {
               <h2 className="text-base font-semibold text-slate-800">
                 Justice Law Firm
               </h2>
-              <p className="text-xs text-slate-500">Managing Director</p>
+              <p className="text-xs text-slate-500">Approved Lawyer</p>
             </div>
           )}
         </div>
@@ -122,19 +106,18 @@ const Sidebar = () => {
           ))}
         </nav>
 
-        {/* Logout Button at Bottom */}
-      <div className="px-5 mt-auto mb-4">
-  <button
-    onClick={handleLogout}
-    className={`flex items-center ${
-      isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
-    } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
-  >
-    <LogOut size={22} />
-    {isOpen && <span className="text-sm font-medium">Logout</span>}
-  </button>
-</div>
-
+        {/* Logout Button */}
+        <div className="px-5 mt-auto mb-4">
+          <button
+            onClick={handleLogout}
+            className={`flex items-center ${
+              isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
+            } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
+          >
+            <LogOut size={22} />
+            {isOpen && <span className="text-sm font-medium">Logout</span>}
+          </button>
+        </div>
       </aside>
     </>
   );

@@ -77,7 +77,7 @@ const ClientsPage = () => {
       <div className="p-5 space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Client Management</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Client Management</h2>
          
         </div>
       </div>

@@ -94,7 +94,7 @@ export default function MyCases() {
         {/* Header + Search */}
         <header className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-slate-800">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
               My Assigned Cases
             </h1>
             <p className="text-sm md:text-base text-slate-600 mt-1">

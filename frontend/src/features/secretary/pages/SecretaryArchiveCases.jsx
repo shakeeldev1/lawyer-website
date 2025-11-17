@@ -107,7 +107,7 @@ const SecretaryArchiveCases = () => {
     >
       {/* Header */}
       <div className="mb-8 text-center md:text-left">
-        <h2 className="text-3xl font-bold text-slate-800 flex items-center justify-center md:justify-start gap-3">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight flex items-center justify-center md:justify-start gap-3">
           Archiving Section
         </h2>
         <p className="text-slate-600 mt-2 text-sm md:text-base">

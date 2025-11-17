@@ -66,7 +66,7 @@ const SecretaryDashboard = () => {
     >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Overview</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Overview</h1>
         <p className="text-gray-600 mt-2">
           Manage cases, documents, and client information efficiently
         </p>
