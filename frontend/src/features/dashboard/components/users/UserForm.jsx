@@ -5,7 +5,7 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[9999]">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-200">
         <h3 className="text-2xl font-bold text-[#162030] mb-6 text-center">Add New User</h3>
 
@@ -53,11 +53,13 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
             <FaUserTag className="absolute top-3 left-3 text-gray-400" />
             <select
               value={formData.role}
-              onChange={e => setFormData({ ...formData, role: e.target.value })}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
-              {roles.map(r => (
-                <option key={r}>{r}</option>
+              {roles.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
               ))}
             </select>
           </div>

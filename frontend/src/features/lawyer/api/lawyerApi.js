@@ -1,0 +1,36 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+export const lawyerApi = createApi({
+    reducerPath: "lawyerApi",
+    baseQuery: fetchBaseQuery({
+        baseUrl: `${BACKEND_URL}/api`,
+        credentials: 'include'
+    }),
+
+    endpoints: (builder) => ({
+        lawyerCases: builder.query({
+            query: (search) => ({
+                url: `/lawyer/cases?search=${encodeURIComponent(search)}`,
+                method: 'GET'
+            })
+        }),
+
+        getLawyerArchieve: builder.query({
+            query: (search) => ({
+                url: `/lawyer/archive?search?${encodeURIComponent(search)}`,
+                method: "GET"
+            })
+        }),
+
+        lawyerDashboardStats: builder.query({
+            query: () => ({
+                url: `/lawyer/dashboard/stats`,
+                method: "GET"
+            })
+        })
+
+    })
+})
+
+export const { useLawyerCasesQuery, useGetLawyerArchieveQuery,useLawyerDashboardStatsQuery } = lawyerApi; 

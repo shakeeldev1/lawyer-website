@@ -1,107 +1,137 @@
-import React, { useState, useMemo, useEffect } from "react";
-
+import React, { useState, useEffect, useMemo } from "react";
 import { Users, UserPlus, UserCheck, TrendingDown } from "lucide-react";
 import UserStats from "../components/users/UserStats";
 import UsersHeader from "../components/users/UsersHeader";
 import UserTable from "../components/users/UserTable";
 import UserForm from "../components/users/UserForm";
-import ViewUserModal from "../components/users/ViewuserModal";
+// import ViewUserModal from "../components/users/ViewuserModal";
+import ViewUserModel from "../components/users/ViewUserModal";
 import UserDeleteModal from "../components/users/UserDeleteModal";
+import {
+  useAllUsersQuery,
+  useUserStatsQuery,
+  useUpdateRoleMutation,
+  useAddUserMutation,
+  useDeleteUserMutation,
+} from "../api/directorApi";
 
 const UsersPage = () => {
-  const [users, setUsers] = useState([
-    { id: "U-001", name: "Ahmed Ali", role: "Managing Director", email: "ahmed@lawfirm.com", phone: "+971501234567", status: "Active", assignedCases: 25, createdOn: "2024-01-01" },
-    { id: "U-002", name: "Fatima Noor", role: "Secretary", email: "fatima@lawfirm.com", phone: "+971505556677", status: "Active", assignedCases: 40, createdOn: "2024-02-10" },
-    { id: "U-003", name: "Mohamed Ragab", role: "Approving Lawyer", email: "ragab@lawfirm.com", phone: "+971509998877", status: "Active", assignedCases: 18, createdOn: "2024-03-05" },
-    { id: "U-004", name: "Ali Hassan", role: "Lawyer", email: "ali@lawfirm.com", phone: "+971507776655", status: "Inactive", assignedCases: 12, createdOn: "2024-04-12" },
-  ]);
   const [search, setSearch] = useState("");
+  const { data: usersData } = useAllUsersQuery(search);
+  const { data: userStats } = useUserStatsQuery();
+
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
-    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-  
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", role: "Lawyer", password: "", confirmPassword: "" });
-  const roles = ["Managing Director", "Secretary", "Lawyer", "Approving Lawyer (Ragab)"];
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "Lawyer",
+    password: "",
+    confirmPassword: "",
+  });
+  const roles = [
+    { value: "director", label: "Managing Director" },
+    { value: "secretary", label: "Secretary" },
+    { value: "lawyer", label: "Lawyer" },
+    { value: "approvingLawyer", label: "Approving Lawyer" },
+  ];
 
-  
-    // ✅ Sync with sidebar state
-    useEffect(() => {
-      const handleResize = () => {
-        const desktop = window.innerWidth >= 1024;
-        setSidebarOpen(desktop);
-      };
-  
-      const handleSidebarToggle = () => {
-        // Listen for sidebar state changes from the sidebar component
-        const sidebar = document.querySelector('aside');
-        if (sidebar) {
-          const isOpen = sidebar.classList.contains('w-64');
-          setSidebarOpen(isOpen);
-        }
-      };
-  
-      window.addEventListener('resize', handleResize);
-      
-      // Check sidebar state periodically (you can use a better state management approach)
-      const interval = setInterval(handleSidebarToggle, 100);
-      
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        clearInterval(interval);
-      };
-    }, []);
-  const filteredUsers = users.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()));
+  const [updateRoleApi] = useUpdateRoleMutation();
+  const [addUserApi] = useAddUserMutation();
+  const [deleteUserApi] = useDeleteUserMutation();
 
-  const stats = useMemo(() => {
-    const totalUsers = users.length;
-    const lawyers = users.filter(u => u.role.includes("Lawyer")).length;
-    const approving = users.filter(u => u.role.includes("Approving")).length;
-    const activeUsers = users.filter(u => u.status === "Active").length;
-    return [
-      { title: "Total Users", value: totalUsers, icon: <Users size={20} />, color: "from-[#162030] to-green-500" },
-      { title: "Lawyers", value: lawyers, icon: <UserPlus size={20} />, color: "from-green-500 to-[#162030]" },
-      { title: "Approving Lawyers", value: approving, icon: <UserCheck size={20} />, color: "from-[#162030] to-fuchsia-500" },
-      { title: "Active Users", value: activeUsers, icon: <TrendingDown size={20} />, color: "from-rose-500 to-[#162030]" },
-    ];
-  }, [users]);
+  // Sync local state with API data
+  useEffect(() => {
+    if (usersData?.users) setUsers(usersData.users);
+  }, [usersData]);
 
-  const updateStatus = (id, status) => setUsers(users.map(u => u.id === id ? { ...u, status } : u));
-  const handleDelete = (id) => { setSelectedUserId(id); setShowDeleteModal(true); };
-  const handleAddUser = (e) => {
+  // Sidebar responsive
+  useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Update role
+  const updateRole = async (_id, role) => {
+    try {
+      await updateRoleApi({ id: _id, data: { role } }).unwrap();
+      setUsers(prev => prev.map(u => u._id === _id ? { ...u, role } : u));
+    } catch (err) {
+      console.error("Error updating role:", err);
+    }
+  };
+
+  // Update status
+  const updateStatus = async (_id, status) => {
+    try {
+      await updateRoleApi({ id: _id, data: { status } }).unwrap();
+      setUsers(prev => prev.map(u => u._id === _id ? { ...u, status } : u));
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
+  };
+
+  // Add user
+  const handleAddUser = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) return alert("Passwords do not match");
-    setUsers([...users, { ...formData, id: `U-${users.length+1}`, assignedCases: 0, status: "Active", createdOn: new Date().toISOString().split("T")[0] }]);
-    setShowAddModal(false);
-    setFormData({ name: "", email: "", phone: "", role: "Lawyer", password: "", confirmPassword: "" });
+    try {
+      const response = await addUserApi(formData).unwrap();
+      setUsers(prev => [...prev, response.user]);
+      setShowAddModal(false);
+      setFormData({ name: "", email: "", phone: "", role: "Lawyer", password: "", confirmPassword: "" });
+    } catch (err) {
+      console.error("Error adding user:", err);
+    }
   };
-  const confirmDelete = () => { setUsers(users.filter(u => u.id !== selectedUserId)); setShowDeleteModal(false); };
+
+  // Delete user
+  const handleDelete = (id) => {
+    setSelectedUserId(id);
+    setShowDeleteModal(true);
+  };
+  const confirmDelete = async () => {
+    try {
+      await deleteUserApi(selectedUserId).unwrap();
+      setUsers(prev => prev.filter(u => u._id !== selectedUserId));
+      setShowDeleteModal(false);
+    } catch (err) {
+      console.error("Error deleting user:", err);
+    }
+  };
+
+  // Stats
+  const stats = useMemo(() => {
+    if (!userStats?.data) return [];
+    return [
+      { title: "Total Users", value: userStats.data.totalUsers, icon: <Users size={20} />, color: "from-[#162030] to-green-500" },
+      { title: "Lawyers", value: userStats.data.lawyers, icon: <UserPlus size={20} />, color: "from-green-500 to-[#162030]" },
+      { title: "Approving Lawyers", value: userStats.data.approvingLawyers, icon: <UserCheck size={20} />, color: "from-[#162030] to-fuchsia-500" },
+      { title: "Active Users", value: userStats.data.activeUsers, icon: <TrendingDown size={20} />, color: "from-rose-500 to-[#162030]" },
+    ];
+  }, [userStats]);
 
   return (
-     <div
-      className={`min-h-screen 
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-25 
-                 transition-all duration-300 ease-in-out mt-14 md:mt-0
-                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
-    >
+    <div className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-25 transition-all duration-300 ease-in-out mt-14 md:mt-0 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}>
       <div className="text-center md:text-left">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
-        Team Management
-        </h1>
-        <p className="text-gray-600 mt-1 text-sm sm:text-base">
-         Manage your team members, roles, and access permissions.
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Team Management</h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage your team members, roles, and access permissions.</p>
       </div>
-      <UserStats stats={stats} />
-      <UsersHeader search={search} setSearch={setSearch} onAdd={()=>setShowAddModal(true)} />
-      <UserTable users={filteredUsers} updateStatus={updateStatus} onView={setSelectedUser} onDelete={handleDelete} />
 
-      <UserForm show={showAddModal} onClose={()=>setShowAddModal(false)} onSubmit={handleAddUser} formData={formData} setFormData={setFormData} roles={roles} />
-      <ViewUserModal user={selectedUser} onClose={()=>setSelectedUser(null)} />
-      <UserDeleteModal show={showDeleteModal} onClose={()=>setShowDeleteModal(false)} onDelete={confirmDelete} />
+      <UserStats stats={stats} />
+      <UsersHeader search={search} setSearch={setSearch} onAdd={() => setShowAddModal(true)} />
+      <UserTable users={users} updateStatus={updateStatus} updateRole={updateRole} roles={roles} onView={setSelectedUser} onDelete={handleDelete} />
+
+      <UserForm show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddUser} formData={formData} setFormData={setFormData} roles={roles} />
+      <ViewUserModel user={selectedUser} onClose={() => setSelectedUser(null)} />
+      <UserDeleteModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} onDelete={confirmDelete} />
     </div>
   );
 };

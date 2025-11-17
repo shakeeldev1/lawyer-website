@@ -39,7 +39,7 @@ const VerifyAccount = () => {
             toast.success(res.data?.message || "Account verified successfully!", {
                 position: "bottom-right",
             });
-            navigate("/auth/login")
+            navigate("/login")
         } catch (error) {
             toast.error(error.data?.message || "Invalid OTP. Please try again.", {
                 position: "bottom-right",

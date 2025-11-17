@@ -14,11 +14,17 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useLogoutMutation } from "../../auth/api/authApi";
+import { useDispatch } from "react-redux";
+import { clearProfile } from "../../auth/authSlice";
 
 const Sidebar = () => {
+  const [logout,{isLoading}] = useLogoutMutation();
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 768 ? false : false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,8 +51,10 @@ const Sidebar = () => {
   const handleLinkClick = () => {
     if (!isDesktop) setIsOpen(false);
   };
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async() => {
+    await logout().unwrap();
+    dispatch(clearProfile());
+    navigate("/login")
   };
 
   return (
@@ -81,9 +89,8 @@ const Sidebar = () => {
       >
         {/* Header */}
         <div
-          className={`flex items-center gap-3 px-5 py-6 border-b border-blue-100 ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
+          className={`flex items-center gap-3 px-5 py-6 border-b border-blue-100 ${isOpen ? "justify-start" : "justify-center"
+            }`}
         >
           <div className="p-2 bg-[#11408bee] rounded-xl shadow-md">
             <Scale size={24} className="text-white" />
@@ -108,11 +115,10 @@ const Sidebar = () => {
               onClick={handleLinkClick}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-5 py-3 rounded-lg mx-2 my-1 transition-all duration-200
-                  ${
-                    isActive
-                      ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-medium border border-blue-200 shadow-sm"
-                      : "text-slate-700 hover:bg-white/80 hover:text-blue-600 hover:shadow-sm"
-                  }
+                  ${isActive
+                  ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-medium border border-blue-200 shadow-sm"
+                  : "text-slate-700 hover:bg-white/80 hover:text-blue-600 hover:shadow-sm"
+                }
                   ${isOpen || !isDesktop ? "justify-start" : "justify-center"}
                 `
               }
@@ -124,17 +130,16 @@ const Sidebar = () => {
         </nav>
 
         {/* Logout Button at Bottom */}
-      <div className="px-5 mt-auto mb-4">
-  <button
-    onClick={handleLogout}
-    className={`flex items-center ${
-      isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
-    } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
-  >
-    <LogOut size={22} />
-    {isOpen && <span className="text-sm font-medium">Logout</span>}
-  </button>
-</div>
+        <div className="px-5 mt-auto mb-4">
+          <button
+            onClick={handleLogout}
+            className={`flex w-full items-center ${isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
+              } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
+          >
+            <LogOut size={22} />
+            {isOpen && <span className="text-sm font-medium">{isLoading?"Logging Out...":"Logout"}</span>}
+          </button>
+        </div>
 
       </aside>
     </>

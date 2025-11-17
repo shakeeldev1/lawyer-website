@@ -1,7 +1,7 @@
 import CaseManagement from "../../features/secretary/pages/CaseManagement"
 import ClientsPage from "../../features/secretary/pages/ClientsPage"
 import SecretaryArchiveCases from "../../features/secretary/pages/SecretaryArchiveCases"
-import SecretaryDashboard from "../../features/secretary/pages/SecretaryDashboard"
+// import SecretaryDashboard from "../../features/secretary/pages/SecretaryDashboard"
 import SecretaryReminders from "../../features/secretary/pages/SecretaryReminders"
 import SecretaryLayout from "../layouts/SecretaryLayout"
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute"

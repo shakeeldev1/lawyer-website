@@ -5,6 +5,7 @@ import { adminRoutes } from "./DirectorRoutes";
 import { SecretaryRoutes } from "./SecretaryRoutes";
 import { LawyerRoutes } from "./LawyerRoutes";
 import { authRoutes } from "./AuthRouter";
+import { ApprovedLawyerRoutes } from "./ApprovedLawyerRoutes";
 
 
 const router = createBrowserRouter([
@@ -17,7 +18,8 @@ const router = createBrowserRouter([
     adminRoutes,
     SecretaryRoutes,
     LawyerRoutes,
-    authRoutes
+    authRoutes,
+    ApprovedLawyerRoutes
 ])
 
 export default function AppRouter() {

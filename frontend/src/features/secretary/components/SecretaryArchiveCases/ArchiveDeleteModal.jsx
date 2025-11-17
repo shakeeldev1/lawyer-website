@@ -5,7 +5,7 @@ const ArchiveDeleteModal = ({ deleteCaseModal, setDeleteCaseModal, handleDeleteC
   if (!deleteCaseModal) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur z-[9999] flex justify-center items-center">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 text-center border border-slate-200">
         <Trash className="text-red-600 mx-auto mb-3" size={40} />
         <h3 className="text-xl font-semibold text-slate-800 mb-2">

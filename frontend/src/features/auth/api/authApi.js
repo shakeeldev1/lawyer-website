@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5000/api/auth',
+        baseUrl: `${BACKEND_URL}/api/auth`,
         credentials: 'include'
     }),
 
@@ -34,8 +35,15 @@ export const authApi = createApi({
                 url: "/my-profile",
                 method: 'GET'
             })
+        }),
+
+        logout: builder.mutation({
+            query: () => ({
+                url: "/logout",
+                method: "POST"
+            })
         })
     })
 })
 
-export const { useLoginMutation, useSignupMutation, useVerifyAccountMutation,useMyProfileQuery } = authApi;
+export const { useLoginMutation, useSignupMutation, useVerifyAccountMutation, useMyProfileQuery ,useLogoutMutation} = authApi;

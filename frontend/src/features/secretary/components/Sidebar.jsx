@@ -30,7 +30,7 @@ const Sidebar = () => {
 
   // ✅ Secretary-specific menu items
   const links = [
-    //  { name: "Overview", icon: <Home size={20} /> },
+     { name: "Overview", icon: <Home size={20} /> },
     { name: "Clients", icon: <Users size={22} />, path: "clients" },
     { name: "Cases", icon: <Scale size={22} />, path: "case-management" },
     { name: "Reminders", icon: <Bell size={22} />, path: "reminders" },

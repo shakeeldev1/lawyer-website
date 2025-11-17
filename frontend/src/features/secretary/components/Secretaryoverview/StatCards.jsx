@@ -7,7 +7,7 @@ export default function StatCards({ metrics }) {
       {metrics.map((m, idx) => (
         <div
           key={idx}
-          className="bg-white text-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:translate-y-1 transition-transform duration-300"
+          className="bg-[#E1E1E2]/40 text-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:translate-y-1 transition-transform duration-300"
         >
           <div className="flex items-center justify-between">
             <div>

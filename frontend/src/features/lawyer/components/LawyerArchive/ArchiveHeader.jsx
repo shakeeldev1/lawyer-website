@@ -9,7 +9,7 @@ const ArchiveHeader = ({ caseCount }) => {
         <div className="flex items-center gap-3 mb-4 sm:mb-0">
          
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight ">
               Case Archives
             </h1>
             <p className="text-gray-600 mt-2 text-sm sm:text-base">

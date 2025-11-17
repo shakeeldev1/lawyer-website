@@ -1,111 +1,31 @@
-// src/components/ArchiveComponents/ArchiveTable.jsx
-import React from "react";
-import { Download, Eye, Trash2, FileText, Archive, Clock, Layers } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Eye, Trash2, ChevronRight } from "lucide-react";
 
 const ArchiveTable = ({ cases, loading, onViewCase, onDeleteCase }) => {
-  const TableRow = ({ caseData }) => (
-    <tr className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors duration-200 group">
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-lg">
-            <FileText className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <div className="font-semibold text-gray-900 text-sm sm:text-base">
-              {caseData.caseNumber}
-            </div>
-            <div className="flex items-center gap-2 text-gray-600 mt-1">
-              <span>{caseData.clientName}</span>
-            </div>
-          </div>
-        </div>
-      </td>
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-      <td className="px-4 sm:px-6 py-4">
-        <span className="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-          <Layers className="w-3 h-3" />
-          {caseData.stages.length} Stage{caseData.stages.length !== 1 ? "s" : ""}
-        </span>
-      </td>
+  // 🔄 Sync with sidebar width
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= 1024);
+    };
 
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-2">
-          <Archive className="w-4 h-4 text-green-600" />
-          <code className="text-gray-700 text-sm sm:text-base font-mono bg-gray-50 px-2 py-1 rounded">
-            {caseData.archiveReference}
-          </code>
-        </div>
-      </td>
+    const detectSidebar = () => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    };
 
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => onViewCase(caseData)}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-sm font-semibold shadow-sm hover:shadow-md"
-          >
-            <Eye className="w-4 h-4" />
-            <span className="hidden sm:inline">View</span>
-          </button>
-          <a
-            href={`/download/archive/${caseData.id}`}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 text-sm font-semibold shadow-sm hover:shadow-md"
-          >
-            <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">Download</span>
-          </a>
-          <button
-            onClick={() => onDeleteCase(caseData)}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg hover:from-rose-600 hover:to-rose-700 transition-all duration-200 text-sm font-semibold shadow-sm hover:shadow-md"
-          >
-            <Trash2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Delete</span>
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
+    window.addEventListener("resize", handleResize);
+    const interval = setInterval(detectSidebar, 120);
 
-  const Card = ({ caseData }) => (
-    <div className="bg-white rounded-lg shadow border border-gray-200 p-4 hover:shadow-md transition">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="font-bold text-gray-800">{caseData.caseNumber}</h3>
-          <p className="text-gray-600 text-sm mt-1">{caseData.clientName}</p>
-          <p className="text-gray-500 text-xs mt-1 font-medium">Type: {caseData.caseType}</p>
-        </div>
-        <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-          {caseData.stages.length} Stage{caseData.stages.length !== 1 ? "s" : ""}
-        </span>
-      </div>
-
-      <div className="mb-3">
-        <p className="text-sm text-gray-700">
-          <span className="font-medium">Archive Ref:</span> {caseData.archiveReference}
-        </p>
-      </div>
-
-      <div className="flex gap-3 justify-center">
-        <button
-          onClick={() => onViewCase(caseData)}
-          className="flex-1 max-w-[120px] bg-slate-700 hover:bg-slate-800 text-white py-2.5 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-sm"
-        >
-          View
-        </button>
-        <a
-          href={`/download/archive/${caseData.id}`}
-          className="flex-1 max-w-[120px] bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 text-sm"
-        >
-          Download
-        </a>
-        <button
-          onClick={() => onDeleteCase(caseData)}
-          className="flex-1 max-w-[120px] bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-2xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 text-sm"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
+  }, []);
 
   if (loading)
     return (
@@ -116,14 +36,14 @@ const ArchiveTable = ({ cases, loading, onViewCase, onDeleteCase }) => {
       </div>
     );
 
-  if (cases.length === 0)
+  if (!cases.length)
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-16 text-center">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Archive className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
+        <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <ChevronRight className="w-10 h-10 text-blue-600" />
         </div>
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">No Archived Cases</h3>
-        <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
+        <h3 className="text-xl font-bold text-gray-900 mb-3">No Archived Cases</h3>
+        <p className="text-gray-500 text-sm max-w-md mx-auto">
           Your case archives will appear here once cases are completed and archived.
         </p>
       </div>
@@ -131,39 +51,127 @@ const ArchiveTable = ({ cases, loading, onViewCase, onDeleteCase }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      {/* Desktop Table */}
-      <div className="hidden lg:block">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-900 text-white uppercase text-sm font-bold">
-              <tr>
-                <th className="px-6 py-4 text-left">Case Info</th>
-                <th className="px-6 py-4 text-left">Stages</th>
-                <th className="px-6 py-4 text-left">Archive Ref</th>
-                <th className="px-6 py-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cases.map((c) => (
-                <TableRow key={c.id} caseData={c} />
+
+      {/* 📌 Responsive Scroll Wrapper */}
+    <div className={`overflow-x-auto w-[330px]  text-left border-collapse ${sidebarOpen ? "md:w-[489px] lg:w-[1050px] ":"md:w-[680px] lg:w-[1225px]" }`}>
+        <table className="w-full min-w-[1000px] text-left border-collapse">
+         <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
+            <tr>
+              {[
+                "Archive ID",
+                "Case Number",
+                "Client Name",
+                "Phone",
+                "Email",
+                "National ID",
+                "Address",
+                "Additional Info",
+                "Case Type",
+                "Date",
+                "Stages",
+                "Actions",
+              ].map((h) => (
+                <th
+                  key={h}
+                  className="p-4 text-sm font-semibold tracking-wide uppercase whitespace-nowrap"
+                >
+                  {h}
+                </th>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </tr>
+          </thead>
 
-      {/* Tablet Cards */}
-      <div className="hidden md:flex lg:hidden flex-col space-y-4">
-        {cases.map((c) => (
-          <Card key={c.id} caseData={c} />
-        ))}
-      </div>
+          <tbody className="divide-y divide-slate-200">
+            {cases.map((caseData, idx) => (
+              <tr
+                key={caseData.id}
+                className={`transition-all duration-200 hover:bg-slate-50 ${
+                  idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                }`}
+              >
+                {/* Archive ID */}
+                <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
+                  {caseData.id}
+                </td>
 
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-3">
-        {cases.map((c) => (
-          <Card key={c.id} caseData={c} />
-        ))}
+                {/* Case Number */}
+                <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
+                  {caseData.caseNumber}
+                </td>
+
+                {/* Client Name */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">
+                  {caseData.clientName}
+                </td>
+
+                {/* Phone */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">{caseData.clientPhone}</td>
+
+                {/* Email */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">{caseData.clientEmail}</td>
+
+                {/* National ID */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">{caseData.nationalId}</td>
+
+                {/* Address */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">{caseData.address}</td>
+
+                {/* Additional Info */}
+                <td className="p-4 text-slate-800 whitespace-nowrap">
+                  {caseData.additionalInfo}
+                </td>
+
+                {/* Case Type */}
+                <td className="p-4 whitespace-nowrap">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                    {caseData.caseType}
+                  </span>
+                </td>
+
+
+                {/* Date */}
+                <td className="p-4 text-slate-600 whitespace-nowrap">{caseData.date}</td>
+
+                {/* Stages List */}
+                <td className="p-4">
+                  <div className="space-y-1">
+                    {caseData.stages.map((s, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 text-sm text-slate-700 whitespace-nowrap"
+                      >
+                        <ChevronRight size={14} className="text-slate-500" />
+                        <span>{s.stage}</span>
+                        <span className="text-slate-500 text-xs">
+                          ({s.documents.length} doc
+                          {s.documents.length > 1 ? "s" : ""})
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </td>
+
+                {/* Actions */}
+                <td className="p-4 text-right flex justify-end gap-2">
+                  <button
+                    onClick={() => onViewCase(caseData)}
+                    className="inline-flex items-center justify-center w-8 h-8 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition shadow-sm"
+                  >
+                    <Eye size={14} />
+                  </button>
+
+                  <button
+                    onClick={() => onDeleteCase(caseData)}
+                    className="inline-flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-md hover:bg-red-700 transition shadow-sm"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
       </div>
     </div>
   );
