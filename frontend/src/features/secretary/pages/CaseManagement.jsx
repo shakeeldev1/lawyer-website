@@ -5,6 +5,8 @@ import CaseTable from "../components/cases/CaseTable";
 import AddCase from "../components/cases/AddCase";
 import dummyCases from "../../../data/dummyCases";
 import ViewCaseModal from "../components/cases/ViewCaseModal";
+import CaseDeleteModal from "../components/cases/CaseDeleteModal";
+import ArchiveCaseModal from "../components/cases/ArchiveCaseModal";
 
 const CaseManagement = () => {
   const [cases, setCases] = useState(dummyCases);
@@ -12,6 +14,8 @@ const CaseManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editCaseData, setEditCaseData] = useState(null);
   const [viewCase, setViewCase] = useState(null);
+  const [deleteCase, setdeleteCase] = useState(null);
+  const [archiveCase, setarchiveCase] = useState(null)
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -22,15 +26,52 @@ const CaseManagement = () => {
       const sidebar = document.querySelector('aside');
       if (sidebar) setSidebarOpen(sidebar.classList.contains('w-64'));
     };
-    
+
     window.addEventListener('resize', handleResize);
     const interval = setInterval(handleSidebarToggle, 100);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
       clearInterval(interval);
     };
   }, []);
+
+  // Add delete handler function
+  const handleDeleteCase = (caseId) => {
+    const caseToDelete = cases.find(c => c.id === caseId);
+    setdeleteCase(caseToDelete);
+  };
+
+  // Add confirm delete function
+  const handleConfirmDelete = () => {
+    if (deleteCase) {
+      setCases(prev => prev.filter(c => c.id !== deleteCase.id));
+      setFilteredCases(prev => prev.filter(c => c.id !== deleteCase.id));
+      setdeleteCase(null);
+    }
+  };
+  // Archive handlers
+  const handleArchiveCase = (caseId) => {
+    const caseToArchive = cases.find(c => c.id === caseId);
+    setarchiveCase(caseToArchive);
+  };
+
+  const handleConfirmArchive = () => {
+    if (archiveCase) {
+      // Update the case status to "Archived" or move to archives
+      setCases(prev => prev.map(c =>
+        c.id === archiveCase.id
+          ? { ...c, case: { ...c.case, status: "Archived" } }
+          : c
+      ));
+      setFilteredCases(prev => prev.map(c =>
+        c.id === archiveCase.id
+          ? { ...c, case: { ...c.case, status: "Archived" } }
+          : c
+      ));
+      setarchiveCase(null);
+    }
+  };
 
   const handleViewCase = (caseId) => {
     const caseToView = cases.find(c => c.id === caseId);
@@ -85,10 +126,9 @@ const CaseManagement = () => {
   };
 
   return (
-    <div 
-      className={`max-w-6xl min-h-screen transition-all duration-300 ease-in-out mt-16 sm:px-2 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 ${
-        sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'
-      }`}
+    <div
+      className={`max-w-6xl min-h-screen transition-all duration-300 ease-in-out mt-16 sm:px-2 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'
+        }`}
     >
       {/* Header - Updated to match Archive styling */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 pl-5">
@@ -113,11 +153,29 @@ const CaseManagement = () => {
         cases={filteredCases}
         onEditCase={handleEditCase}
         onViewCase={handleViewCase}
+        onDeleteCase={handleDeleteCase} // Add this prop
+        onArchive={handleArchiveCase}
       />
 
       {/* VIEW MODAL */}
-      <ViewCaseModal caseData={viewCase} onClose={() => setViewCase(null)} />
-          
+      <ViewCaseModal
+        caseData={viewCase}
+        onClose={() => setViewCase(null)} />
+
+      <CaseDeleteModal
+        isOpen={!!deleteCase}
+        caseItem={deleteCase}
+        onClose={() => setdeleteCase(null)}
+        onConfirm={handleConfirmDelete}
+      />
+      <ArchiveCaseModal
+      isOpen={!!archiveCase}
+      caseItem={archiveCase}
+      onClose={()=> setarchiveCase(null)}
+      onConfirm={handleConfirmArchive}
+      
+      />
+
       <AddCase
         isOpen={showAddModal}
         onClose={() => {
