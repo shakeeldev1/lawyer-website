@@ -32,80 +32,106 @@ const Signup = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 mb-1" htmlFor="fullName">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 mb-1" htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 mb-1" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full text-white py-2 rounded-lg transition-colors ${isLoading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-              }`}
-          >
-            {isLoading ? "Creating..." : "Sign Up"}
-          </button>
-
-          {error && (
-            <p className="text-red-500 text-center mt-2">
-              {error?.data?.message || "Something went wrong"}
-            </p>
-          )}
-        </form>
-      </div>
+ return (
+  <div
+    className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden 
+               bg-gradient-to-br from-slate-200 to-slate-300"
+  >
+    {/* Background Pattern */}
+    <div className="absolute inset-0 opacity-10 select-none pointer-events-none 
+                    flex items-center justify-center text-[120px] font-extrabold 
+                    text-slate-700 tracking-widest">
+      E!E!E@
     </div>
-  );
+
+    {/* Form Container */}
+    <div className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
+                    w-full max-w-md border border-slate-200">
+      
+      <h1 className="text-3xl font-extrabold text-center mb-2 text-slate-700">
+        Create Account
+      </h1>
+
+      <p className="text-center text-slate-600 mb-8 text-sm">
+        Join us to continue
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+
+        <div className="space-y-1">
+          <label className="block text-slate-700 font-medium" htmlFor="fullName">
+            Full Name
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="Enter your full name"
+            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+            required
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-slate-700 font-medium" htmlFor="email">
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter email address"
+            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+            required
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label className="block text-slate-700 font-medium" htmlFor="password">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter password"
+            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`w-full text-white py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
+            isLoading
+              ? "bg-slate-400 cursor-not-allowed"
+              : "bg-slate-700 hover:bg-slate-800 hover:shadow-lg"
+          }`}
+        >
+          {isLoading ? "Creating..." : "Sign Up"}
+        </button>
+
+        {error && (
+          <p className="text-red-500 text-center mt-2 text-sm">
+            {error?.data?.message || "Something went wrong"}
+          </p>
+        )}
+      </form>
+    </div>
+  </div>
+);
+
+
 };
 
 export default Signup;
