@@ -33,7 +33,7 @@ export default function ApprovedLawyerCasesTable ({
   }, [])
   return (
     <div
-      className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
+      className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
     ${sidebarOpen ? 'md:w-[510px] lg:w-[980px]' : 'md:w-[700px] lg:w-[1160px]'}
   `}
     >
