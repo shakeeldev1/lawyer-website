@@ -105,7 +105,7 @@ export default function ClientTable({
   return (
     <div
   className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
-    ${sidebarOpen ? "md:w-[510px] lg:w-[1010px]" : "md:w-[700px] lg:w-[1200px]"}
+    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
   `}
 >
       {/* ✅ Responsive container width based on sidebar */}
