@@ -5,7 +5,7 @@ const CaseDeleteModal = ({ isOpen, caseItem, onClose, onConfirm }) => {
     if (!isOpen || !caseItem) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center !z-[10000] p-4">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
