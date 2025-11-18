@@ -1,6 +1,7 @@
 // src/components/lawyer/RecentActivitiesTable.jsx
 import React from "react";
 import { FileText, Clock, CheckCircle } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const recentActivitiesData = [
   { 
@@ -163,9 +164,9 @@ const RecentActivitiesTable = () => {
 
       {/* Footer */}
       <div className="mt-6 pt-4 border-t border-slate-200">
-        <button className="w-full py-2 text-slate-700 hover:text-slate-900 font-medium text-sm transition-colors duration-200 hover:bg-white rounded-lg">
+        <Link to ="my-cases" className="w-full py-2 flex justify-end  text-slate-700 hover:text-slate-900 font-medium text-sm transition-colors duration-200 ">
           View All Activities →
-        </button>
+        </Link>
       </div>
     </div>
   );

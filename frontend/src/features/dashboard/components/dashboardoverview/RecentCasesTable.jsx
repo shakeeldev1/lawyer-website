@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search, ArrowRight } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 
 const RecentCasesTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -180,10 +181,10 @@ const RecentCasesTable = () => {
           Showing <b>{filteredCases.length}</b> of{" "}
           <b>{recentCases.length}</b> cases
         </p>
-        <NavLink to="/all-cases" className="flex items-center gap-2 text-sm font-medium text-[#fe9a00] hover:text-[#1c283c] transition-all">
+        <Link to="all-cases" className="flex items-center gap-2 text-sm font-medium text-[#fe9a00] hover:text-[#1c283c] transition-all">
           View All Cases
           <ArrowRight size={16} />
-        </NavLink>
+        </Link>
       </div>
     </div>
   );
