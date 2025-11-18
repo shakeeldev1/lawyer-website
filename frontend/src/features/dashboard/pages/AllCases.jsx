@@ -44,7 +44,7 @@ const AllCases = () => {
     };
   }, []);
 
-  // 🔥 Update cases when API loads
+
   useEffect(() => {
     if (apiCases.length) {
       setCases(apiCases);
