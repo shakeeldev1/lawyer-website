@@ -7,9 +7,9 @@ import ApprovedLawyerLayout from "../layouts/ApprovedLawyerLayout";
 export const ApprovedLawyerRoutes = {
     path: 'approvedlawyer',
     element: (
-        // <RoleProtectedRoute allowedRoles={['lawyer']}>
+        <RoleProtectedRoute allowedRoles={['lawyer']}>
             <ApprovedLawyerLayout />
-        // </RoleProtectedRoute>
+    </RoleProtectedRoute>
     ),
     children: [
         { index: true, element: <ApprovedLawyerPage /> },
