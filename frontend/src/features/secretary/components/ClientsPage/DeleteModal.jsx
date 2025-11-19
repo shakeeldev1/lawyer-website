@@ -5,7 +5,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete, name }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-[9999]">
       <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Confirm Delete</h2>
         <p className="text-gray-600 mb-6">

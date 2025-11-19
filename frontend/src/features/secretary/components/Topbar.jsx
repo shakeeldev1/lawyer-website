@@ -1,6 +1,7 @@
 
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Topbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -111,9 +112,9 @@ const Topbar = () => {
       </div>
 
       <div className="py-2">
-        <NavLink to ="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+        <Link to ="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
           <User size={16} /> My Profile
-        </NavLink>
+        </Link>
       </div>
 
       <div className="border-t border-blue-100 pt-2">

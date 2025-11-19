@@ -50,10 +50,16 @@ const ArchiveTable = ({ cases, loading, onViewCase, onDeleteCase }) => {
     );
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+     <div
+  className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
+    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
+  `}
+>
+      {/* ✅ Responsive container width based on sidebar */}
+     <div
+  className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse"
+>
 
-      {/* 📌 Responsive Scroll Wrapper */}
-    <div className={`overflow-x-auto w-[330px]  text-left border-collapse ${sidebarOpen ? "md:w-[489px] lg:w-[1050px] ":"md:w-[680px] lg:w-[1225px]" }`}>
         <table className="w-full min-w-[1000px] text-left border-collapse">
          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
             <tr>

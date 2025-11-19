@@ -1,7 +1,7 @@
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { clearProfile, selectUserProfile } from "../../auth/authSlice";
 import { useLogoutMutation } from "../../auth/api/authApi";
 
@@ -138,9 +138,9 @@ const TopBar = () => {
             </div>
 
             <div className="py-2">
-              <NavLink to="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+              <Link to="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
                 <User size={16} /> My Profile
-              </NavLink>
+              </Link>
             </div>
 
             <div className="border-t border-blue-100 pt-2">
