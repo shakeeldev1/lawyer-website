@@ -1,6 +1,3 @@
-
-
-
 import React from "react";
 import { Archive, Eye, Trash2, Edit } from "lucide-react";
 

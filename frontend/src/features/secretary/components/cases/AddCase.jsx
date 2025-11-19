@@ -156,20 +156,8 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
                 }
               }}
             />
-            // <div className="space-y-4">
-            //   <h3 className="text-lg font-semibold text-gray-800">Document Details</h3>
-            //   <p className="text-gray-600">Document upload functionality will be implemented here.</p>
-            //   {/* Add your document upload components here */}
-            //   <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-            //     <p className="text-gray-500">Drag and drop files here or click to upload</p>
-            //     <button className="mt-2 px-4 py-2 bg-[#11408bee] text-white rounded-lg hover:bg-[#0f3674] transition-colors">
-            //       Upload Documents
-            //     </button>
-            //   </div>
-            // </div>
           )}
         </div>
-
         {/* Fixed Footer */}
         <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 rounded-b-2xl">
           <div className="flex justify-between">
