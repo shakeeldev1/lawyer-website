@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { Trash2, Edit, FileText } from "lucide-react";
 import DeleteModal from "./DeleteModal";
+import { useDeleteClientMutation } from "../../api/secretaryApi";
+import { toast } from "react-toastify";
 
 export default function ClientTable({
   clients = [],
@@ -12,6 +14,8 @@ export default function ClientTable({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [clientToDelete, setClientToDelete] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
   // ✅ Sync sidebar width responsiveness (same logic as ArchiveTable)
   useEffect(() => {
@@ -47,10 +51,19 @@ export default function ClientTable({
     setDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    setClients(clients.filter((c) => c.id !== clientToDelete.id));
-    setDeleteModalOpen(false);
-    setClientToDelete(null);
+  const handleConfirmDelete = async () => {
+    if (!clientToDelete) return;
+
+    try {
+      await deleteClient(clientToDelete._id).unwrap();
+      toast.success("Client deleted successfully");
+      setDeleteModalOpen(false);
+      setClientToDelete(null);
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to delete client");
+      setDeleteModalOpen(false);
+      setClientToDelete(null);
+    }
   };
 
   if (!clients.length)
@@ -73,7 +86,7 @@ export default function ClientTable({
       }`}
     >
       <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
-        {c.id}
+        {c._id?.slice(-6) || c.id}
       </td>
       <td className="p-4 text-slate-800 whitespace-nowrap">{c.name}</td>
       <td className="p-4 text-slate-800 whitespace-nowrap">{c.email}</td>
@@ -104,15 +117,12 @@ export default function ClientTable({
 
   return (
     <div
-  className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
+      className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
     ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
   `}
->
+    >
       {/* ✅ Responsive container width based on sidebar */}
-     <div
-  className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse"
->
-
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse">
         <table className="w-full min-w-[1000px] text-left border-collapse">
           <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
             <tr>
@@ -137,7 +147,7 @@ export default function ClientTable({
           </thead>
           <tbody className="divide-y divide-slate-200">
             {clients.map((c, idx) => (
-              <TableRow key={c.id} c={c} idx={idx} />
+              <TableRow key={c._id || c.id} c={c} idx={idx} />
             ))}
           </tbody>
         </table>
@@ -147,9 +157,13 @@ export default function ClientTable({
       {deleteModalOpen && (
         <DeleteModal
           isOpen={deleteModalOpen}
-          onClose={() => setDeleteModalOpen(false)}
+          onClose={() => {
+            setDeleteModalOpen(false);
+            setClientToDelete(null);
+          }}
           onDelete={handleConfirmDelete}
           name={clientToDelete?.name}
+          isDeleting={isDeleting}
         />
       )}
     </div>

@@ -12,7 +12,10 @@ export default function RecentActivity({ recentActivities }) {
       </div>
       <ul className="space-y-4">
         {recentActivities.map((a) => (
-          <li key={a.id} className="flex items-start space-x-3 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0">
+          <li
+            key={a._id || a.id}
+            className="flex items-start space-x-3 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0"
+          >
             <div className="w-2 h-2 bg-[#FE9A00] rounded-full mt-2 flex-shrink-0"></div>
             <div className="flex-1">
               <p className="text-gray-800 font-medium">{a.activity}</p>

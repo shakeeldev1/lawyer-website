@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Bell, Calendar, FilePlus, Archive, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useGetRemindersQuery } from "../api/secretaryApi";
 
 const SecretaryReminders = () => {
-  // Sample reminders for the secretary
-  const reminders = [
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  // Fetch reminders from API
+  const { data: remindersData, isLoading, error } = useGetRemindersQuery();
+
+  // Sample reminders for fallback (if no API data)
+  const fallbackReminders = [
     {
       type: "Submission Pending",
       caseName: "Client Ahmed Ali",
@@ -52,36 +58,37 @@ const SecretaryReminders = () => {
     },
   ];
 
-   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-      // ✅ Sync with sidebar state
-      useEffect(() => {
-        const handleResize = () => {
-          const desktop = window.innerWidth >= 1024;
-          setSidebarOpen(desktop);
-        };
-    
-        const handleSidebarToggle = () => {
-          // Listen for sidebar state changes from the sidebar component
-          const sidebar = document.querySelector('aside');
-          if (sidebar) {
-            const isOpen = sidebar.classList.contains('w-64');
-            setSidebarOpen(isOpen);
-          }
-        };
-    
-        window.addEventListener('resize', handleResize);
-        
-        // Check sidebar state periodically (you can use a better state management approach)
-        const interval = setInterval(handleSidebarToggle, 100);
-        
-        return () => {
-          window.removeEventListener('resize', handleResize);
-          clearInterval(interval);
-        };
-      }, []);
+  // Use API data or fallback to sample data
+  const reminders = remindersData?.data || fallbackReminders;
+
+  // ✅ Sync with sidebar state
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      // Listen for sidebar state changes from the sidebar component
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Check sidebar state periodically (you can use a better state management approach)
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
-    
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
@@ -90,9 +97,9 @@ const SecretaryReminders = () => {
                  px-3 sm:px-4 md:px-6 lg:px-2
                  py-3 sm:py-4 md:py-5 
                  transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
     >
-       {/* Title & Subtitle */}
+      {/* Title & Subtitle */}
       <div className="mb-6 text-center md:text-left">
         <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight flex items-center justify-center md:justify-start gap-2">
           <Bell className="text-[#fe9a00]" /> Secretary Reminders
@@ -102,26 +109,45 @@ const SecretaryReminders = () => {
         </p>
       </div>
 
-      <div className="space-y-4">
-        {reminders.map((reminder, i) => (
-          <div
-            key={i}
-            className={`p-4 rounded-xl ${reminder.color} shadow-sm border-l-4 border-[#fe9a00] flex items-start gap-3`}
-          >
-            <div>{reminder.icon}</div>
-            <div className="flex-1">
-              <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-gray-800">{reminder.caseName}</h3>
-                <span className="text-sm flex items-center gap-1">
-                  <Calendar size={14} /> {reminder.dueDate}
-                </span>
+      {/* Loading & Error States */}
+      {isLoading && (
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        </div>
+      )}
+      {error && (
+        <div className="text-center py-10 text-red-600">
+          Error loading reminders:{" "}
+          {error?.data?.message || "Something went wrong"}
+        </div>
+      )}
+
+      {!isLoading && (
+        <div className="space-y-4">
+          {reminders.map((reminder, i) => (
+            <div
+              key={i}
+              className={`p-4 rounded-xl ${reminder.color} shadow-sm border-l-4 border-[#fe9a00] flex items-start gap-3`}
+            >
+              <div>{reminder.icon}</div>
+              <div className="flex-1">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold text-gray-800">
+                    {reminder.caseName}
+                  </h3>
+                  <span className="text-sm flex items-center gap-1">
+                    <Calendar size={14} /> {reminder.dueDate}
+                  </span>
+                </div>
+                <p className="text-sm mt-1">{reminder.message}</p>
+                <p className="text-xs mt-1 italic">
+                  {reminder.type} - Stage: {reminder.stage}
+                </p>
               </div>
-              <p className="text-sm mt-1">{reminder.message}</p>
-              <p className="text-xs mt-1 italic">{reminder.type} - Stage: {reminder.stage}</p>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 };

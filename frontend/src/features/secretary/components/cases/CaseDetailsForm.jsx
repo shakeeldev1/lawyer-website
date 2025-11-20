@@ -1,6 +1,23 @@
 import React from "react";
+import { useGetLawyersQuery } from "../../api/secretaryApi";
 
 const CaseDetailsForm = ({ caseInfo, onChange }) => {
+  const {
+    data: lawyersData,
+    isLoading: loadingLawyers,
+    error: lawyersError,
+  } = useGetLawyersQuery();
+
+  // Debug logging
+  React.useEffect(() => {
+    if (lawyersData) {
+      console.log("Lawyers loaded:", lawyersData);
+    }
+    if (lawyersError) {
+      console.error("Error loading lawyers:", lawyersError);
+    }
+  }, [lawyersData, lawyersError]);
+
   return (
     <div className="space-y-6">
       {/* Case Information Section */}
@@ -38,14 +55,38 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
             onChange={onChange}
             className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
             required
+            disabled={loadingLawyers}
           >
-            <option value="">Select Lawyer</option>
-            <option value="Ahmed Mohamed">Ahmed Mohamed</option>
-            <option value="Fatima Ali">Fatima Ali</option>
-            <option value="Omar Hassan">Omar Hassan</option>
-            <option value="Aisha Abdullah">Aisha Abdullah</option>
-            <option value="Khalid Ibrahim">Khalid Ibrahim</option>
+            <option value="">
+              {loadingLawyers ? "Loading lawyers..." : "Select Lawyer"}
+            </option>
+            {lawyersData?.data?.map((lawyer) => (
+              <option key={lawyer._id} value={lawyer._id}>
+                {lawyer.name} - {lawyer.email}
+              </option>
+            ))}
+            {!lawyersData?.data?.length && !loadingLawyers && (
+              <option value="" disabled>
+                No lawyers available
+              </option>
+            )}
           </select>
+          {loadingLawyers && (
+            <p className="text-xs text-blue-500 flex items-center gap-2">
+              <span className="inline-block w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+              Loading lawyers...
+            </p>
+          )}
+          {lawyersError && (
+            <p className="text-xs text-red-500">
+              Error: {lawyersError?.data?.message || "Failed to load lawyers"}
+            </p>
+          )}
+          {!lawyersData?.data?.length && !loadingLawyers && !lawyersError && (
+            <p className="text-xs text-orange-500">
+              No active lawyers found. Please add lawyers first.
+            </p>
+          )}
         </div>
 
         {/* Hearing Date */}
@@ -77,7 +118,9 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
             required
             readOnly
           />
-          <p className="text-xs text-gray-500">Automatically set to today's date</p>
+          <p className="text-xs text-gray-500">
+            Automatically set to today's date
+          </p>
         </div>
       </div>
 

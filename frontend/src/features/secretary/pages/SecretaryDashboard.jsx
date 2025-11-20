@@ -3,9 +3,19 @@ import { User, FileText, Calendar } from "lucide-react";
 import StatCards from "../components/Secretaryoverview/StatCards";
 import SecretaryCharts from "../components/Secretaryoverview/SecretaryCharts";
 import RecentActivity from "../components/Secretaryoverview/RecentActivity";
+import {
+  useGetDashboardStatsQuery,
+  useGetActivityLogsQuery,
+} from "../api/secretaryApi";
 
 const SecretaryDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  // Fetch dashboard stats and activity logs
+  const { data: statsData, isLoading: statsLoading } =
+    useGetDashboardStatsQuery();
+  const { data: activityData, isLoading: activityLoading } =
+    useGetActivityLogsQuery();
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,30 +40,50 @@ const SecretaryDashboard = () => {
     };
   }, []);
 
-  const metrics = [
-    { title: "Total Clients", value: 42, icon: <User size={28} /> },
-    { title: "Active Cases", value: 18, icon: <FileText size={28} /> },
-    { title: "Pending Documents", value: 7, icon: <FileText size={28} /> },
-    { title: "Upcoming Hearings", value: 5, icon: <Calendar size={28} /> },
+  // Use API data or fallback to defaults
+  const metrics = statsData?.stats
+    ? [
+        {
+          title: "Total Clients",
+          value: statsData.stats.totalClients || 0,
+          icon: <User size={28} />,
+        },
+        {
+          title: "Active Cases",
+          value: statsData.stats.activeCases || 0,
+          icon: <FileText size={28} />,
+        },
+        {
+          title: "Pending Documents",
+          value: statsData.stats.pendingDocuments || 0,
+          icon: <FileText size={28} />,
+        },
+        {
+          title: "Upcoming Hearings",
+          value: statsData.stats.upcomingHearings || 0,
+          icon: <Calendar size={28} />,
+        },
+      ]
+    : [
+        { title: "Total Clients", value: 0, icon: <User size={28} /> },
+        { title: "Active Cases", value: 0, icon: <FileText size={28} /> },
+        { title: "Pending Documents", value: 0, icon: <FileText size={28} /> },
+        { title: "Upcoming Hearings", value: 0, icon: <Calendar size={28} /> },
+      ];
+
+  const caseTypeData = statsData?.caseTypeData || [
+    { name: "Civil", value: 0 },
+    { name: "Criminal", value: 0 },
+    { name: "Family", value: 0 },
   ];
 
-  const caseTypeData = [
-    { name: "Civil", value: 8 },
-    { name: "Criminal", value: 5 },
-    { name: "Family", value: 5 },
+  const pendingDocsData = statsData?.pendingDocsData || [
+    { status: "Not Started", count: 0 },
+    { status: "In Progress", count: 0 },
+    { status: "Completed", count: 0 },
   ];
 
-  const pendingDocsData = [
-    { status: "Not Started", count: 2 },
-    { status: "In Progress", count: 3 },
-    { status: "Completed", count: 2 },
-  ];
-
-  const recentActivities = [
-    { id: 1, activity: "New client John Doe added", time: "2 hours ago" },
-    { id: 2, activity: "Assigned document to lawyer Sarah Ali", time: "5 hours ago" },
-    { id: 3, activity: "Upcoming hearing for case #C123", time: "Tomorrow" },
-  ];
+  const recentActivities = activityData?.activities || [];
 
   return (
     <div
@@ -62,31 +92,44 @@ const SecretaryDashboard = () => {
       py-6 
       transition-all duration-300 ease-in-out
       ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-16"}
-      pt-[100px]`}  // 👈 this ensures nothing overlaps topbar
+      pt-[100px]`} // 👈 this ensures nothing overlaps topbar
     >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Overview</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+          Overview
+        </h1>
         <p className="text-gray-600 mt-2">
           Manage cases, documents, and client information efficiently
         </p>
       </div>
 
+      {/* Loading State */}
+      {(statsLoading || activityLoading) && (
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        </div>
+      )}
+
       {/* Dashboard Content */}
-      <div className="space-y-10 pb-10">
-        <StatCards metrics={metrics} />
+      {!statsLoading && (
+        <div className="space-y-10 pb-10">
+          <StatCards metrics={metrics} />
 
-        <div className="mt-6">
-          <SecretaryCharts
-            caseTypeData={caseTypeData}
-            pendingDocsData={pendingDocsData}
-          />
-        </div>
+          <div className="mt-6">
+            <SecretaryCharts
+              caseTypeData={caseTypeData}
+              pendingDocsData={pendingDocsData}
+            />
+          </div>
 
-        <div className="mt-8">
-          <RecentActivity recentActivities={recentActivities} />
+          {!activityLoading && (
+            <div className="mt-8">
+              <RecentActivity recentActivities={recentActivities} />
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

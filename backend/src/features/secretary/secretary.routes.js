@@ -5,9 +5,11 @@ import {
   getClientById,
   updateClient,
   deleteClient,
+  getAllCases,
   createCase,
   getCaseById,
   updateCase,
+  deleteCase,
   uploadCaseDocuments,
   assignCaseToLawyer,
   addCaseStage,
@@ -23,6 +25,7 @@ import {
   uploadCaseDocumentsWithFiles,
   uploadStageDocumentsWithFiles,
   uploadCourtSubmissionProof,
+  getReminders,
 } from "./secretary.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import {
@@ -40,9 +43,11 @@ router.get("/clients/:id", getClientById);
 router.put("/clients/:id", updateClient);
 router.delete("/clients/:id", deleteClient);
 
+router.get("/cases", getAllCases);
 router.post("/cases", createCase);
 router.get("/cases/:id", getCaseById);
 router.put("/cases/:id", updateCase);
+router.delete("/cases/:id", deleteCase);
 router.post("/cases/:id/documents", uploadCaseDocuments);
 router.post(
   "/cases/:id/documents/upload",
@@ -68,6 +73,7 @@ router.post("/cases/:id/archive", archiveCase);
 router.post("/cases/:id/notes", addCaseNote);
 
 router.get("/archive", getArchivedCases);
+router.get("/reminders", getReminders);
 router.get("/activity-logs", getActivityLogs);
 router.get("/dashboard/stats", getDashboardStats);
 router.get("/lawyers", getLawyers);

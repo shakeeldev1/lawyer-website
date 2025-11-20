@@ -1,7 +1,11 @@
 import React from "react";
 import { XCircle, Trash } from "lucide-react";
 
-const ArchiveDeleteModal = ({ deleteCaseModal, setDeleteCaseModal, handleDeleteCase }) => {
+const ArchiveDeleteModal = ({
+  deleteCaseModal,
+  setDeleteCaseModal,
+  handleDeleteCase,
+}) => {
   if (!deleteCaseModal) return null;
 
   return (
@@ -12,12 +16,13 @@ const ArchiveDeleteModal = ({ deleteCaseModal, setDeleteCaseModal, handleDeleteC
           Delete Case?
         </h3>
         <p className="text-slate-600 mb-6">
-          Are you sure you want to permanently delete <strong>{deleteCaseModal.caseNumber}</strong>? <br />
+          Are you sure you want to permanently delete{" "}
+          <strong>{deleteCaseModal.caseNumber}</strong>? <br />
           This action cannot be undone.
         </p>
         <div className="flex justify-center gap-3">
           <button
-            onClick={() => handleDeleteCase(deleteCaseModal.id)}
+            onClick={() => handleDeleteCase(deleteCaseModal._id)}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all"
           >
             Yes, Delete

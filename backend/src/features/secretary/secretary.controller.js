@@ -115,12 +115,61 @@ export const deleteClient = asyncHandler(async (req, res) => {
     .json({ success: true, message: "Client deleted successfully" });
 });
 
+export const getAllCases = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 50, search } = req.query;
+
+  const query = {};
+  if (search) {
+    const clients = await Client.find({
+      $or: [
+        { name: { $regex: search, $options: "i" } },
+        { contactNumber: { $regex: search, $options: "i" } },
+      ],
+    }).select("_id");
+
+    query.$or = [
+      { caseNumber: { $regex: search, $options: "i" } },
+      { caseType: { $regex: search, $options: "i" } },
+      { clientId: { $in: clients.map((c) => c._id) } },
+    ];
+  }
+
+  const cases = await Case.find(query)
+    .populate(
+      "clientId",
+      "name email contactNumber nationalId address additionalInfo"
+    )
+    .populate("assignedLawyer", "name email")
+    .populate("secretary", "name email")
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .sort({ createdAt: -1 });
+
+  const count = await Case.countDocuments(query);
+
+  res.status(200).json({
+    success: true,
+    data: cases,
+    totalPages: Math.ceil(count / limit),
+    currentPage: page,
+  });
+});
+
 export const createCase = asyncHandler(async (req, res) => {
-  const { clientId, caseType, caseDescription, documents } = req.body;
+  const { clientId, caseType, caseDescription, documents, assignedLawyer } =
+    req.body;
 
   const client = await Client.findById(clientId);
   if (!client) {
     throw new customError("Client not found", 404);
+  }
+
+  // Validate lawyer if provided
+  if (assignedLawyer) {
+    const lawyer = await User.findById(assignedLawyer);
+    if (!lawyer || lawyer.role !== "lawyer") {
+      throw new customError("Invalid lawyer assignment", 400);
+    }
   }
 
   const caseCount = await Case.countDocuments();
@@ -132,6 +181,7 @@ export const createCase = asyncHandler(async (req, res) => {
     caseType,
     caseDescription,
     documents: documents || [],
+    assignedLawyer: assignedLawyer || null,
     secretary: req.user._id,
     stages: [
       {
@@ -168,13 +218,31 @@ export const getCaseById = asyncHandler(async (req, res) => {
 });
 
 export const updateCase = asyncHandler(async (req, res) => {
-  const { caseType, caseDescription, documents } = req.body;
+  const { caseType, caseDescription, documents, assignedLawyer } = req.body;
 
-  const caseData = await Case.findByIdAndUpdate(
-    req.params.id,
-    { caseType, caseDescription, documents },
-    { new: true, runValidators: true }
-  );
+  // Validate lawyer if provided
+  if (assignedLawyer) {
+    const lawyer = await User.findById(assignedLawyer);
+    if (!lawyer || lawyer.role !== "lawyer") {
+      throw new customError("Invalid lawyer assignment", 400);
+    }
+  }
+
+  const updateData = {
+    caseType,
+    caseDescription,
+    documents,
+  };
+
+  // Only update assignedLawyer if it's provided in the request
+  if (assignedLawyer !== undefined) {
+    updateData.assignedLawyer = assignedLawyer;
+  }
+
+  const caseData = await Case.findByIdAndUpdate(req.params.id, updateData, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!caseData) {
     throw new customError("Case not found", 404);
@@ -188,6 +256,36 @@ export const updateCase = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({ success: true, data: caseData });
+});
+
+export const deleteCase = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+
+  // Optional: Prevent deletion of archived cases
+  if (caseData.archived) {
+    throw new customError(
+      "Cannot delete archived case. Unarchive it first.",
+      400
+    );
+  }
+
+  await Case.findByIdAndDelete(req.params.id);
+
+  await ActivityLog.create({
+    caseId: req.params.id,
+    userId: req.user._id,
+    action: "CASE_DELETED",
+    description: `Case ${caseData.caseNumber} deleted`,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Case deleted successfully",
+  });
 });
 
 export const uploadCaseDocuments = asyncHandler(async (req, res) => {
@@ -658,5 +756,17 @@ export const uploadCourtSubmissionProof = asyncHandler(async (req, res) => {
     success: true,
     message: "Court submission proof uploaded successfully",
     data: caseData,
+  });
+});
+
+export const getReminders = asyncHandler(async (req, res) => {
+  const reminders = await Reminder.find()
+    .populate("caseId", "caseNumber caseType")
+    .populate("userId", "name email")
+    .sort({ reminderDate: 1 });
+
+  res.status(200).json({
+    success: true,
+    data: reminders,
   });
 });

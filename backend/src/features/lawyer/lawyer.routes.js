@@ -15,6 +15,7 @@ import {
   addCaseNote,
   getMyReminders,
   getCaseTimeline,
+  getAllLawyers,
 } from "./lawyer.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import { uploadMemorandum } from "../../middleware/upload.js";
@@ -43,5 +44,6 @@ router.get("/archive", getMyArchive);
 router.get("/hearings", getUpcomingHearings);
 router.get("/reminders", getMyReminders);
 router.get("/dashboard/stats", getDashboardStats);
+router.get("/all-lawyers", getAllLawyers);
 
 export default router;

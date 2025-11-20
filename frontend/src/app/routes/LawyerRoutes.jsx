@@ -6,16 +6,16 @@ import LawyerLayout from "../layouts/LawyerLayout";
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
 export const LawyerRoutes = {
-    path: 'lawyer',
-    element: (
-        <RoleProtectedRoute allowedRoles={['lawyer']}>
-            <LawyerLayout />
-         </RoleProtectedRoute>
-    ),
-    children: [
-        { index: true, element: <LawyerOverview /> },
-        { path: 'my-cases', element: <MyCases /> },
-        { path: 'archieve', element: <LawyerArchieve /> },
-        { path: 'notifications', element: <LawyerNotifications /> },
-    ]
-}
+  path: "lawyer",
+  element: (
+    <RoleProtectedRoute allowedRoles={["secretary"]}>
+      <LawyerLayout />
+    </RoleProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <LawyerOverview /> },
+    { path: "my-cases", element: <MyCases /> },
+    { path: "archieve", element: <LawyerArchieve /> },
+    { path: "notifications", element: <LawyerNotifications /> },
+  ],
+};
