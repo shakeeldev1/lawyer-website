@@ -1,27 +1,46 @@
-import { Download } from "lucide-react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { useGetAllCasesQuery } from "../../api/directorApi";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import CountUp from "react-countup";
 
 const CaseStageChart = () => {
-  const caseDistribution = [
-    { name: "Main Case", value: 60, color: "#1c283c" },
-    { name: "Appeal", value: 35, color: "#fe9a00" },
-    { name: "Cassation", value: 15, color: "#6b7280" },
-    { name: "Closed", value: 30, color: "#d1d5db" },
-  ];
+  const { data, isLoading, isError } = useGetAllCasesQuery();
+  const cases = data?.data || [];
 
-  const lawyerPerformance = [
-    { name: "Lawyer A", cases: 28 },
-    { name: "Lawyer B", cases: 24 },
-    { name: "Lawyer C", cases: 19 },
-    { name: "Lawyer D", cases: 12 },
-  ];
+  // Compute case distribution by status
+  const statusColors = {
+    Draft: "#1c283c",
+    "In Progress": "#fe9a00",
+    Completed: "#22c55e",
+    Closed: "#6b7280",
+  };
+
+  const caseDistributionMap = cases.reduce((acc, c) => {
+    const status = c.status || "Other";
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {});
+
+  const caseDistribution = Object.entries(caseDistributionMap).map(
+    ([name, value]) => ({
+      name,
+      value,
+      color: statusColors[name] || "#d1d5db",
+    })
+  );
+
+  // Compute lawyer performance
+  const lawyerMap = cases.reduce((acc, c) => {
+    const lawyer = c.assignedLawyer?.name || "Unassigned";
+    acc[lawyer] = (acc[lawyer] || 0) + 1;
+    return acc;
+  }, {});
+
+  const lawyerPerformance = Object.entries(lawyerMap).map(
+    ([name, cases]) => ({ name, cases })
+  );
+
+  if (isLoading) return <p>Loading charts...</p>;
+  if (isError) return <p>Error loading charts</p>;
 
   return (
     <div className="bg-white mt-10 p-5 sm:p-6 md:p-8 rounded-2xl shadow-md border border-gray-100 w-full space-y-8">
@@ -101,7 +120,7 @@ const CaseStageChart = () => {
                   <div
                     className="h-full rounded-full transition-all duration-1000"
                     style={{
-                      width: `${(lawyer.cases / 30) * 100}%`,
+                      width: `${(lawyer.cases / Math.max(...lawyerPerformance.map(l => l.cases))) * 100}%`,
                       background: "linear-gradient(to right, #fe9a00, #1c283c)",
                     }}
                   ></div>

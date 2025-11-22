@@ -1,53 +1,19 @@
 import { useState } from "react";
 import { Search, ArrowRight } from "lucide-react";
 import { Link } from 'react-router-dom';
-
+import { useGetAllCasesQuery } from "../../api/directorApi";
 
 const RecentCasesTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const recentCases = [
-    {
-      id: "C-2024-001",
-      caseName: "Johnson vs State Corporation",
-      client: "Robert Johnson",
-      type: "Civil Litigation",
-      status: "In Progress",
-      priority: "High",
-    },
-    {
-      id: "C-2024-002",
-      caseName: "Smith Property Dispute",
-      client: "Michael Smith",
-      type: "Real Estate",
-      status: "Pending Approval",
-      priority: "Medium",
-    },
-    {
-      id: "C-2024-003",
-      caseName: "Davis Contract Breach",
-      client: "Jennifer Davis",
-      type: "Corporate Law",
-      status: "Document Review",
-      priority: "High",
-    },
-    {
-      id: "C-2024-004",
-      caseName: "Miller Estate Planning",
-      client: "James Miller",
-      type: "Family Law",
-      status: "Completed",
-      priority: "Low",
-    },
-    {
-      id: "C-2024-005",
-      caseName: "Wilson Employment Case",
-      client: "Patricia Wilson",
-      type: "Labor Law",
-      status: "In Progress",
-      priority: "Medium",
-    },
-  ];
+  const { data, isLoading, isError } = useGetAllCasesQuery();
+
+  const recentCases = data?.data || [];
+console.log(recentCases)
+  // Sort by createdAt descending (most recent first) and limit to 6
+  const sortedCases = [...recentCases]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 6);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -64,11 +30,11 @@ const RecentCasesTable = () => {
     }
   };
 
-  const filteredCases = recentCases.filter(
+  const filteredCases = sortedCases.filter(
     (caseItem) =>
-      caseItem.caseName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caseItem.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      caseItem.type.toLowerCase().includes(searchTerm.toLowerCase())
+      caseItem.caseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      caseItem.clientId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      caseItem.caseType?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -100,8 +66,9 @@ const RecentCasesTable = () => {
         <table className="w-full text-sm">
           <thead className="bg-[#1c283c] text-white">
             <tr>
-              <th className="text-left py-3 px-5 font-semibold">Case ID</th>
-              <th className="text-left py-3 px-5 font-semibold">Case Name</th>
+              <th className="text-left py-3 px-5 font-semibold">Case Number</th>
+              <th className="text-left py-3 px-5 font-semibold">Client</th>
+              <th className="text-left py-3 px-5 font-semibold">Assigned Lawyer</th>
               <th className="text-left py-3 px-5 font-semibold">Type</th>
               <th className="text-left py-3 px-5 font-semibold">Status</th>
             </tr>
@@ -114,18 +81,26 @@ const RecentCasesTable = () => {
                 className="hover:bg-[#fe9a00]/5 transition-all duration-200"
               >
                 <td className="py-4 px-5 text-[#1c283c]/80 font-medium font-mono">
-                  {caseItem.id}
+                  {caseItem.caseNumber}
                 </td>
                 <td className="py-4 px-5">
                   <div>
                     <p className="font-semibold text-[#1c283c]">
-                      {caseItem.caseName}
+                      {caseItem.clientId?.name}
                     </p>
-                    <p className="text-xs text-gray-500">{caseItem.client}</p>
+                    <p className="text-xs text-gray-500">{caseItem.clientId?.email}</p>
+                  </div>
+                </td>
+                <td className="py-4 px-5">
+                  <div>
+                    <p className="font-semibold text-[#1c283c]">
+                      {caseItem.assignedLawyer?.name}
+                    </p>
+                    <p className="text-xs text-gray-500">{caseItem.clientId?.email}</p>
                   </div>
                 </td>
                 <td className="py-4 px-5 text-[#1c283c]/70">
-                  {caseItem.type}
+                  {caseItem.caseType}
                 </td>
                 <td className="py-4 px-5">
                   <span
@@ -151,7 +126,7 @@ const RecentCasesTable = () => {
           >
             <div className="flex items-center justify-between mb-2">
               <span className="font-mono text-sm font-semibold text-[#1c283c]/80">
-                {caseItem.id}
+                {caseItem.caseNumber}
               </span>
               <span
                 className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(
@@ -162,11 +137,11 @@ const RecentCasesTable = () => {
               </span>
             </div>
             <p className="font-semibold text-[#1c283c]">
-              {caseItem.caseName}
+              {caseItem.clientId?.name}
             </p>
-            <p className="text-xs text-gray-500 mb-2">{caseItem.client}</p>
+            <p className="text-xs text-gray-500 mb-2">{caseItem.clientId?.email}</p>
             <div className="flex items-center justify-between mt-2 text-sm">
-              <span className="text-[#1c283c]/70">{caseItem.type}</span>
+              <span className="text-[#1c283c]/70">{caseItem.caseType}</span>
               <button className="text-[#fe9a00] hover:text-[#1c283c] text-xs font-medium flex items-center gap-1">
                 View <ArrowRight size={12} />
               </button>
@@ -178,8 +153,7 @@ const RecentCasesTable = () => {
       {/* Footer */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-6 pt-5 border-t border-gray-100 gap-2">
         <p className="text-sm text-gray-500">
-          Showing <b>{filteredCases.length}</b> of{" "}
-          <b>{recentCases.length}</b> cases
+          Showing <b>{filteredCases.length}</b> of <b>{recentCases.length}</b> cases
         </p>
         <Link to="all-cases" className="flex items-center gap-2 text-sm font-medium text-[#fe9a00] hover:text-[#1c283c] transition-all">
           View All Cases
