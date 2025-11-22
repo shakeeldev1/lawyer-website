@@ -27,6 +27,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await login(formData).unwrap();
+      console.log(res)
       dispatch(setProfile(res?.user));
       toast.success(res?.data?.message || "Login successful!", {
         position: "bottom-right",
@@ -40,8 +41,8 @@ const Login = () => {
         case "secretary":
           navigate("/", { replace: true });
           break;
-        case "approvedlawyer":
-          navigate("/approvedlawyer", { replace: true });
+        case "approvingLawyer":
+          navigate("/approvingLawyer", { replace: true });
           break;
         case "lawyer":
           navigate("/lawyer", { replace: true });
