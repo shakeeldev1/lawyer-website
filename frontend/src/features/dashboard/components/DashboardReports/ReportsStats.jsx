@@ -1,4 +1,3 @@
-import React from "react";
 import { Users, Scale, CheckCircle, Clock } from "lucide-react";
 
 const ReportsStats = () => {
