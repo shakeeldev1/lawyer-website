@@ -17,7 +17,7 @@ export default function LawyerArchive() {
 
   const { data, isLoading, isError } = useGetLawyerArchieveQuery(search);
   const archivedCases = data?.data || [];
-
+console.log(archivedCases)
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
 

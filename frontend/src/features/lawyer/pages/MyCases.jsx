@@ -1,31 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { FiX, FiSearch } from "react-icons/fi";
-import DetailsTab from "../components/LawyerCases/DetailsTab";
-import DocumentsTab from "../components/LawyerCases/DocumentsTab";
-import MemorandumTab from "../components/LawyerCases/MemorandumTab";
 import CasesTable from "../components/LawyerCases/CasesTable";
 import DeleteModal from "../components/LawyerCases/DeleteModal";
+import CaseDetail from "../components/LawyerCases/CaseDetail";
+import DocumentsTab from "../components/LawyerCases/DocumentsTab";
+import MemorandumTab from "../components/LawyerCases/MemorandumTab";
 import { useLawyerCasesQuery } from "../api/lawyerApi";
 
 export default function MyCases() {
-  const currentUserId = "lawyer1";
   const [cases, setCases] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
   const [activeTab, setActiveTab] = useState("Details");
-  const [selectedStage, setSelectedStage] = useState("Main");
+  const [selectedStage, setSelectedStage] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
 
-  // Fetch cases from API
   const { data, isLoading, isError } = useLawyerCasesQuery(search);
 
   useEffect(() => {
-    if (data?.success) setCases(data.data);
+    if (data?.data) {
+      const mapped = data.data.map((c) => ({
+        ...c,
+        id: c._id,
+        clientName: c.name || c.clientId?.name || "—",
+        clientEmail: c.email || c.clientId?.email || "—",
+        clientPhone: c.contactNumber || c.clientId?.contactNumber || "—",
+        assignedStage: c.currentStage || 0,
+        stages: c.stages || [],
+        documents: c.documents || [],
+        memorandum: c.memorandum || {},
+        notes: c.notes || [],
+      }));
+      setCases(mapped);
+    }
   }, [data]);
 
-  // Sidebar responsive handling
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
     const interval = setInterval(() => {
@@ -39,16 +50,22 @@ export default function MyCases() {
     };
   }, []);
 
-  // Open/close case modal
   const openCase = (c) => {
-    setSelectedCase(c);
+    setSelectedCase({
+      ...c,
+      stages: c.stages || [],
+      documents: c.documents || [],
+      memorandum: c.memorandum || {},
+      notes: c.notes || [],
+    });
     setActiveTab("Details");
-    setSelectedStage(c.assignedStage);
+    setSelectedStage(c.assignedStage || 0);
   };
+
   const closeCase = () => setSelectedCase(null);
 
-  // Update memorandum
   const updateCaseMemorandum = (stage, updatedMemo) => {
+    if (!selectedCase) return;
     setCases((prev) =>
       prev.map((c) =>
         c.id === selectedCase.id
@@ -62,7 +79,6 @@ export default function MyCases() {
     }));
   };
 
-  // Delete handlers
   const handleDeleteClick = (c) => {
     setCaseToDelete(c);
     setDeleteModalOpen(true);
@@ -75,37 +91,22 @@ export default function MyCases() {
   };
 
   if (isLoading)
-    return (
-      <p className="text-center mt-20 text-slate-700 font-medium">
-        Loading cases...
-      </p>
-    );
+    return <p className="text-center mt-20 text-slate-700 font-medium">Loading cases...</p>;
   if (isError)
-    return (
-      <p className="text-center mt-20 text-red-500 font-medium">
-        Error fetching cases. Please try again.
-      </p>
-    );
+    return <p className="text-center mt-20 text-red-500 font-medium">Error fetching cases. Please try again.</p>;
 
   return (
-    <div
-      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-4 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
-      }`}
-    >
+    <div className={`min-h-screen px-4 py-3 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}>
       <div className="max-w-7xl mx-auto mt-20">
-        {/* Header + Search */}
+
         <header className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
-              My Assigned Cases
-            </h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">My Assigned Cases</h1>
             <p className="text-sm md:text-base text-slate-600 mt-1">
               Workspace for lawyers — review documents, manage workflow efficiently.
             </p>
           </div>
 
-          {/* Search bar */}
           <div className="relative w-full md:w-64 mt-2 md:mt-0">
             <FiSearch className="absolute top-2.5 left-3 text-slate-400" />
             <input
@@ -118,46 +119,18 @@ export default function MyCases() {
           </div>
         </header>
 
-        {/* Cases Table */}
-        <CasesTable
-          cases={cases.filter((c) => c.assignedTo === currentUserId)}
-          onOpen={openCase}
-          onDelete={handleDeleteClick}
-        />
+        <CasesTable cases={cases} onOpen={openCase} onDelete={handleDeleteClick} />
 
-        {/* Case Modal */}
         {selectedCase && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60">
             <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transition-transform duration-300 scale-100 md:scale-100">
+
               {/* Header */}
               <div className="flex justify-between items-start px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
-                <div>
-                  <h2 className="font-bold text-xl md:text-2xl">
-                    {selectedCase.caseNumber}
-                  </h2>
-                  <p className="text-sm md:text-base text-slate-200 mt-1">
-                    {selectedCase.clientName} • {selectedCase.caseType}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <select
-                    value={selectedStage}
-                    onChange={(e) => setSelectedStage(e.target.value)}
-                    className="px-3 py-2 rounded border text-sm bg-slate-500 text-white focus:outline-none focus:ring-2 focus:ring-slate-300"
-                  >
-                    {["Main", "Appeal", "Cassation"].map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={closeCase}
-                    className="p-2 rounded hover:bg-slate-600 transition"
-                  >
-                    <FiX size={24} />
-                  </button>
-                </div>
+                <h2 className="font-bold text-xl md:text-2xl">{selectedCase.caseNumber}</h2>
+                <button onClick={closeCase} className="p-2 rounded hover:bg-slate-600 transition">
+                  <FiX size={24} />
+                </button>
               </div>
 
               {/* Tabs */}
@@ -167,11 +140,7 @@ export default function MyCases() {
                     <button
                       key={t}
                       onClick={() => setActiveTab(t)}
-                      className={`pb-2 px-2 text-sm md:text-base font-medium transition ${
-                        activeTab === t
-                          ? "border-b-2 border-slate-800 text-slate-900"
-                          : "text-slate-500 hover:text-slate-800"
-                      }`}
+                      className={`pb-2 px-2 text-sm md:text-base font-medium transition ${activeTab === t ? "border-b-2 border-slate-800 text-slate-900" : "text-slate-500 hover:text-slate-800"}`}
                     >
                       {t}
                     </button>
@@ -179,32 +148,18 @@ export default function MyCases() {
                 </div>
               </div>
 
-              {/* Content */}
+              {/* Tab Content */}
               <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                {activeTab === "Details" && (
-                  <DetailsTab selectedCase={selectedCase} />
-                )}
-                {activeTab === "Documents" && (
-                  <DocumentsTab
-                    selectedCase={selectedCase}
-                    selectedStage={selectedStage}
-                  />
-                )}
+                {activeTab === "Details" && <CaseDetail selectedCase={selectedCase} />}
+                {activeTab === "Documents" && <DocumentsTab selectedCase={selectedCase} selectedStage={selectedStage} />}
                 {activeTab === "Memorandum" && (
-                  <MemorandumTab
-                    selectedCase={selectedCase}
-                    selectedStage={selectedStage}
-                    updateCaseMemorandum={updateCaseMemorandum}
-                  />
+                  <MemorandumTab selectedCase={selectedCase} selectedStage={selectedStage} updateCaseMemorandum={updateCaseMemorandum} />
                 )}
               </div>
 
               {/* Footer */}
               <div className="flex justify-end px-6 py-4 border-t sticky bottom-0 bg-white">
-                <button
-                  onClick={closeCase}
-                  className="px-5 py-2 rounded-md border text-slate-800 hover:bg-slate-50 transition font-medium"
-                >
+                <button onClick={closeCase} className="px-5 py-2 rounded-md border text-slate-800 hover:bg-slate-50 transition font-medium">
                   Close
                 </button>
               </div>
@@ -212,7 +167,6 @@ export default function MyCases() {
           </div>
         )}
 
-        {/* Delete Modal */}
         {deleteModalOpen && (
           <DeleteModal
             isOpen={deleteModalOpen}
