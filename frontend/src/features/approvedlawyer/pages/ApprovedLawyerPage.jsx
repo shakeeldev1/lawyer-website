@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 
 import ApprovedLawyerCasesTable from "../components/ApprovedLawyerPage/ApprovedLawyerCasesTable";
@@ -59,7 +59,7 @@ const dummyCases = [
 ];
 
 export default function ApprovedLawyerPage() {
-    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   
   const [cases, setCases] = useState(dummyCases);
   const [selectedCase, setSelectedCase] = useState(null);

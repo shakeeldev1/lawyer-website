@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   FaUserCircle,
   FaSignOutAlt,
@@ -9,13 +9,16 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { selectUserProfile } from "./features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 const MyProfilePage = () => {
+  const user = useSelector(selectUserProfile);
   const profile = {
-    name: "Michael Smith",
-    role: "Approved Lawyer",
-    email: "michaelsmith@gmail.com",
-    phone: "+1 234 567 890",
+    name: user?.name,
+    role: user?.role,
+    email: user?.email,
+    phone: user?.phone,
     profilePic: null,
   };
 
