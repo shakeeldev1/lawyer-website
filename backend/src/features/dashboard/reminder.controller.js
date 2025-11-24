@@ -1,0 +1,1 @@
+import AdminReminder from "./models/model.reminder";
