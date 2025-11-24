@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AddCaseModal from "../components/dashboardCaseManagement/AddCaseModal";
 import CaseTimelineModal from "../components/dashboardCaseManagement/CaseTimelineModal";
 import CasesTable from "../components/dashboardCaseManagement/CasesTable";
@@ -8,9 +8,7 @@ import { useGetAllCasesQuery } from "../api/directorApi";
 
 const AllCases = () => {
   const { data, isLoading, isError } = useGetAllCasesQuery();
-
   const apiCases = data?.data || [];
-
   const [cases, setCases] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState("All");
@@ -20,14 +18,30 @@ const AllCases = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
 
-  // Sync sidebar state
   useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector('aside');
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains('w-64');
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
-  // Format API data for table
   useEffect(() => {
     const formatted = apiCases.map((c) => ({
       ...c,
@@ -39,7 +53,6 @@ const AllCases = () => {
     setCases(formatted);
   }, [apiCases]);
 
-  // 🔎 Search + Stage Filtering
   const filteredCases = cases.filter((c) => {
     const matchesSearch =
       c.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -68,9 +81,9 @@ const AllCases = () => {
     <div
       className={`min-h-screen 
         px-3 sm:px-4 md:px-6 lg:px-2
-        py-3 sm:py-4 md:py-5 
+        py-3 sm:py-4 md:py-5
         transition-all duration-300 ease-in-out
-        ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+       ${sidebarOpen ? "lg:ml-64 md:ml-64 mr-20" : "lg:ml-20 md:ml-14"}`}
     >
       {/* Header */}
       <div className="mb-4 sm:mb-5 md:mb-6 lg:mb-8">
