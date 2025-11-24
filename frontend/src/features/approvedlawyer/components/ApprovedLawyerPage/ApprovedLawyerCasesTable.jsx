@@ -37,7 +37,6 @@ export default function ApprovedLawyerCasesTable ({
     ${sidebarOpen ? 'md:w-[510px] lg:w-[980px]' : 'md:w-[700px] lg:w-[1160px]'}
   `}
     >
-      {/* ✅ Responsive container width based on sidebar */}
       <div className='overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse'>
         <table className='w-full min-w-[1000px] text-left border-collapse'>
           <thead className='bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10'>
