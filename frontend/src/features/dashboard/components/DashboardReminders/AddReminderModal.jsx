@@ -1,5 +1,5 @@
 // src/components/DashboardReminders/AddReminderModal.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 const AddReminderModal = ({ onClose, onSubmit }) => {
   const [form, setForm] = useState({

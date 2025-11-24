@@ -4,70 +4,95 @@ import RemindersConfirmationModal from "../components/DashboardReminders/Reminde
 import RemindersHeader from "../components/DashboardReminders/RemindersHeader";
 import AddReminderModal from "../components/DashboardReminders/AddReminderModal";
 
-import { useGetAllRemindersQuery } from "../api/directorApi";
+import {
+  useGetAllRemindersQuery,
+  useCreateReminderMutation,
+  useMarkCompletedMutation,
+} from "../api/reminderApi";
 
 const RemindersPage = () => {
   const [search, setSearch] = useState("");
-  const { data, isLoading, isError } = useGetAllRemindersQuery();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
-  const reminders = data?.data || [];
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [modal, setModal] = useState({ show: false, message: "", type: "info" });
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-  useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-
-    const checkSidebar = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        setSidebarOpen(sidebar.classList.contains("w-64"));
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(checkSidebar, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
-
-  const [modal, setModal] = useState({
-    show: false,
-    message: "",
-    type: "info",
+  // API hooks
+  const { data, isLoading, isError, refetch } = useGetAllRemindersQuery({
+    search,
+    page,
+    limit,
   });
 
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [createReminder] = useCreateReminderMutation();
+  const [markCompleted] = useMarkCompletedMutation();
 
-  // Local view action (no API required)
-  const handleAction = (action, reminder) => {
-    if (action === "View") {
+  const reminders = data?.reminders || [];
+  const totalPages = data?.totalPages || 1;
+
+  // Sidebar resize logic
+  useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Add reminder handler
+  const handleAddReminder = async (newReminder) => {
+    try {
+      await createReminder(newReminder).unwrap();
       setModal({
         show: true,
-        message: `Case: ${reminder.caseName}\nLawyer: ${reminder.lawyer}\nDate: ${reminder.date}\nStatus: ${reminder.status}`,
-        type: "info",
+        message: `New reminder "${newReminder.caseName}" added.`,
+        type: "success",
+      });
+      setShowAddModal(false);
+      refetch();
+    } catch (error) {
+      setModal({
+        show: true,
+        message: `Failed to add reminder: ${error.data?.message || error.message}`,
+        type: "error",
       });
     }
   };
 
-  // Local add reminder (no backend)
-  const handleAddReminder = (newReminder) => {
-    setModal({
-      show: true,
-      message: `New reminder "${newReminder.caseName}" added.`,
-      type: "success",
-    });
-    setShowAddModal(false);
+  // Action buttons (View / Mark Complete)
+  const handleAction = async (action, reminder) => {
+    if (action === "View") {
+      setModal({
+        show: true,
+        message: `Case: ${reminder.caseName}\nLawyer: ${reminder.lawyer}\nDate: ${new Date(
+          reminder.date
+        ).toLocaleDateString()}\nStatus: ${reminder.isCompleted ? "Completed" : "Pending"}`,
+        type: "info",
+      });
+    }
+
+    if (action === "Mark Complete") {
+      try {
+        await markCompleted(reminder._id).unwrap();
+        setModal({
+          show: true,
+          message: `Reminder "${reminder.caseName}" marked as completed.`,
+          type: "success",
+        });
+        refetch();
+      } catch (error) {
+        setModal({
+          show: true,
+          message: `Failed to mark complete: ${error.data?.message || error.message}`,
+          type: "error",
+        });
+      }
+    }
   };
 
-  // Apply search filtering locally
-  const filteredReminders = reminders.filter(
-    (r) =>
-      r.caseName.toLowerCase().includes(search.toLowerCase()) ||
-      r.lawyer.toLowerCase().includes(search.toLowerCase())
-  );
+  // Pagination handler
+  const handlePageChange = (newPage) => setPage(newPage);
 
   if (isLoading)
     return <p className="text-center mt-20">Loading reminders...</p>;
@@ -85,8 +110,7 @@ const RemindersPage = () => {
         px-3 sm:px-4 md:px-6 lg:px-2
         py-3 sm:py-4 md:py-5
         transition-all duration-300 ease-in-out
-        ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}
-      `}
+        ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
     >
       {/* Header */}
       <RemindersHeader
@@ -97,8 +121,11 @@ const RemindersPage = () => {
 
       {/* Table */}
       <RemindersTable
-        reminders={filteredReminders}
+        reminders={reminders}
         onAction={handleAction}
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
 
       {/* Add Reminder Modal */}
@@ -114,9 +141,7 @@ const RemindersPage = () => {
         <RemindersConfirmationModal
           message={modal.message}
           type={modal.type}
-          onClose={() =>
-            setModal((prev) => ({ ...prev, show: false }))
-          }
+          onClose={() => setModal((prev) => ({ ...prev, show: false }))}
         />
       )}
     </div>
