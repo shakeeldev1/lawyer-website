@@ -123,9 +123,8 @@ export const submitMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -171,9 +170,8 @@ export const uploadMemorandumFile = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum file submitted for stage ${
-      parseInt(stageIndex) + 1
-    } of case ${caseData.caseNumber}`,
+    description: `Memorandum file submitted for stage ${parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
   });
 
   res.status(200).json({
@@ -219,9 +217,8 @@ export const updateMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_UPDATED",
-    description: `Memorandum updated for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum updated for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -268,9 +265,8 @@ export const approveMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_APPROVED",
-    description: `Memorandum approved for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    } by ${req.user.name}`,
+    description: `Memorandum approved for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      } by ${req.user.name}`,
   });
 
   res.status(200).json({
@@ -315,9 +311,8 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_REJECTED",
-    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${
-      caseData.caseNumber
-    }`,
+    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${caseData.caseNumber
+      }`,
   });
 
   res.status(200).json({
@@ -329,7 +324,6 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
 
 export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
-
   const cases = await Case.find({
     approvingLawyer: req.user._id,
     status: "PendingApproval",
@@ -342,6 +336,7 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     .skip((page - 1) * limit)
     .sort({ updatedAt: -1 });
 
+  console.log("Cases fetched:", cases);
   const count = await Case.countDocuments({
     approvingLawyer: req.user._id,
     status: "PendingApproval",
