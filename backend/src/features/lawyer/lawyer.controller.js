@@ -490,9 +490,9 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
 export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const cases = await Case.find({
-    approvingLawyer: req.user._id,
-    status: "PendingApproval",
-    archived: false,
+    // approvingLawyer: req.user._id,
+    // status: "PendingApproval",
+    // archived: false,
   })
     .populate("clientId", "name contactNumber")
     .populate("assignedLawyer", "name email")
@@ -501,7 +501,7 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     .skip((page - 1) * limit)
     .sort({ updatedAt: -1 });
 
-  console.log("Cases fetched:", cases);
+  console.log("Cases fetched:", cases[0]);
   const count = await Case.countDocuments({
     approvingLawyer: req.user._id,
     status: "PendingApproval",
