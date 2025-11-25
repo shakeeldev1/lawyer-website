@@ -1,9 +1,8 @@
-import React from "react";
 import { Eye, Trash2 } from "lucide-react";
 
 const CasesTable = ({ cases, onView, onDelete }) => {
   return (
-    <div className="bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden">
+    <div className="bg-white text-[#24344f] shadow-md rounded-2xl border border-[#fe9a00]/20 overflow-hidden">
       {/* ===== Desktop Table ===== */}
       <div className="hidden lg:block">
         <div className="overflow-x-auto">
