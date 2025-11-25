@@ -1,65 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { Bell, Calendar, FilePlus, Archive, AlertCircle } from "lucide-react";
+import {
+  Bell,
+  Calendar,
+  FilePlus,
+  AlertCircle,
+  Trash2,
+  Clock,
+} from "lucide-react";
 import { motion } from "framer-motion";
-import { useGetRemindersQuery } from "../api/secretaryApi";
+import {
+  useGetRemindersQuery,
+  useDeleteReminderMutation,
+} from "../api/secretaryApi";
 
 const SecretaryReminders = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-  // Fetch reminders from API
-  const { data: remindersData, isLoading, error } = useGetRemindersQuery();
+  // Fetch reminders from API with auto-refresh
+  const {
+    data: remindersData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetRemindersQuery(undefined, {
+    pollingInterval: 60000, // Refresh every 60 seconds
+    skipPollingIfUnfocused: true,
+  });
 
-  // Sample reminders for fallback (if no API data)
-  const fallbackReminders = [
-    {
-      type: "Submission Pending",
-      caseName: "Client Ahmed Ali",
-      stage: "Appeal",
-      dueDate: "12 Nov 2025",
-      message: "Memorandum approved by Ragab. Ready for your final review.",
-      color: "bg-yellow-100 text-yellow-800",
-      icon: <FilePlus size={18} />,
-    },
-    {
-      type: "Upcoming Hearing",
-      caseName: "Client Hassan",
-      stage: "Main Case",
-      dueDate: "15 Nov 2025",
-      message: "Hearing in 3 days at Court 2, 9:00 AM",
-      color: "bg-blue-100 text-blue-800",
-      icon: <Calendar size={18} />,
-    },
-    {
-      type: "Overdue / Action Required",
-      caseName: "Client Fatima Khan",
-      stage: "Cassation",
-      dueDate: "10 Nov 2025",
-      message: "Deposit summary not uploaded. Submission overdue.",
-      color: "bg-red-100 text-red-800",
-      icon: <AlertCircle size={18} />,
-    },
-    {
-      type: "New Case Assignment",
-      caseName: "Client Omar",
-      stage: "Main Case",
-      dueDate: "12 Nov 2025",
-      message: "New client file needs to be created and documents uploaded.",
-      color: "bg-green-100 text-green-800",
-      icon: <FilePlus size={18} />,
-    },
-    {
-      type: "Archiving Reminder",
-      caseName: "Client Ahmed Ali",
-      stage: "Appeal",
-      dueDate: "14 Nov 2025",
-      message: "All stages completed. Please archive the case.",
-      color: "bg-purple-100 text-purple-800",
-      icon: <Archive size={18} />,
-    },
-  ];
+  // Delete reminder mutation
+  const [deleteReminder, { isLoading: isDeleting }] =
+    useDeleteReminderMutation();
 
-  // Use API data or fallback to sample data
-  const reminders = remindersData?.data || fallbackReminders;
+  // Use API data
+  const reminders = remindersData?.data || [];
+
+  // Handle delete reminder
+  const handleDeleteReminder = async (id) => {
+    if (window.confirm("Are you sure you want to delete this reminder?")) {
+      try {
+        await deleteReminder(id).unwrap();
+        alert("Reminder deleted successfully");
+      } catch (error) {
+        alert("Failed to delete reminder");
+        console.error("Delete error:", error);
+      }
+    }
+  };
+
+  // Get icon based on reminder type
+  const getIcon = (reminderType, isOverdue) => {
+    if (isOverdue) return <AlertCircle size={18} />;
+    if (reminderType === "Hearing") return <Calendar size={18} />;
+    if (reminderType === "Submission") return <FilePlus size={18} />;
+    return <Bell size={18} />;
+  };
 
   // ✅ Sync with sidebar state
   useEffect(() => {
@@ -113,38 +107,115 @@ const SecretaryReminders = () => {
       {isLoading && (
         <div className="text-center py-10">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
-        </div>
-      )}
-      {error && (
-        <div className="text-center py-10 text-red-600">
-          Error loading reminders:{" "}
-          {error?.data?.message || "Something went wrong"}
+          <p className="text-gray-600 mt-4">Loading reminders...</p>
         </div>
       )}
 
-      {!isLoading && (
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+          <h3 className="text-red-800 font-semibold mb-2">
+            Error Loading Reminders
+          </h3>
+          <p className="text-red-600">
+            {error?.data?.message ||
+              "Unable to fetch reminders. Please try again."}
+          </p>
+          <button
+            onClick={() => refetch()}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {!isLoading && !error && reminders.length === 0 && (
+        <div className="text-center py-16">
+          <div className="text-gray-400 mb-4">
+            <Bell size={64} className="mx-auto" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            No Reminders
+          </h3>
+          <p className="text-gray-500">
+            You have no upcoming reminders. They will appear here when hearings
+            or submissions are scheduled.
+          </p>
+        </div>
+      )}
+
+      {!isLoading && !error && reminders.length > 0 && (
         <div className="space-y-4">
-          {reminders.map((reminder, i) => (
-            <div
-              key={i}
-              className={`p-4 rounded-xl ${reminder.color} shadow-sm border-l-4 border-[#fe9a00] flex items-start gap-3`}
+          {reminders.map((reminder) => (
+            <motion.div
+              key={reminder._id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-xl ${
+                reminder.color
+              } shadow-sm border-l-4 ${
+                reminder.isOverdue ? "border-red-500" : "border-[#fe9a00]"
+              } flex items-start gap-3 hover:shadow-md transition-shadow`}
             >
-              <div>{reminder.icon}</div>
+              <div className="mt-1">
+                {getIcon(reminder.reminderType, reminder.isOverdue)}
+              </div>
               <div className="flex-1">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-gray-800">
-                    {reminder.caseName}
-                  </h3>
-                  <span className="text-sm flex items-center gap-1">
-                    <Calendar size={14} /> {reminder.dueDate}
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                      {reminder.caseName}
+                      {reminder.isToday && (
+                        <span className="text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full">
+                          TODAY
+                        </span>
+                      )}
+                      {reminder.isOverdue && (
+                        <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
+                          OVERDUE
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                      Case: {reminder.caseNumber} • {reminder.caseType}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteReminder(reminder._id)}
+                    disabled={isDeleting}
+                    className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+                    title="Delete reminder"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                <p className="text-sm mt-2 text-gray-700">{reminder.message}</p>
+
+                <div className="flex items-center justify-between mt-3 text-xs">
+                  <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1 text-gray-600">
+                      <Calendar size={13} /> {reminder.dueDate}
+                    </span>
+                    <span className="flex items-center gap-1 text-gray-600">
+                      <Clock size={13} />
+                      {reminder.isOverdue
+                        ? `${reminder.daysUntil} days overdue`
+                        : reminder.isToday
+                        ? "Today"
+                        : `${reminder.daysUntil} days left`}
+                    </span>
+                  </div>
+                  <span className="px-2 py-1 bg-white/50 rounded-md font-medium">
+                    {reminder.type}
                   </span>
                 </div>
-                <p className="text-sm mt-1">{reminder.message}</p>
-                <p className="text-xs mt-1 italic">
-                  {reminder.type} - Stage: {reminder.stage}
+
+                <p className="text-xs mt-2 text-gray-500 italic">
+                  Stage: {reminder.stage}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}

@@ -11,11 +11,26 @@ import {
 const SecretaryDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-  // Fetch dashboard stats and activity logs
-  const { data: statsData, isLoading: statsLoading } =
-    useGetDashboardStatsQuery();
-  const { data: activityData, isLoading: activityLoading } =
-    useGetActivityLogsQuery();
+  // Fetch dashboard stats and activity logs with auto-refresh every 30 seconds
+  const {
+    data: statsData,
+    isLoading: statsLoading,
+    error: statsError,
+    refetch: refetchStats,
+  } = useGetDashboardStatsQuery(undefined, {
+    pollingInterval: 30000, // Auto-refresh every 30 seconds
+    skipPollingIfUnfocused: true,
+    refetchOnMountOrArgChange: true,
+  });
+  const {
+    data: activityData,
+    isLoading: activityLoading,
+    error: activityError,
+  } = useGetActivityLogsQuery(undefined, {
+    pollingInterval: 30000, // Auto-refresh every 30 seconds
+    skipPollingIfUnfocused: true,
+    refetchOnMountOrArgChange: true,
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,11 +86,14 @@ const SecretaryDashboard = () => {
         { title: "Upcoming Hearings", value: 0, icon: <Calendar size={28} /> },
       ];
 
-  const caseTypeData = statsData?.caseTypeData || [
-    { name: "Civil", value: 0 },
-    { name: "Criminal", value: 0 },
-    { name: "Family", value: 0 },
-  ];
+  const caseTypeData =
+    statsData?.caseTypeData && statsData.caseTypeData.length > 0
+      ? statsData.caseTypeData
+      : [
+          { name: "Civil", value: 0 },
+          { name: "Criminal", value: 0 },
+          { name: "Family", value: 0 },
+        ];
 
   const pendingDocsData = statsData?.pendingDocsData || [
     { status: "Not Started", count: 0 },
@@ -108,11 +126,34 @@ const SecretaryDashboard = () => {
       {(statsLoading || activityLoading) && (
         <div className="text-center py-10">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+          <p className="text-gray-600 mt-4">Loading dashboard data...</p>
+        </div>
+      )}
+
+      {/* Error State */}
+      {(statsError || activityError) && !statsLoading && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+          <h3 className="text-red-800 font-semibold mb-2">
+            Error Loading Dashboard
+          </h3>
+          <p className="text-red-600">
+            {statsError?.data?.message ||
+              activityError?.data?.message ||
+              "Unable to fetch dashboard data. Please try again."}
+          </p>
+          <button
+            onClick={() => {
+              refetchStats();
+            }}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+          >
+            Retry
+          </button>
         </div>
       )}
 
       {/* Dashboard Content */}
-      {!statsLoading && (
+      {!statsLoading && !statsError && (
         <div className="space-y-10 pb-10">
           <StatCards metrics={metrics} />
 
@@ -123,9 +164,16 @@ const SecretaryDashboard = () => {
             />
           </div>
 
-          {!activityLoading && (
+          {!activityLoading && !activityError && (
             <div className="mt-8">
               <RecentActivity recentActivities={recentActivities} />
+            </div>
+          )}
+
+          {activityLoading && (
+            <div className="text-center py-6">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#fe9a00]"></div>
+              <p className="text-gray-600 mt-2">Loading recent activities...</p>
             </div>
           )}
         </div>

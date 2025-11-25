@@ -1,9 +1,10 @@
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { ChevronDown, LogOut, User, Briefcase, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearProfile, selectUserProfile } from "../../auth/authSlice";
 import { useLogoutMutation } from "../../auth/api/authApi";
+import { useGetDashboardStatsQuery } from "../api/lawyerApi";
 
 const TopBar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -13,6 +14,10 @@ const TopBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logout, { isLoading }] = useLogoutMutation();
+
+  // Fetch quick stats for topbar
+  const { data: statsData, isLoading: statsLoading } =
+    useGetDashboardStatsQuery();
 
   // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
@@ -66,26 +71,47 @@ const TopBar = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 h-16 sm:h-20
-      bg-gradient-to-r from-blue-50 to-indigo-50/90
+      bg-linear-to-r from-blue-50 to-indigo-50/90
       shadow-md border-b border-blue-100
       flex items-center justify-between
-      px-4 sm:px-6 md:px-10 md:z-[40]
+      px-4 sm:px-6 md:px-10 md:z-40
       transition-all duration-300 ease-in-out
       lg:left-${sidebarOpen ? "64" : "20"} lg:right-0`}
     >
       {/* Left Quick Stats */}
       <div
-        className={`flex items-center gap-6 sm:gap-8 ${
+        className={`flex items-center gap-4 sm:gap-6 ${
           sidebarOpen ? "ml-20 md:ml-[300px]" : "ml-14 md:ml-[130px]"
         }`}
       >
-        <div className="text-right">
-          <p className="text-xs text-slate-500">Active Cases</p>
-          <p className="text-lg font-semibold text-slate-800">24</p>
+        {/* Active Cases */}
+        <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
+          <Briefcase size={18} className="text-blue-600" />
+          <div className="text-left">
+            <p className="text-xs text-slate-500">Active Cases</p>
+            {statsLoading ? (
+              <div className="h-5 w-8 bg-slate-200 animate-pulse rounded"></div>
+            ) : (
+              <p className="text-lg font-semibold text-slate-800">
+                {statsData?.data?.totalAssigned || 0}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="text-right whitespace-nowrap">
-          <p className="text-xs text-slate-500">Today's Hearings</p>
-          <p className="text-lg font-semibold text-slate-800">3</p>
+
+        {/* Today's Hearings */}
+        <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
+          <Calendar size={18} className="text-amber-600" />
+          <div className="text-left whitespace-nowrap">
+            <p className="text-xs text-slate-500">Upcoming</p>
+            {statsLoading ? (
+              <div className="h-5 w-8 bg-slate-200 animate-pulse rounded"></div>
+            ) : (
+              <p className="text-lg font-semibold text-slate-800">
+                {statsData?.data?.upcomingHearings?.length || 0}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -138,7 +164,10 @@ const TopBar = () => {
             </div>
 
             <div className="py-2">
-              <Link to="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium">
+              <Link
+                to="/my-profile"
+                className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium"
+              >
                 <User size={16} /> My Profile
               </Link>
             </div>

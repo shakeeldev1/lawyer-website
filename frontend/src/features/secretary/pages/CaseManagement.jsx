@@ -6,6 +6,7 @@ import AddCase from "../components/cases/AddCase";
 import ViewCaseModal from "../components/cases/ViewCaseModal";
 import CaseDeleteModal from "../components/cases/CaseDeleteModal";
 import ArchiveCaseModal from "../components/cases/ArchiveCaseModal";
+import AddReminderModal from "../components/cases/AddReminderModal";
 import {
   useGetAllCasesQuery,
   useUpdateCaseMutation,
@@ -37,6 +38,7 @@ const CaseManagement = () => {
   const [viewCase, setViewCase] = useState(null);
   const [deleteCase, setdeleteCase] = useState(null);
   const [archiveCase, setarchiveCase] = useState(null);
+  const [reminderCase, setReminderCase] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -226,6 +228,7 @@ const CaseManagement = () => {
           onViewCase={handleViewCase}
           onDeleteCase={handleDeleteCase}
           onArchive={handleArchiveCase}
+          onAddReminder={(caseData) => setReminderCase(caseData)}
         />
       )}
 
@@ -243,6 +246,13 @@ const CaseManagement = () => {
         caseItem={archiveCase}
         onClose={() => setarchiveCase(null)}
         onConfirm={handleConfirmArchive}
+      />
+
+      {/* ADD REMINDER MODAL */}
+      <AddReminderModal
+        isOpen={!!reminderCase}
+        onClose={() => setReminderCase(null)}
+        caseData={reminderCase}
       />
 
       <AddCase

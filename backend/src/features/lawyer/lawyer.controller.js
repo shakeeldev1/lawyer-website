@@ -136,51 +136,215 @@ export const submitMemorandum = asyncHandler(async (req, res) => {
 });
 
 export const uploadMemorandumFile = asyncHandler(async (req, res) => {
-  const { stageIndex, content } = req.body;
+  try {
+    console.log("📝 Upload Memorandum Request:", {
+      caseId: req.params.id,
+      stageIndex: req.body.stageIndex,
+      hasFile: !!req.file,
+      userId: req.user?._id,
+    });
 
-  const caseData = await Case.findById(req.params.id);
+    let { stageIndex, content } = req.body;
 
-  if (!caseData) {
-    throw new customError("Case not found", 404);
+    if (stageIndex === undefined || stageIndex === null || stageIndex === "") {
+      throw new customError("Stage index is required", 400);
+    }
+
+    // Convert stageIndex to number
+    stageIndex = parseInt(stageIndex);
+    if (isNaN(stageIndex)) {
+      throw new customError("Stage index must be a valid number", 400);
+    }
+
+    const caseData = await Case.findById(req.params.id);
+
+    if (!caseData) {
+      throw new customError("Case not found", 404);
+    }
+
+    if (caseData.assignedLawyer?.toString() !== req.user._id.toString()) {
+      throw new customError("Not authorized to submit memorandum", 403);
+    }
+
+    console.log(
+      "📋 Case stages:",
+      caseData.stages.length,
+      "Stage index:",
+      stageIndex
+    );
+
+    if (!caseData.stages || caseData.stages.length === 0) {
+      throw new customError("Case has no stages", 400);
+    }
+
+    if (stageIndex < 0 || stageIndex >= caseData.stages.length) {
+      throw new customError(
+        `Stage ${stageIndex} not found. Case has ${caseData.stages.length} stage(s)`,
+        404
+      );
+    }
+
+    if (!req.file) {
+      throw new customError("No file uploaded", 400);
+    }
+
+    console.log(
+      "📄 Uploading memorandum file:",
+      req.file.originalname,
+      req.file.path
+    );
+
+    caseData.stages[stageIndex].memorandum = {
+      content: content || "",
+      fileUrl: req.file.path,
+      preparedBy: req.user._id,
+      preparedAt: new Date(),
+      status: "Pending",
+    };
+
+    caseData.status = "PendingApproval";
+
+    // Mark the stages path as modified for Mongoose
+    caseData.markModified("stages");
+
+    await caseData.save({ validateBeforeSave: false });
+    console.log("✅ Memorandum saved to database");
+
+    await ActivityLog.create({
+      caseId: caseData._id,
+      userId: req.user._id,
+      action: "MEMORANDUM_SUBMITTED",
+      description: `Memorandum file submitted for stage ${
+        parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Memorandum uploaded successfully",
+      data: caseData,
+    });
+  } catch (error) {
+    console.error("❌ Upload Memorandum Error:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      errors: error.errors,
+    });
+    throw error;
   }
+});
 
-  if (caseData.assignedLawyer?.toString() !== req.user._id.toString()) {
-    throw new customError("Not authorized to submit memorandum", 403);
+export const uploadCaseDocuments = asyncHandler(async (req, res) => {
+  try {
+    console.log("📤 Upload Documents Request:", {
+      caseId: req.params.id,
+      stageIndex: req.body.stageIndex,
+      filesCount: req.files?.length || 0,
+      userId: req.user?._id,
+    });
+
+    let { stageIndex } = req.body;
+
+    if (stageIndex === undefined || stageIndex === null || stageIndex === "") {
+      throw new customError("Stage index is required", 400);
+    }
+
+    // Convert stageIndex to number
+    stageIndex = parseInt(stageIndex);
+    if (isNaN(stageIndex)) {
+      throw new customError("Stage index must be a valid number", 400);
+    }
+
+    const caseData = await Case.findById(req.params.id);
+
+    if (!caseData) {
+      throw new customError("Case not found", 404);
+    }
+
+    if (caseData.assignedLawyer?.toString() !== req.user._id.toString()) {
+      throw new customError("Not authorized to upload documents", 403);
+    }
+
+    console.log(
+      "📋 Case stages:",
+      caseData.stages.length,
+      "Stage index:",
+      stageIndex
+    );
+
+    if (!caseData.stages || caseData.stages.length === 0) {
+      throw new customError("Case has no stages", 400);
+    }
+
+    if (stageIndex < 0 || stageIndex >= caseData.stages.length) {
+      throw new customError(
+        `Stage ${stageIndex} not found. Case has ${caseData.stages.length} stage(s)`,
+        404
+      );
+    }
+
+    if (!req.files || req.files.length === 0) {
+      throw new customError("No files uploaded", 400);
+    }
+
+    // Initialize documents array if it doesn't exist
+    if (!caseData.stages[stageIndex].documents) {
+      caseData.stages[stageIndex].documents = [];
+      console.log("📁 Initialized documents array for stage", stageIndex);
+    }
+
+    // Add each uploaded file to the stage documents
+    req.files.forEach((file) => {
+      console.log("📄 Processing file:", file.originalname, file.path);
+      const newDoc = {
+        name: file.originalname,
+        url: file.path,
+        uploadedBy: req.user._id,
+        uploadedAt: new Date(),
+      };
+      console.log("📄 Adding document:", newDoc);
+      caseData.stages[stageIndex].documents.push(newDoc);
+    });
+
+    console.log(
+      "💾 About to save. Stage documents count:",
+      caseData.stages[stageIndex].documents.length
+    );
+    console.log(
+      "💾 Stage structure:",
+      JSON.stringify(caseData.stages[stageIndex], null, 2)
+    );
+
+    // Mark the stages path as modified for Mongoose
+    caseData.markModified("stages");
+
+    await caseData.save({ validateBeforeSave: false });
+    console.log("✅ Documents saved to database");
+
+    await ActivityLog.create({
+      caseId: caseData._id,
+      userId: req.user._id,
+      action: "DOCUMENTS_UPLOADED",
+      description: `${req.files.length} document(s) uploaded for stage ${
+        parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Documents uploaded successfully",
+      data: caseData,
+    });
+  } catch (error) {
+    console.error("❌ Upload Documents Error:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      errors: error.errors,
+    });
+    throw error;
   }
-
-  if (!caseData.stages[stageIndex]) {
-    throw new customError("Stage not found", 404);
-  }
-
-  if (!req.file) {
-    throw new customError("No file uploaded", 400);
-  }
-
-  caseData.stages[stageIndex].memorandum = {
-    content: content || "",
-    fileUrl: req.file.path,
-    preparedBy: req.user._id,
-    preparedAt: new Date(),
-    status: "Pending",
-  };
-
-  caseData.status = "PendingApproval";
-  await caseData.save();
-
-  await ActivityLog.create({
-    caseId: caseData._id,
-    userId: req.user._id,
-    action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum file submitted for stage ${
-      parseInt(stageIndex) + 1
-    } of case ${caseData.caseNumber}`,
-  });
-
-  res.status(200).json({
-    success: true,
-    message: "Memorandum uploaded successfully",
-    data: caseData,
-  });
 });
 
 export const updateMemorandum = asyncHandler(async (req, res) => {
@@ -591,5 +755,167 @@ export const getAllLawyers = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: lawyers,
+  });
+});
+
+export const getNotifications = asyncHandler(async (req, res) => {
+  const { type, stage, status } = req.query;
+
+  // Get all cases for this lawyer
+  const cases = await Case.find({
+    $or: [{ assignedLawyer: req.user._id }, { approvingLawyer: req.user._id }],
+    archived: false,
+  })
+    .populate("clientId", "name")
+    .populate("assignedLawyer", "name")
+    .populate("approvingLawyer", "name")
+    .sort({ updatedAt: -1 });
+
+  const notifications = [];
+  let notificationId = 1;
+
+  for (const caseData of cases) {
+    // New Assignment Notifications
+    if (
+      caseData.status === "Assigned" &&
+      caseData.assignedLawyer?._id.toString() === req.user._id.toString()
+    ) {
+      notifications.push({
+        id: notificationId++,
+        caseId: caseData._id,
+        caseNumber: caseData.caseNumber,
+        clientName: caseData.clientId?.name || "Unknown",
+        caseType: caseData.caseType,
+        stage: "Main",
+        type: "New Assignment",
+        message: "New client case assigned for your review.",
+        status: "unread",
+        timestamp: caseData.assignedAt || caseData.createdAt,
+      });
+    }
+
+    // Process each stage for various notifications
+    for (const [index, stage] of caseData.stages.entries()) {
+      const stageName = stage.stageType || `Stage ${index + 1}`;
+
+      // Upload Reminder - if memorandum is not submitted or rejected
+      if (
+        caseData.assignedLawyer?._id.toString() === req.user._id.toString() &&
+        (!stage.memorandum ||
+          stage.memorandum.status === "Rejected" ||
+          stage.status === "Pending")
+      ) {
+        notifications.push({
+          id: notificationId++,
+          caseId: caseData._id,
+          caseNumber: caseData.caseNumber,
+          clientName: caseData.clientId?.name || "Unknown",
+          caseType: caseData.caseType,
+          stage: stageName,
+          type: "Upload Reminder",
+          message: `Upload memorandum for ${stageName} stage.`,
+          status: stage.memorandum?.status === "Rejected" ? "unread" : "read",
+          timestamp: stage.memorandum?.preparedAt || caseData.updatedAt,
+        });
+      }
+
+      // Ragab Feedback - if memorandum was approved or rejected
+      if (
+        caseData.assignedLawyer?._id.toString() === req.user._id.toString() &&
+        stage.memorandum &&
+        (stage.memorandum.status === "Approved" ||
+          stage.memorandum.status === "Rejected")
+      ) {
+        const isApproved = stage.memorandum.status === "Approved";
+        notifications.push({
+          id: notificationId++,
+          caseId: caseData._id,
+          caseNumber: caseData.caseNumber,
+          clientName: caseData.clientId?.name || "Unknown",
+          caseType: caseData.caseType,
+          stage: stageName,
+          type: "Ragab Feedback",
+          message: isApproved
+            ? `Ragab approved your memorandum for ${stageName} stage.`
+            : `Ragab requested changes to your ${stageName} memorandum.`,
+          status: isApproved ? "read" : "unread",
+          timestamp: stage.memorandum.approvedAt || caseData.updatedAt,
+          feedback: stage.memorandum.feedback,
+        });
+      }
+
+      // Hearing Reminders - upcoming hearings within 7 days
+      if (stage.hearingDate) {
+        const hearingDate = new Date(stage.hearingDate);
+        const today = new Date();
+        const daysUntil = Math.ceil(
+          (hearingDate - today) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysUntil >= 0 && daysUntil <= 7) {
+          notifications.push({
+            id: notificationId++,
+            caseId: caseData._id,
+            caseNumber: caseData.caseNumber,
+            clientName: caseData.clientId?.name || "Unknown",
+            caseType: caseData.caseType,
+            stage: stageName,
+            type: "Hearing Reminder",
+            message:
+              daysUntil === 0
+                ? `Hearing for ${stageName} stage is today!`
+                : `Hearing for ${stageName} stage in ${daysUntil} day${
+                    daysUntil > 1 ? "s" : ""
+                  }.`,
+            status: daysUntil <= 3 ? "unread" : "read",
+            timestamp: hearingDate,
+            daysUntil,
+          });
+        }
+      }
+    }
+  }
+
+  // Apply filters
+  let filteredNotifications = notifications;
+
+  if (type) {
+    filteredNotifications = filteredNotifications.filter(
+      (n) => n.type === type
+    );
+  }
+
+  if (stage) {
+    filteredNotifications = filteredNotifications.filter(
+      (n) => n.stage === stage
+    );
+  }
+
+  if (status) {
+    filteredNotifications = filteredNotifications.filter(
+      (n) => n.status === status
+    );
+  }
+
+  // Sort by timestamp (newest first)
+  filteredNotifications.sort(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+  );
+
+  res.status(200).json({
+    success: true,
+    data: filteredNotifications,
+    total: filteredNotifications.length,
+    unreadCount: filteredNotifications.filter((n) => n.status === "unread")
+      .length,
+  });
+});
+
+export const markNotificationAsRead = asyncHandler(async (req, res) => {
+  // Since notifications are generated dynamically, we'll just return success
+  // In a real-world scenario, you'd store notification read status in the database
+  res.status(200).json({
+    success: true,
+    message: "Notification marked as read",
   });
 });
