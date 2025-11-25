@@ -1,5 +1,5 @@
 import React from "react";
-import { Archive, Eye, Trash2, Edit } from "lucide-react";
+import { Archive, Eye, Trash2, Edit, Bell } from "lucide-react";
 
 const CaseTable = ({
   cases,
@@ -8,6 +8,7 @@ const CaseTable = ({
   onEditCase,
   onViewCase,
   onDeleteCase,
+  onAddReminder,
 }) => {
   // Badge helpers
   const getStageBadge = (stage) => {
@@ -66,7 +67,7 @@ const CaseTable = ({
       {/* Desktop/Tablet Table */}
       <div className="overflow-x-auto rounded-2xl custom-scrollbar">
         <table className="text-sm">
-          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white uppercase tracking-wide text-xs font-semibold whitespace-nowrap">
+          <thead className="bg-linear-to-r from-slate-800 to-slate-700 text-white uppercase tracking-wide text-xs font-semibold whitespace-nowrap">
             <tr>
               <th className="px-6 py-4 text-left">Case ID</th>
               <th className="px-6 py-4 text-left">Client</th>
@@ -125,14 +126,23 @@ const CaseTable = ({
                     <button
                       onClick={() => onViewCase?.(c.id)}
                       className="flex items-center gap-1 bg-[#24344f] text-white px-2 py-1.5 rounded hover:bg-indigo-700"
+                      title="View case"
                     >
                       <Eye size={16} />
                     </button>
                     <button
                       onClick={() => onEditCase?.(c.id)}
                       className="flex items-center gap-1 bg-green-600 text-white px-2 py-1.5 rounded hover:bg-green-700"
+                      title="Edit case"
                     >
                       <Edit size={16} />
+                    </button>
+                    <button
+                      onClick={() => onAddReminder?.(c)}
+                      className="flex items-center gap-1 bg-[#fe9a00] text-white px-2 py-1.5 rounded hover:bg-[#ff8c00]"
+                      title="Add reminder"
+                    >
+                      <Bell size={16} />
                     </button>
                     <button
                       onClick={() => onArchive?.(c.id)}
@@ -151,6 +161,7 @@ const CaseTable = ({
                     <button
                       onClick={() => onDeleteCase?.(c.id)}
                       className="flex items-center gap-1 bg-red-500 text-white px-2 py-1.5 rounded hover:bg-red-700"
+                      title="Delete case"
                     >
                       <Trash2 size={16} />
                     </button>

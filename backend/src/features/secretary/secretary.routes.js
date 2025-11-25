@@ -26,6 +26,11 @@ import {
   uploadStageDocumentsWithFiles,
   uploadCourtSubmissionProof,
   getReminders,
+  getCaseStatsByStatus,
+  getRecentCases,
+  getQuickStats,
+  createReminder,
+  deleteReminder,
 } from "./secretary.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import {
@@ -74,8 +79,13 @@ router.post("/cases/:id/notes", addCaseNote);
 
 router.get("/archive", getArchivedCases);
 router.get("/reminders", getReminders);
+router.post("/reminders", createReminder);
+router.delete("/reminders/:id", deleteReminder);
 router.get("/activity-logs", getActivityLogs);
 router.get("/dashboard/stats", getDashboardStats);
+router.get("/dashboard/case-stats", getCaseStatsByStatus);
+router.get("/dashboard/recent-cases", getRecentCases);
+router.get("/dashboard/quick-stats", getQuickStats);
 router.get("/lawyers", getLawyers);
 
 export default router;

@@ -5,7 +5,7 @@ import DeleteModal from "../components/LawyerCases/DeleteModal";
 import CaseDetail from "../components/LawyerCases/CaseDetail";
 import DocumentsTab from "../components/LawyerCases/DocumentsTab";
 import MemorandumTab from "../components/LawyerCases/MemorandumTab";
-import { useLawyerCasesQuery } from "../api/lawyerApi";
+import { useGetAssignedCasesQuery } from "../api/lawyerApi";
 
 export default function MyCases() {
   const [cases, setCases] = useState([]);
@@ -17,25 +17,47 @@ export default function MyCases() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
 
-  const { data, isLoading, isError } = useLawyerCasesQuery(search);
+  const { data, isLoading, isError } = useGetAssignedCasesQuery({
+    search: search || undefined,
+    limit: 50, // Get more cases for better UX
+  });
 
   useEffect(() => {
     if (data?.data) {
-      const mapped = data.data.map((c) => ({
-        ...c,
-        id: c._id,
-        clientName: c.name || c.clientId?.name || "—",
-        clientEmail: c.email || c.clientId?.email || "—",
-        clientPhone: c.contactNumber || c.clientId?.contactNumber || "—",
-        assignedStage: c.currentStage || 0,
-        stages: c.stages || [],
-        documents: c.documents || [],
-        memorandum: c.memorandum || {},
-        notes: c.notes || [],
-      }));
+      console.log("📊 Raw case data from API:", data.data[0]);
+      const mapped = data.data.map((c) => {
+        const mappedCase = {
+          ...c,
+          id: c._id || c.id,
+          _id: c._id || c.id, // Keep both for compatibility
+          clientName: c.clientId?.name || "—",
+          clientEmail: c.clientId?.email || "—",
+          clientPhone: c.clientId?.contactNumber || "—",
+          assignedStage: c.currentStage || 0,
+          currentStage: c.currentStage || 0, // Keep both
+          stages: c.stages || [],
+          notes: c.notes || [],
+          caseNumber: c.caseNumber,
+          caseType: c.caseType,
+          status: c.status,
+        };
+        return mappedCase;
+      });
+      console.log("📊 Mapped case:", mapped[0]);
       setCases(mapped);
+
+      // Update selectedCase if it's currently open and data has changed
+      if (selectedCase) {
+        const updatedCase = mapped.find(
+          (c) => c._id === selectedCase._id || c.id === selectedCase.id
+        );
+        if (updatedCase) {
+          console.log("🔄 Updating selected case with fresh data");
+          setSelectedCase(updatedCase);
+        }
+      }
     }
-  }, [data]);
+  }, [data, selectedCase]);
 
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
@@ -51,33 +73,44 @@ export default function MyCases() {
   }, []);
 
   const openCase = (c) => {
-    setSelectedCase({
-      ...c,
-      stages: c.stages || [],
-      documents: c.documents || [],
-      memorandum: c.memorandum || {},
-      notes: c.notes || [],
+    console.log("🔍 Opening case - Full object:", c);
+    console.log("🔍 Case details:", {
+      _id: c._id,
+      id: c.id,
+      caseNumber: c.caseNumber,
+      stagesLength: Array.isArray(c.stages) ? c.stages.length : "NOT ARRAY",
+      stagesValue: c.stages,
+      currentStage: c.currentStage,
+      assignedStage: c.assignedStage,
     });
+
+    // Ensure we have valid data
+    const validCase = {
+      ...c,
+      _id: c._id || c.id,
+      id: c.id || c._id,
+      stages: Array.isArray(c.stages) ? c.stages : [],
+      notes: Array.isArray(c.notes) ? c.notes : [],
+      currentStage:
+        typeof c.currentStage === "number"
+          ? c.currentStage
+          : typeof c.assignedStage === "number"
+          ? c.assignedStage
+          : 0,
+    };
+
+    console.log("✅ Validated case:", validCase);
+    setSelectedCase(validCase);
     setActiveTab("Details");
-    setSelectedStage(c.assignedStage || 0);
+    setSelectedStage(validCase.currentStage);
   };
 
   const closeCase = () => setSelectedCase(null);
 
-  const updateCaseMemorandum = (stage, updatedMemo) => {
-    if (!selectedCase) return;
-    setCases((prev) =>
-      prev.map((c) =>
-        c.id === selectedCase.id
-          ? { ...c, memorandum: { ...c.memorandum, [stage]: updatedMemo } }
-          : c
-      )
-    );
-    setSelectedCase((prev) => ({
-      ...prev,
-      memorandum: { ...prev.memorandum, [stage]: updatedMemo },
-    }));
-  };
+  // This function is no longer needed since we're using RTK Query cache invalidation
+  // const updateCaseMemorandum = (stage, updatedMemo) => {
+  //   // API will automatically refresh after mutation
+  // };
 
   const handleDeleteClick = (c) => {
     setCaseToDelete(c);
@@ -91,19 +124,33 @@ export default function MyCases() {
   };
 
   if (isLoading)
-    return <p className="text-center mt-20 text-slate-700 font-medium">Loading cases...</p>;
+    return (
+      <p className="text-center mt-20 text-slate-700 font-medium">
+        Loading cases...
+      </p>
+    );
   if (isError)
-    return <p className="text-center mt-20 text-red-500 font-medium">Error fetching cases. Please try again.</p>;
+    return (
+      <p className="text-center mt-20 text-red-500 font-medium">
+        Error fetching cases. Please try again.
+      </p>
+    );
 
   return (
-    <div className={`min-h-screen px-4 py-3 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}>
+    <div
+      className={`min-h-screen px-4 py-3 transition-all duration-300 ease-in-out ${
+        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+      }`}
+    >
       <div className="max-w-7xl mx-auto mt-20">
-
         <header className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">My Assigned Cases</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+              My Assigned Cases
+            </h1>
             <p className="text-sm md:text-base text-slate-600 mt-1">
-              Workspace for lawyers — review documents, manage workflow efficiently.
+              Workspace for lawyers — review documents, manage workflow
+              efficiently.
             </p>
           </div>
 
@@ -119,16 +166,24 @@ export default function MyCases() {
           </div>
         </header>
 
-        <CasesTable cases={cases} onOpen={openCase} onDelete={handleDeleteClick} />
+        <CasesTable
+          cases={cases}
+          onOpen={openCase}
+          onDelete={handleDeleteClick}
+        />
 
         {selectedCase && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60">
+          <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/60">
             <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transition-transform duration-300 scale-100 md:scale-100">
-
               {/* Header */}
-              <div className="flex justify-between items-start px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
-                <h2 className="font-bold text-xl md:text-2xl">{selectedCase.caseNumber}</h2>
-                <button onClick={closeCase} className="p-2 rounded hover:bg-slate-600 transition">
+              <div className="flex justify-between items-start px-6 py-4 bg-linear-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
+                <h2 className="font-bold text-xl md:text-2xl">
+                  {selectedCase.caseNumber}
+                </h2>
+                <button
+                  onClick={closeCase}
+                  className="p-2 rounded hover:bg-slate-600 transition"
+                >
                   <FiX size={24} />
                 </button>
               </div>
@@ -140,7 +195,11 @@ export default function MyCases() {
                     <button
                       key={t}
                       onClick={() => setActiveTab(t)}
-                      className={`pb-2 px-2 text-sm md:text-base font-medium transition ${activeTab === t ? "border-b-2 border-slate-800 text-slate-900" : "text-slate-500 hover:text-slate-800"}`}
+                      className={`pb-2 px-2 text-sm md:text-base font-medium transition ${
+                        activeTab === t
+                          ? "border-b-2 border-slate-800 text-slate-900"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
                     >
                       {t}
                     </button>
@@ -150,16 +209,29 @@ export default function MyCases() {
 
               {/* Tab Content */}
               <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                {activeTab === "Details" && <CaseDetail selectedCase={selectedCase} />}
-                {activeTab === "Documents" && <DocumentsTab selectedCase={selectedCase} selectedStage={selectedStage} />}
+                {activeTab === "Details" && (
+                  <CaseDetail selectedCase={selectedCase} />
+                )}
+                {activeTab === "Documents" && (
+                  <DocumentsTab
+                    selectedCase={selectedCase}
+                    selectedStage={selectedStage}
+                  />
+                )}
                 {activeTab === "Memorandum" && (
-                  <MemorandumTab selectedCase={selectedCase} selectedStage={selectedStage} updateCaseMemorandum={updateCaseMemorandum} />
+                  <MemorandumTab
+                    selectedCase={selectedCase}
+                    selectedStage={selectedStage}
+                  />
                 )}
               </div>
 
               {/* Footer */}
               <div className="flex justify-end px-6 py-4 border-t sticky bottom-0 bg-white">
-                <button onClick={closeCase} className="px-5 py-2 rounded-md border text-slate-800 hover:bg-slate-50 transition font-medium">
+                <button
+                  onClick={closeCase}
+                  className="px-5 py-2 rounded-md border text-slate-800 hover:bg-slate-50 transition font-medium"
+                >
                   Close
                 </button>
               </div>

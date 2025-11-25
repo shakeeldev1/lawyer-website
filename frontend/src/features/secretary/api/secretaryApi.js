@@ -7,7 +7,16 @@ export const secretaryApi = createApi({
     baseUrl: `${BACKEND_URL}/api/secretary`,
     credentials: "include",
   }),
-  tagTypes: ["Clients", "Cases", "Archive", "ActivityLogs", "DashboardStats"],
+  keepUnusedDataFor: 60, // Keep data for 60 seconds
+  refetchOnMountOrArgChange: true,
+  tagTypes: [
+    "Clients",
+    "Cases",
+    "Archive",
+    "ActivityLogs",
+    "DashboardStats",
+    "Reminders",
+  ],
   endpoints: (builder) => ({
     // ==================== CLIENT ENDPOINTS ====================
     createClient: builder.mutation({
@@ -211,23 +220,65 @@ export const secretaryApi = createApi({
       ],
     }),
     getActivityLogs: builder.query({
-      query: () => ({
-        url: "/activity-logs",
-        method: "GET",
-      }),
+      query: (params) => {
+        const { page = 1, limit = 20 } = params || {};
+        return {
+          url: `/activity-logs?page=${page}&limit=${limit}`,
+          method: "GET",
+        };
+      },
       providesTags: ["ActivityLogs"],
+      transformResponse: (response) => response,
     }),
     getReminders: builder.query({
       query: () => ({
         url: "/reminders",
         method: "GET",
       }),
+      providesTags: ["Reminders"],
+    }),
+    createReminder: builder.mutation({
+      query: (reminderData) => ({
+        url: "/reminders",
+        method: "POST",
+        body: reminderData,
+      }),
+      invalidatesTags: ["Reminders", "ActivityLogs"],
+    }),
+    deleteReminder: builder.mutation({
+      query: (id) => ({
+        url: `/reminders/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Reminders", "ActivityLogs"],
     }),
 
     // ==================== DASHBOARD & LAWYERS ====================
     getDashboardStats: builder.query({
       query: () => ({
         url: "/dashboard/stats",
+        method: "GET",
+      }),
+      providesTags: ["DashboardStats"],
+      transformResponse: (response) => response,
+    }),
+    getCaseStatsByStatus: builder.query({
+      query: () => ({
+        url: "/dashboard/case-stats",
+        method: "GET",
+      }),
+      providesTags: ["DashboardStats"],
+    }),
+    getRecentCases: builder.query({
+      query: (limit = 5) => ({
+        url: `/dashboard/recent-cases?limit=${limit}`,
+        method: "GET",
+      }),
+      providesTags: ["Cases"],
+    }),
+    getQuickStats: builder.query({
+      query: () => ({
+        url: "/dashboard/quick-stats",
         method: "GET",
       }),
       providesTags: ["DashboardStats"],
@@ -277,8 +328,13 @@ export const {
   useAddCaseNoteMutation,
   useGetActivityLogsQuery,
   useGetRemindersQuery,
+  useCreateReminderMutation,
+  useDeleteReminderMutation,
 
   // Dashboard & lawyers hooks
   useGetDashboardStatsQuery,
+  useGetCaseStatsByStatusQuery,
+  useGetRecentCasesQuery,
+  useGetQuickStatsQuery,
   useGetLawyersQuery,
 } = secretaryApi;

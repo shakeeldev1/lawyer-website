@@ -5,6 +5,7 @@ import {
   acceptCase,
   submitMemorandum,
   uploadMemorandumFile,
+  uploadCaseDocuments,
   updateMemorandum,
   approveMemorandum,
   rejectMemorandum,
@@ -16,9 +17,14 @@ import {
   getMyReminders,
   getCaseTimeline,
   getAllLawyers,
+  getNotifications,
+  markNotificationAsRead,
 } from "./lawyer.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
-import { uploadMemorandum } from "../../middleware/upload.js";
+import {
+  uploadMemorandum,
+  uploadCaseDocuments as uploadDocsMulter,
+} from "../../middleware/upload.js";
 
 const router = express.Router();
 
@@ -33,6 +39,11 @@ router.post(
   uploadMemorandum.single("memorandum"),
   uploadMemorandumFile
 );
+router.post(
+  "/cases/:id/documents/upload",
+  uploadDocsMulter.array("documents", 10),
+  uploadCaseDocuments
+);
 router.put("/cases/:id/memorandum", updateMemorandum);
 router.post("/cases/:id/memorandum/approve", approveMemorandum);
 router.post("/cases/:id/memorandum/reject", rejectMemorandum);
@@ -45,5 +56,7 @@ router.get("/hearings", getUpcomingHearings);
 router.get("/reminders", getMyReminders);
 router.get("/dashboard/stats", getDashboardStats);
 router.get("/all-lawyers", getAllLawyers);
+router.get("/notifications", getNotifications);
+router.post("/notifications/:id/read", markNotificationAsRead);
 
 export default router;
