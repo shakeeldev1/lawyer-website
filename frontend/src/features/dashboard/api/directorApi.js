@@ -59,21 +59,41 @@ export const directorApi = createApi({
             query: (search = "") => ({
                 url: `/cases?search=${search}`,
                 method: 'GET',
-            })
+            }),
+            invalidatesTags: ["Users"],
         }),
 
         getAllArchieve: builder.query({
             query: (search) => ({
                 url: `/director-archive?search=${encodeURIComponent(search)}`,
                 method: 'GET'
-            })
+            }),
+            invalidatesTags: ["Users"],
         }),
 
         getAllReminders: builder.query({
             query: () => ({
                 url: `/reminders`,
                 method: "GET"
-            })
+            }),
+            invalidatesTags: ["Users"],
+        }),
+
+        getPendingSignature: builder.query({
+            query: () => ({
+                url: `/getPendingSignature`,
+                method: "GET"
+            }),
+            invalidatesTags: ["Users"],
+        }),
+
+        updateStatusReadyForSubmission: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `/updateStatusReadyForSubmission/${id}`,
+                method: "PUT",
+                body: data,
+            }),
+            invalidatesTags: ["Users"],
         }),
     }),
 });
@@ -87,4 +107,6 @@ export const {
     useGetAllCasesQuery,
     useGetAllArchieveQuery,
     useGetAllRemindersQuery,
+    useGetPendingSignatureQuery,
+    useUpdateStatusReadyForSubmissionMutation,
 } = directorApi;

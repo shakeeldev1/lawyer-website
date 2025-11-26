@@ -6,11 +6,12 @@ import FeedbackModal from "../components/DashboardFinalApproval/FeedbackModal";
 import ConfirmationModal from "../components/DashboardFinalApproval/ConfirmationModal";
 import FinalApprovalHeader from "../components/DashboardFinalApproval/FinalApprovalHeader";
 import DeleteConfirmationModal from "../components/DashboardFinalApproval/DeleteConfirmationModal";
-import { useGetAllCasesQuery } from "../api/directorApi";
+import { useGetPendingSignatureQuery, useUpdateStatusReadyForSubmissionMutation } from "../api/directorApi";
 
 const FinalApprovals = () => {
-  const { data, isLoading, isError } = useGetAllCasesQuery();
+  const { data, isLoading, isError } = useGetPendingSignatureQuery();
   const allCases = data?.data || [];
+  const [updateStatusReadyForSubmission] = useUpdateStatusReadyForSubmissionMutation();
 
   const [selectedCase, setSelectedCase] = useState(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -27,13 +28,8 @@ const FinalApprovals = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Filter cases that require final approval
-  const pendingCases = allCases.filter((c) =>
-    ["Draft", "Pending Review"].includes(c.status)
-  );
-
   // Apply search filter
-  const filteredCases = pendingCases.filter(
+  const filteredCases = allCases.filter(
     (c) =>
       c.caseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.clientId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,12 +37,18 @@ const FinalApprovals = () => {
       c.stages?.some((s) => s.title.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleApprove = (caseItem) => {
-    // TODO: call API to approve case
-    setConfirmation(
-      `✅ Case ${caseItem.caseNumber} has been approved and digitally signed.`
-    );
-    setSelectedCase(null);
+  const handleApprove = async (caseItem) => {
+    try {
+      const res = await updateStatusReadyForSubmission({ id: caseItem._id, data: { status: "ReadyForSubmission" } });
+      console.log("Update response:", res);
+      setConfirmation(
+        `${res.data?.success ? "✅" : "❌"} Case ${caseItem.caseNumber} approved for submission.`
+      );
+      setSelectedCase(null);
+    } catch (error) {
+      console.error("Error approving case:", error);
+      setConfirmation(` Failed to approve case ${caseItem.caseNumber}.`);
+    }
   };
 
   const handleRequestChanges = (caseItem) => {
@@ -83,9 +85,8 @@ const FinalApprovals = () => {
 
   return (
     <div
-      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
-      }`}
+      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+        }`}
     >
       {/* Header */}
       <FinalApprovalHeader onSearch={setSearchTerm} />
