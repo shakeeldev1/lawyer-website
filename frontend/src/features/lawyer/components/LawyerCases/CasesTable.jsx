@@ -49,12 +49,32 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
     [mappedCases, search, filterStatus]
   );
 
-  // ▌ SIDEBAR RESIZE HANDLING
-  useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // ✅ Sync with sidebar state
+   useEffect(() => {
+     const handleResize = () => {
+       const desktop = window.innerWidth >= 1024;
+       setSidebarOpen(desktop);
+     };
+ 
+     const handleSidebarToggle = () => {
+       // Listen for sidebar state changes from the sidebar component
+       const sidebar = document.querySelector("aside");
+       if (sidebar) {
+         const isOpen = sidebar.classList.contains("w-64");
+         setSidebarOpen(isOpen);
+       }
+     };
+ 
+     window.addEventListener("resize", handleResize);
+ 
+     // Check sidebar state periodically (you can use a better state management approach)
+     const interval = setInterval(handleSidebarToggle, 100);
+ 
+     return () => {
+       window.removeEventListener("resize", handleResize);
+       clearInterval(interval);
+     };
+   }, []);
 
   // ▌ DATE FORMATTER
   const formatDate = (iso) => (iso ? new Date(iso).toLocaleString() : "—");
@@ -81,7 +101,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
     );
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 md:px-4">
       {/* Search & Filter */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 p-4 border-b border-gray-200 bg-gray-50">
         <div className="relative w-full md:w-1/3">
@@ -111,7 +131,13 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+        <div
+      className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
+    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
+  `}
+    >
+      {/* ✅ Responsive container width based on sidebar */}
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse">
         <table className="w-full min-w-[1000px] text-left border-collapse">
           <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
             <tr>
@@ -200,6 +226,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

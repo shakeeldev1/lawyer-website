@@ -124,7 +124,7 @@ const RemindersPage = () => {
   return (
     <div
       className={`min-h-screen
-        px-3 sm:px-4  border-2 md:px-6 lg:px-2
+        px-3 sm:px-4 md:px-6 lg:px-2
         py-3 sm:py-4 md:py-5 
         transition-all duration-300 ease-in-out
         ${sidebarOpen ? " md:ml-64 lg:ml-64" : "lg:ml-20 md:ml-15"}`}

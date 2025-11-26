@@ -87,7 +87,7 @@ const SecretaryArchiveCases = () => {
       </div>
 
       {/* Search */}
-      <div className="relative mb-8 w-full max-w-md mx-auto md:mx-0 shadow-[#162030] rounded-full shadow-md">
+      <div className="relative mb-8 w-full max-w-md mx-auto md:mx-0  rounded-full">
         <Search className="absolute left-3 top-3 text-slate-500" size={20} />
         <input
           type="text"
