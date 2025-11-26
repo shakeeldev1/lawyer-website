@@ -102,13 +102,14 @@ const caseSchema = new mongoose.Schema(
     archived: { type: Boolean, default: false },
     archivedAt: Date,
     archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    notes: [
+    modificationRequests: [
       {
-        text: String,
-        addedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        addedAt: { type: Date, default: Date.now },
-      },
+        requestedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        note: String,
+        requestedAt: { type: Date, default: Date.now },
+      }
     ],
+
   },
   { timestamps: true }
 );

@@ -19,6 +19,8 @@ import {
   getAllLawyers,
   getNotifications,
   markNotificationAsRead,
+  updateStatusPendingSignature,
+  requestModificationBAL,
 } from "./lawyer.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import {
@@ -51,6 +53,8 @@ router.post("/cases/:id/notes", addCaseNote);
 router.get("/cases/:id/timeline", getCaseTimeline);
 
 router.get("/pending-approvals", getPendingApprovals);
+router.post("/pending-approvals/:id", updateStatusPendingSignature);
+router.post("/request-modification/:id", requestModificationBAL);
 router.get("/archive", getMyArchive);
 router.get("/hearings", getUpcomingHearings);
 router.get("/reminders", getMyReminders);
