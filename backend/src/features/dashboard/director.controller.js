@@ -183,3 +183,57 @@ export const getAllCases = asyncHandler(async (req, res) => {
     currentPage: page,
   });
 });
+
+export const getPendingSignature = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const cases = await Case.find({
+    // approvingLawyer: req.user._id,
+    status: "PendingSignature",
+    archived: false,
+  })
+    .populate("clientId", "name contactNumber")
+    .populate("assignedLawyer", "name email")
+    .populate("secretary", "name email")
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .sort({ updatedAt: -1 });
+
+  const count = await Case.countDocuments({
+    approvingLawyer: req.user._id,
+    status: "PendingApproval",
+    archived: false,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: cases,
+    totalPages: Math.ceil(count / limit),
+    currentPage: page,
+  });
+});
+
+export const updateStatusReadyForSubmission = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+  caseData.status = req.body.status || "ReadyForSubmission";
+  await caseData.save();
+  res.status(200).json({
+    success: true,
+    message: "Case status updated to Pending Signature",
+    data: caseData,
+  });
+})
+
+export const deleteCase = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+  await Case.findByIdAndDelete(req.params.id);
+  res.status(200).json({
+    success: true,
+    message: "Case deleted successfully",
+  });
+});

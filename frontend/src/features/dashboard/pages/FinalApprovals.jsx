@@ -6,17 +6,25 @@ import FeedbackModal from "../components/DashboardFinalApproval/FeedbackModal";
 import ConfirmationModal from "../components/DashboardFinalApproval/ConfirmationModal";
 import FinalApprovalHeader from "../components/DashboardFinalApproval/FinalApprovalHeader";
 import DeleteConfirmationModal from "../components/DashboardFinalApproval/DeleteConfirmationModal";
-import { useGetAllCasesQuery } from "../api/directorApi";
+import {
+  useDeleteCaseMutation,
+  useGetPendingSignatureQuery,
+  useUpdateStatusReadyForSubmissionMutation,
+} from "../api/directorApi";
 
 const FinalApprovals = () => {
-  const { data, isLoading, isError } = useGetAllCasesQuery();
+  const { data, isLoading, isError,refetch } = useGetPendingSignatureQuery();
   const allCases = data?.data || [];
+
+  const [updateStatusReadyForSubmission] = useUpdateStatusReadyForSubmissionMutation();
+  const [deleteCaseMutation] = useDeleteCaseMutation(); // renamed to avoid conflict
 
   const [selectedCase, setSelectedCase] = useState(null);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [confirmation, setConfirmation] = useState("");
-  const [deleteCase, setDeleteCase] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [deleteCaseModal, setDeleteCaseModal] = useState(null); // renamed modal state
 
   // Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
@@ -45,13 +53,8 @@ const FinalApprovals = () => {
      };
    }, []);
 
-  // Filter cases that require final approval
-  const pendingCases = allCases.filter((c) =>
-    ["Draft", "Pending Review"].includes(c.status)
-  );
-
   // Apply search filter
-  const filteredCases = pendingCases.filter(
+  const filteredCases = allCases.filter(
     (c) =>
       c.caseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.clientId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,12 +62,21 @@ const FinalApprovals = () => {
       c.stages?.some((s) => s.title.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleApprove = (caseItem) => {
-    // TODO: call API to approve case
-    setConfirmation(
-      `✅ Case ${caseItem.caseNumber} has been approved and digitally signed.`
-    );
-    setSelectedCase(null);
+  const handleApprove = async (caseItem) => {
+    try {
+      const res = await updateStatusReadyForSubmission({
+        id: caseItem._id,
+        data: { status: "ReadyForSubmission" },
+      });
+      console.log("Update response:", res);
+      setConfirmation(
+        `${res.data?.success ? "✅" : "❌"} Case ${caseItem.caseNumber} approved for submission.`
+      );
+      setSelectedCase(null);
+    } catch (error) {
+      console.error("Error approving case:", error);
+      setConfirmation(` Failed to approve case ${caseItem.caseNumber}.`);
+    }
   };
 
   const handleRequestChanges = (caseItem) => {
@@ -73,7 +85,6 @@ const FinalApprovals = () => {
   };
 
   const submitFeedback = (feedbackText) => {
-    // TODO: call API to submit feedback
     setConfirmation(
       `🔁 Case ${selectedCase.caseNumber} returned for changes with feedback.`
     );
@@ -81,11 +92,23 @@ const FinalApprovals = () => {
     setSelectedCase(null);
   };
 
-  const confirmDelete = (caseItem) => {
-    // TODO: call API to delete case
-    setConfirmation(`🗑️ Case ${caseItem.caseNumber} deleted successfully.`);
-    setDeleteCase(null);
+  // ================= Delete Function =================
+  const confirmDelete = async (caseItem) => {
+    if (!caseItem) return; // safeguard
+    try {
+      const res = await deleteCaseMutation(caseItem._id);
+      console.log("Delete response:", res);
+      setConfirmation(
+        `${res.data?.success ? "🗑️" : "❌"} Case ${caseItem.caseNumber} deleted successfully.`
+      );
+      setDeleteCaseModal(null);
+    } catch (error) {
+      console.error(error);
+      setConfirmation(`❌ Failed to delete case ${caseItem.caseNumber}.`);
+      setDeleteCaseModal(null);
+    }
   };
+
 
   if (isLoading)
     return (
@@ -101,9 +124,8 @@ const FinalApprovals = () => {
 
   return (
     <div
-      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
-      }`}
+      className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+        }`}
     >
       {/* Header */}
       <FinalApprovalHeader onSearch={setSearchTerm} />
@@ -112,7 +134,7 @@ const FinalApprovals = () => {
       <FinalApprovalTable
         cases={filteredCases}
         onView={setSelectedCase}
-        onDelete={(c) => setDeleteCase(c)}
+        onDelete={(c) => setDeleteCaseModal(c)} // open modal with correct case
       />
 
       {/* Modals */}
@@ -132,13 +154,14 @@ const FinalApprovals = () => {
         />
       )}
 
-      {deleteCase && (
+      {deleteCaseModal && (
         <DeleteConfirmationModal
-          caseItem={deleteCase}
-          onCancel={() => setDeleteCase(null)}
-          onConfirm={confirmDelete}
+          caseItem={deleteCaseModal}       // pass correct case
+          onCancel={() => setDeleteCaseModal(null)}
+          onConfirm={(caseItem) => confirmDelete(caseItem)} // pass caseItem here
         />
       )}
+
 
       {confirmation && (
         <ConfirmationModal

@@ -529,9 +529,7 @@ export const updateStatusPendingSignature = asyncHandler(async (req, res) => {
 })
 
 export const requestModificationBAL = asyncHandler(async (req, res) => {
-  console.log("api is running....");
   const { note } = req.body;
-  console.log("body data....",req.params.id, note);
   const caseData = await Case.findById(req.params.id);
   if (!caseData) {
     throw new customError("Case not found", 404);
