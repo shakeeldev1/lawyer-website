@@ -3,6 +3,8 @@ import React from "react";
 import { Eye, Trash2 } from "lucide-react";
 
 const FinalApprovalTable = ({ cases, onView, onDelete }) => {
+  console.log(cases);
+
   return (
     <div className="bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden">
       {/* ===== Desktop View ===== */}
@@ -24,17 +26,17 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
             <tbody>
               {cases.map((c) => (
                 <tr
-                  key={c.id}
+                  key={c._id}
                   className="border-t whitespace-normal border-[#fe9a00]/10 hover:bg-[#f9f9f9] transition-all duration-200"
                 >
                   <td className="px-4 py-3 break-words">{c.caseNumber}</td>
-                  <td className="px-4 py-3 break-words">{c.clientName}</td>
-                  <td className="px-4 py-3 break-words">{c.lawyer}</td>
-                  <td className="px-4 py-3 break-words">{c.stage}</td>
+                  <td className="px-4 py-3 break-words">{c.clientId.name}</td>
+                  <td className="px-4 py-3 break-words">{c.assignedLawyer.name}</td>
+                  <td className="px-4 py-3 break-words">{c.currentStage}</td>
                   <td className="px-4 py-3 break-words">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        c.status === "Pending Review"
+                        c.status === "Draft"
                           ? "bg-yellow-500/20 text-yellow-800 border border-yellow-500/30"
                           : c.status === "Approved & Signed"
                           ? "bg-green-500/20 text-green-800 border border-green-500/30"
@@ -44,7 +46,9 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
                       {c.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 break-words">{c.lastUpdated}</td>
+                  <td className="px-4 py-3 break-words">
+                    {new Date(c.updatedAt).toLocaleString()}
+                  </td>
                   <td className="px-4 py-3 text-center flex flex-wrap justify-center gap-2">
                     <button
                       onClick={() => onView(c)}
@@ -71,7 +75,7 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
       <div className="lg:hidden flex flex-col gap-4 p-4">
         {cases.map((c) => (
           <div
-            key={c.id}
+            key={c._id}
             className="bg-[#f9f9f9] border border-[#fe9a00]/30 rounded-2xl shadow-lg p-5 transition-all duration-300 hover:shadow-xl hover:border-[#fe9a00]/60"
           >
             {/* Header: Case Number + Status */}
@@ -81,7 +85,7 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
               </h2>
               <span
                 className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  c.status === "Pending Review"
+                  c.status === "Draft"
                     ? "bg-yellow-500/20 text-yellow-600 border border-yellow-500/30"
                     : c.status === "Approved & Signed"
                     ? "bg-green-500/20 text-green-600 border border-green-500/30"
@@ -96,19 +100,19 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
             <div className="grid grid-cols-1 gap-2 text-sm text-gray-800 break-words">
               <p>
                 <span className="font-semibold text-gray-800">Client:</span>{" "}
-                {c.clientName}
+                {c.clientId.name}
               </p>
               <p>
                 <span className="font-semibold text-gray-800">Lawyer:</span>{" "}
-                {c.lawyer}
+                {c.assignedLawyer.name}
               </p>
               <p>
                 <span className="font-semibold text-gray-800">Stage:</span>{" "}
-                {c.stage}
+                {c.currentStage}
               </p>
               <p>
                 <span className="font-semibold text-gray-800">Updated:</span>{" "}
-                {c.lastUpdated}
+                {new Date(c.updatedAt).toLocaleString()}
               </p>
             </div>
 

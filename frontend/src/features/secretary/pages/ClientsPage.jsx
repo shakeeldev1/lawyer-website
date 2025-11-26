@@ -1,44 +1,32 @@
 // src/features/secretary/clients/ClientsPage.jsx
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import ClientTable from './../components/ClientsPage/ClientTable';
+import ClientTable from "./../components/ClientsPage/ClientTable";
 import ClientEditModal from "../components/ClientsPage/ClientEditModal";
+import {
+  useGetAllClientsQuery,
+  useUpdateClientMutation,
+  useCreateClientMutation,
+} from "../api/secretaryApi";
+import { toast } from "react-toastify";
 
 const ClientsPage = () => {
-  // Dummy client data
-  const [clients, setClients] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "johndoe@gmail.com",
-      contactNumber: "+923001234567",
-      nationalId: "31302-345891-2",
-      address: "-",
-      additionalInfo: "Civil case regarding property dispute",
-    },
-    {
-      id: 2,
-      name: "Sarah Ali",
-      email: "sarahali@gmail.com",
-      contactNumber: "+923009876543",
-      nationalId: "35201-1234567-8",
-      address: "-",
-      additionalInfo: "Criminal case related to fraud investigation",
-    },
-    {
-      id: 3,
-      name: "Ahmed Khan",
-      email: "ahmedkhan@gmail.com",
-      contactNumber: "+923001112233",
-      nationalId: "37402-7654321-9",
-      address: "-",
-      additionalInfo: "Family case involving child custody",
-    },
-  ]);
+  // Fetch clients from API
+  const { data: clientsData, isLoading, error } = useGetAllClientsQuery();
+  const [updateClient] = useUpdateClientMutation();
+  const [createClient] = useCreateClientMutation();
 
-  // ✅ FIXED: Add missing states
+  const [clients, setClients] = useState([]);
   const [selectedClient, setSelectedClient] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
+
+  // Update local state when API data changes
+  useEffect(() => {
+    if (clientsData?.clients) {
+      setClients(clientsData.clients);
+    }
+  }, [clientsData]);
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -77,8 +65,26 @@ const ClientsPage = () => {
       <div className="p-5 space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">Client Management</h2>
-         
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+            Client Management
+          </h2>
+          <button
+            onClick={() => {
+              setSelectedClient({
+                name: "",
+                email: "",
+                contactNumber: "",
+                nationalId: "",
+                address: "",
+                additionalInfo: "",
+              });
+              setIsCreatingNew(true);
+              setShowForm(true);
+            }}
+            className="flex items-center gap-2 bg-[#11408bee] hover:bg-[#0f3674] text-white px-4 py-2 rounded-lg transition-all"
+          >
+            <Plus size={18} /> Add Client
+          </button>
         </div>
       </div>
 
@@ -86,24 +92,60 @@ const ClientsPage = () => {
       <ClientTable
         clients={clients}
         setClients={setClients}
-        setSelectedClient={setSelectedClient}
+        setSelectedClient={(client) => {
+          setSelectedClient(client);
+          setIsCreatingNew(false);
+        }}
         setShowForm={setShowForm}
       />
 
       {/* Client Form Modal */}
-   {showForm && selectedClient && (
-  <ClientEditModal
-    client={selectedClient}
-    onClose={() => setShowForm(false)}
-    onSave={(updatedData) => {
-      setClients((prev) =>
-        prev.map((c) => (c.id === selectedClient.id ? { ...c, ...updatedData } : c))
-      );
-      setShowForm(false);
-    }}
-  />
-)}
+      {showForm && selectedClient && (
+        <ClientEditModal
+          client={selectedClient}
+          isCreating={isCreatingNew}
+          onClose={() => {
+            setShowForm(false);
+            setIsCreatingNew(false);
+            setSelectedClient(null);
+          }}
+          onSave={async (updatedData) => {
+            try {
+              if (isCreatingNew) {
+                await createClient(updatedData).unwrap();
+                toast.success("Client created successfully");
+              } else {
+                await updateClient({
+                  id: selectedClient._id || selectedClient.id,
+                  data: updatedData,
+                }).unwrap();
+                toast.success("Client updated successfully");
+              }
+              setShowForm(false);
+              setIsCreatingNew(false);
+              setSelectedClient(null);
+            } catch (error) {
+              toast.error(
+                error?.data?.message ||
+                  `Failed to ${isCreatingNew ? "create" : "update"} client`
+              );
+            }
+          }}
+        />
+      )}
 
+      {/* Loading & Error States */}
+      {isLoading && (
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        </div>
+      )}
+      {error && (
+        <div className="text-center py-10 text-red-600">
+          Error loading clients:{" "}
+          {error?.data?.message || "Something went wrong"}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import React from "react";
 import { Users, Scale, CheckCircle, Clock } from "lucide-react";
 
 const ReportsStats = () => {
+  
   const stats = [
     { title: "Active Lawyers", value: "8", icon: <Users className="w-6 h-6" /> },
     { title: "Completed Cases", value: "36", icon: <CheckCircle className="w-6 h-6" /> },

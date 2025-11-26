@@ -6,7 +6,7 @@ import ArchiveTable from "../components/LawyerArchive/ArchiveTable";
 import ArchiveModal from "../components/LawyerArchive/ArchiveModal";
 import ArchiveDeleteModal from "../components/LawyerArchive/ArchiveDeleteModal";
 
-import { useGetLawyerArchieveQuery } from "../api/lawyerApi";
+import { useGetMyArchiveQuery } from "../api/lawyerApi";
 
 export default function LawyerArchive() {
   const [search, setSearch] = useState("");
@@ -15,7 +15,10 @@ export default function LawyerArchive() {
   const [caseToDelete, setCaseToDelete] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-  const { data, isLoading, isError } = useGetLawyerArchieveQuery(search);
+  const { data, isLoading, isError } = useGetMyArchiveQuery({
+    search: search || undefined,
+  });
+
   const archivedCases = data?.data || [];
 
   useEffect(() => {
@@ -40,9 +43,10 @@ export default function LawyerArchive() {
 
   const filteredCases = archivedCases.filter(
     (c) =>
-      c.caseNumber.toLowerCase().includes(search.toLowerCase()) ||
-      c.clientName.toLowerCase().includes(search.toLowerCase()) ||
-      (c.archiveReference && c.archiveReference.toLowerCase().includes(search.toLowerCase()))
+      c.caseNumber?.toLowerCase().includes(search.toLowerCase()) ||
+      c.clientId?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      (c.archiveReference &&
+        c.archiveReference.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleDeleteClick = (c) => {
@@ -52,9 +56,9 @@ export default function LawyerArchive() {
 
   const handleConfirmDelete = () => {
     if (caseToDelete) {
-      // Optimistically update UI
-      // Note: You might also want to call a delete API here
-      archivedCases.splice(archivedCases.indexOf(caseToDelete), 1);
+      // TODO: Implement delete API call here when backend is ready
+      // For now, just close the modal
+      console.log("Delete functionality to be implemented");
     }
     setDeleteModalOpen(false);
     setCaseToDelete(null);

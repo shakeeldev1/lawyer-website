@@ -1,5 +1,12 @@
 import React from "react";
-import { X, FileText, Clock, CheckCircle, Shield, Download } from "lucide-react";
+import {
+  X,
+  FileText,
+  Clock,
+  CheckCircle,
+  Shield,
+  Download,
+} from "lucide-react";
 
 const ViewCaseModal = ({ viewModal, setViewModal }) => {
   if (!viewModal) return null;
@@ -12,7 +19,6 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
       ></div>
 
       <div className="relative bg-white w-full max-w-3xl max-h-[60vh] lg:max-h-[80vh] overflow-y-auto rounded-2xl shadow-2xl z-10 flex flex-col">
-
         {/* Header */}
         <div className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl px-4 sm:px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -21,10 +27,11 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
             </div>
             <div>
               <h2 className="text-base sm:text-lg md:text-xl font-semibold">
-                {viewModal.client || "Unknown Client"}
+                {viewModal.clientId?.name || "Unknown Client"}
               </h2>
               <p className="text-yellow-200 text-xs sm:text-sm">
-                Client Number: {viewModal.clientNumber || "N/A"} | {viewModal.caseType || "N/A"}
+                Client Number: {viewModal.clientId?.contactNumber || "N/A"} |{" "}
+                {viewModal.caseType || "N/A"}
               </p>
             </div>
           </div>
@@ -39,27 +46,56 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
 
         {/* 🔵 NEW — FULL CASE DETAILS BLOCK */}
         <div className="p-4 sm:p-6 bg-slate-50 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-amber-800 mb-3">Case Details</h3>
+          <h3 className="text-lg font-semibold text-amber-800 mb-3">
+            Case Details
+          </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
+            <p>
+              <strong>Archive ID:</strong> {viewModal._id?.slice(-6) || "N/A"}
+            </p>
+            <p>
+              <strong>Case Number:</strong> {viewModal.caseNumber || "N/A"}
+            </p>
 
-            <p><strong>Archive ID:</strong> {viewModal.id || "N/A"}</p>
-            <p><strong>Case Number:</strong> {viewModal.caseNumber || "N/A"}</p>
+            <p>
+              <strong>Client Name:</strong> {viewModal.clientId?.name || "N/A"}
+            </p>
+            <p>
+              <strong>Phone:</strong>{" "}
+              {viewModal.clientId?.contactNumber || "N/A"}
+            </p>
 
-            <p><strong>Client Name:</strong> {viewModal.client || "N/A"}</p>
-            <p><strong>Phone:</strong> {viewModal.clientNumber || "N/A"}</p>
+            <p>
+              <strong>Email:</strong> {viewModal.clientId?.email || "N/A"}
+            </p>
+            <p>
+              <strong>National ID:</strong>{" "}
+              {viewModal.clientId?.nationalId || "N/A"}
+            </p>
 
-            <p><strong>Email:</strong> {viewModal.email || "N/A"}</p>
-            <p><strong>National ID:</strong> {viewModal.nationalId || "N/A"}</p>
+            <p>
+              <strong>Address:</strong> {viewModal.clientId?.address || "N/A"}
+            </p>
+            <p>
+              <strong>Additional Info:</strong>{" "}
+              {viewModal.clientId?.additionalInfo || "N/A"}
+            </p>
 
-            <p><strong>Address:</strong> {viewModal.address || "N/A"}</p>
-            <p><strong>Additional Info:</strong> {viewModal.additionalInfo || "N/A"}</p>
+            <p>
+              <strong>Case Type:</strong> {viewModal.caseType || "N/A"}
+            </p>
+            <p>
+              <strong>Lawyer:</strong>{" "}
+              {viewModal.assignedLawyer?.name || "Unassigned"}
+            </p>
 
-            <p><strong>Case Type:</strong> {viewModal.caseType || "N/A"}</p>
-            <p><strong>Lawyer:</strong> {viewModal.lawyer || "N/A"}</p>
-
-            <p><strong>Date:</strong> {viewModal.date || "N/A"}</p>
-
+            <p>
+              <strong>Archived Date:</strong>{" "}
+              {viewModal.archivedAt
+                ? new Date(viewModal.archivedAt).toLocaleDateString()
+                : "N/A"}
+            </p>
           </div>
         </div>
 
@@ -93,11 +129,14 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
                         : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
+                    {stage.memorandums?.every((m) => m.approved) ? (
+                      <CheckCircle size={14} />
+                    ) : (
+                      <Clock size={14} />
+                    )}
                     {stage.memorandums?.every((m) => m.approved)
-                      ? <CheckCircle size={14} />
-                      : <Clock size={14} />
-                    }
-                    {stage.memorandums?.every((m) => m.approved) ? "Approved" : "Pending"}
+                      ? "Approved"
+                      : "Pending"}
                   </span>
 
                   <span className="px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1 bg-blue-100 text-blue-800">
@@ -156,7 +195,8 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
           {(viewModal.notifications || []).length > 0 && (
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
               <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
-                <FileText size={16} className="text-yellow-500" /> Notifications & Logs
+                <FileText size={16} className="text-yellow-500" /> Notifications
+                & Logs
               </h4>
               <div className="space-y-2">
                 {viewModal.notifications.map((n, idx) => (
@@ -187,7 +227,7 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
               Close
             </button>
             <a
-              href={`/download/archive/${viewModal.id}`}
+              href={`/download/archive/${viewModal._id}`}
               className="flex items-center gap-2 px-5 py-2 bg-yellow-700 text-white rounded-lg font-medium hover:bg-yellow-800 transition shadow-sm"
             >
               <Download size={16} /> Download All

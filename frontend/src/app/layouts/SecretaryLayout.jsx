@@ -1,19 +1,43 @@
-import { Outlet } from "react-router-dom"
-import Sidebar from "../../features/secretary/components/Sidebar"
-import Topbar from "../../features/secretary/components/Topbar"
+import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import Sidebar from "../../features/secretary/components/Sidebar";
+import Topbar from "../../features/secretary/components/Topbar";
+import { useMyProfileQuery } from "../../features/auth/api/authApi";
+import { setProfile } from "../../features/auth/authSlice";
 
 const SecretaryLayout = () => {
-    return (
-        <div className='flex h-screen bg-gray-100 gap-3'>
-            <Sidebar />
-            <div className='flex-1 flex flex-col'>
-                <Topbar />
-                <div className='flex-1 p-4 overflow-y-auto'>
-                    <Outlet />
-                </div>
-            </div>
-        </div>
-    )
-}
+  const dispatch = useDispatch();
+  const { data: profileData, isLoading } = useMyProfileQuery();
 
-export default SecretaryLayout
+  useEffect(() => {
+    if (profileData?.user) {
+      dispatch(setProfile(profileData.user));
+    }
+  }, [profileData, dispatch]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen bg-gray-100 gap-3">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Topbar />
+        <div className="flex-1 p-4 overflow-y-auto">
+          <Outlet />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SecretaryLayout;

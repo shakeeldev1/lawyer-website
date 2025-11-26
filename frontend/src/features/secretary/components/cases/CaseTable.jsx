@@ -1,11 +1,15 @@
-
-
-
 import React from "react";
-import { Archive, Eye, Trash2, Edit } from "lucide-react";
+import { Archive, Eye, Trash2, Edit, Bell } from "lucide-react";
 
-const CaseTable = ({ cases, onArchive, sidebarOpen, onEditCase, onViewCase, onDeleteCase }) => {
-
+const CaseTable = ({
+  cases,
+  onArchive,
+  sidebarOpen,
+  onEditCase,
+  onViewCase,
+  onDeleteCase,
+  onAddReminder,
+}) => {
   // Badge helpers
   const getStageBadge = (stage) => {
     switch (stage) {
@@ -54,12 +58,16 @@ const CaseTable = ({ cases, onArchive, sidebarOpen, onEditCase, onViewCase, onDe
   return (
     <div
       className={`bg-white rounded-2xl text-[#24344f] w-[360px] shadow-2xl border border-[#fe9a00]/20 sm:w- transition-all duration-300
-        ${sidebarOpen ? "lg:w-[960px] md:w-[500px]" : "lg:w-[1130px] md:w-[690px]"
-        }`}>
+        ${
+          sidebarOpen
+            ? "lg:w-[960px] md:w-[500px]"
+            : "lg:w-[1130px] md:w-[690px]"
+        }`}
+    >
       {/* Desktop/Tablet Table */}
       <div className="overflow-x-auto rounded-2xl custom-scrollbar">
         <table className="text-sm">
-          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white uppercase tracking-wide text-xs font-semibold whitespace-nowrap">
+          <thead className="bg-linear-to-r from-slate-800 to-slate-700 text-white uppercase tracking-wide text-xs font-semibold whitespace-nowrap">
             <tr>
               <th className="px-6 py-4 text-left">Case ID</th>
               <th className="px-6 py-4 text-left">Client</th>
@@ -79,13 +87,16 @@ const CaseTable = ({ cases, onArchive, sidebarOpen, onEditCase, onViewCase, onDe
                 c.case.stages && c.case.stages.length > 0
                   ? c.case.stages[c.case.stages.length - 1].stage
                   : c.case.stage || "N/A";
-              
+
               // Fix: Only disable archive for already archived cases
               const isArchived = c.case.status === "Archived";
               const canArchive = !isArchived;
 
               return (
-                <tr key={c.id} className="border-t border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200 whitespace-nowrap">
+                <tr
+                  key={c._id || c.id}
+                  className="border-t border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200 whitespace-nowrap"
+                >
                   <td className="px-6 py-4 font-medium">{c.id}</td>
                   <td className="px-6 py-4">{c.client.name}</td>
                   <td className="px-6 py-4">{c.client.contact}</td>
@@ -101,7 +112,11 @@ const CaseTable = ({ cases, onArchive, sidebarOpen, onEditCase, onViewCase, onDe
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(c.case.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(
+                        c.case.status
+                      )}`}
+                    >
                       {c.case.status}
                     </span>
                   </td>
@@ -111,30 +126,42 @@ const CaseTable = ({ cases, onArchive, sidebarOpen, onEditCase, onViewCase, onDe
                     <button
                       onClick={() => onViewCase?.(c.id)}
                       className="flex items-center gap-1 bg-[#24344f] text-white px-2 py-1.5 rounded hover:bg-indigo-700"
+                      title="View case"
                     >
                       <Eye size={16} />
                     </button>
                     <button
                       onClick={() => onEditCase?.(c.id)}
                       className="flex items-center gap-1 bg-green-600 text-white px-2 py-1.5 rounded hover:bg-green-700"
+                      title="Edit case"
                     >
                       <Edit size={16} />
                     </button>
-                    <button 
-                      onClick={() => onArchive?.(c.id)} 
+                    <button
+                      onClick={() => onAddReminder?.(c)}
+                      className="flex items-center gap-1 bg-[#fe9a00] text-white px-2 py-1.5 rounded hover:bg-[#ff8c00]"
+                      title="Add reminder"
+                    >
+                      <Bell size={16} />
+                    </button>
+                    <button
+                      onClick={() => onArchive?.(c.id)}
                       className={`flex items-center gap-1 px-2 py-1.5 rounded transition-all ${
-                        canArchive 
-                          ? "bg-gray-500 text-white hover:bg-gray-700" 
+                        canArchive
+                          ? "bg-gray-500 text-white hover:bg-gray-700"
                           : "bg-gray-300 text-gray-500 cursor-not-allowed"
                       }`}
                       disabled={!canArchive}
-                      title={isArchived ? "Case already archived" : "Archive case"}
+                      title={
+                        isArchived ? "Case already archived" : "Archive case"
+                      }
                     >
                       <Archive size={16} />
                     </button>
                     <button
                       onClick={() => onDeleteCase?.(c.id)}
-                      className="flex items-center gap-1 bg-red-500 text-white px-2 py-1.5 rounded hover:bg-red-700" 
+                      className="flex items-center gap-1 bg-red-500 text-white px-2 py-1.5 rounded hover:bg-red-700"
+                      title="Delete case"
                     >
                       <Trash2 size={16} />
                     </button>

@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
+} from "recharts";
+import { useGetDashboardStatsQuery } from "../../api/lawyerApi";
 
 const COLORS = ["#1e293b", "#475569", "#64748b", "#94a3b8"];
-
-const caseStageData = [
-  { name: "Main Case", value: 5 },
-  { name: "Appeal", value: 3 },
-  { name: "Cassation", value: 2 },
-];
-
-const casesByStatusData = [
-  { status: "Pending Memorandum", count: 3 },
-  { status: "Awaiting Ragab Approval", count: 2 },
-  { status: "Approved", count: 5 },
-];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -21,8 +22,10 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="bg-slate-800 border border-slate-700 p-3 rounded-lg shadow-lg">
         <p className="text-white font-medium">{label || payload[0].name}</p>
         <p className="text-slate-200">
-          {payload[0].dataKey === 'count' ? 'Count: ' : 'Value: '}
-          <span className="text-white font-semibold ml-1">{payload[0].value}</span>
+          {payload[0].dataKey === "count" ? "Count: " : "Value: "}
+          <span className="text-white font-semibold ml-1">
+            {payload[0].value}
+          </span>
         </p>
       </div>
     );
@@ -30,12 +33,29 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export const PieChartCard = ({ title, data }) => {
+export const PieChartCard = ({ title, data, loading }) => {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     setAnimate(true);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-[330px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800"></div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-[330px] flex flex-col items-center justify-center">
+        <h2 className="text-xl font-semibold text-slate-800 mb-4">{title}</h2>
+        <p className="text-slate-500">No data available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
@@ -51,7 +71,9 @@ export const PieChartCard = ({ title, data }) => {
             outerRadius={80}
             innerRadius={40}
             paddingAngle={2}
-            label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+            label={({ name, percent }) =>
+              `${name} (${(percent * 100).toFixed(0)}%)`
+            }
             labelLine={false}
             animationBegin={0}
             animationDuration={1000}
@@ -73,7 +95,24 @@ export const PieChartCard = ({ title, data }) => {
   );
 };
 
-export const BarChartCard = ({ title, data }) => {
+export const BarChartCard = ({ title, data, loading }) => {
+  if (loading) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-[330px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800"></div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-[330px] flex flex-col items-center justify-center">
+        <h2 className="text-xl font-semibold text-slate-800 mb-4">{title}</h2>
+        <p className="text-slate-500">No data available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-300">
       <h2 className="text-xl font-semibold text-slate-800 mb-6">{title}</h2>
@@ -96,11 +135,7 @@ export const BarChartCard = ({ title, data }) => {
             height={50}
             interval={0}
           />
-          <YAxis
-            stroke="#64748b"
-            fontSize={12}
-            width={40}
-          />
+          <YAxis stroke="#64748b" fontSize={12} width={40} />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Bar
@@ -118,10 +153,73 @@ export const BarChartCard = ({ title, data }) => {
 };
 
 const OverviewCharts = () => {
+  const { data, isLoading, isError } = useGetDashboardStatsQuery();
+
+  // Prepare chart data from API response
+  const prepareChartData = () => {
+    if (!data?.data) return { pieData: [], barData: [] };
+
+    const stats = data.data;
+
+    // Pie chart data - Cases by stage (we'll use case status for now)
+    const pieData = [
+      { name: "Under Review", value: stats.underReview || 0 },
+      { name: "Pending Approval", value: stats.pendingApproval || 0 },
+      { name: "Approved", value: stats.approved || 0 },
+    ].filter((item) => item.value > 0); // Only show non-zero values
+
+    // Bar chart data - Cases by status
+    const barData = [
+      { status: "Under Review", count: stats.underReview || 0 },
+      { status: "Pending Approval", count: stats.pendingApproval || 0 },
+      { status: "Awaiting My Approval", count: stats.pendingMyApproval || 0 },
+      { status: "Approved", count: stats.approved || 0 },
+    ];
+
+    return { pieData, barData };
+  };
+
+  const { pieData, barData } = prepareChartData();
+
+  if (isError) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-red-50 p-6 rounded-xl border border-red-200 flex items-center justify-center h-[330px]">
+          <div className="text-center">
+            <p className="text-red-600 font-medium mb-2">
+              Failed to load chart data
+            </p>
+            <p className="text-red-500 text-sm">
+              Please try refreshing the page
+            </p>
+          </div>
+        </div>
+        <div className="bg-red-50 p-6 rounded-xl border border-red-200 flex items-center justify-center h-[330px]">
+          <div className="text-center">
+            <p className="text-red-600 font-medium mb-2">
+              Failed to load chart data
+            </p>
+            <p className="text-red-500 text-sm">
+              Please try refreshing the page
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <PieChartCard title="Cases by Stage" data={caseStageData} />
-      <BarChartCard title="Cases by Status" data={casesByStatusData} />
+      <PieChartCard
+        title="Cases by Status"
+        data={pieData}
+        loading={isLoading}
+      />
+      <BarChartCard
+        title="Cases Distribution"
+        data={barData}
+        loading={isLoading}
+      />
     </div>
   );
 };

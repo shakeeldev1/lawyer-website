@@ -2,7 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-export default function ClientEditModal({ client, onClose, onSave }) {
+export default function ClientEditModal({
+  client,
+  onClose,
+  onSave,
+  isCreating = false,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,7 +33,9 @@ export default function ClientEditModal({ client, onClose, onSave }) {
       <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-[95%] max-w-2xl p-6 sm:p-8 animate-slideIn overflow-y-auto max-h-[80vh]">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-slate-700">Edit Client</h2>
+          <h2 className="text-2xl font-semibold text-slate-700">
+            {isCreating ? "Add New Client" : "Edit Client"}
+          </h2>
           <button
             onClick={onClose}
             className="text-slate-500 hover:text-slate-700 transition"
@@ -38,14 +45,19 @@ export default function ClientEditModal({ client, onClose, onSave }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
           {/* Name */}
           <div className="flex flex-col gap-1">
             <label className="text-slate-700 font-medium">Name</label>
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Enter client name"
               className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
             />
@@ -57,7 +69,9 @@ export default function ClientEditModal({ client, onClose, onSave }) {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               placeholder="Enter email address"
               className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700 transition"
             />

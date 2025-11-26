@@ -11,7 +11,7 @@ const CasesHeader = ({
 }) => {
   return (
     <div
-      className="mt-20 mb-6 sm:mb-8 
+      className="mt-20 mb-6 sm:mb-8
                  flex flex-col md:flex-row 
                  md:items-center md:justify-between 
                  gap-5 sm:gap-6 

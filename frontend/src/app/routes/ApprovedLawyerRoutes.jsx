@@ -6,15 +6,14 @@ import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
 
 export const ApprovedLawyerRoutes = {
-    path: 'approvedlawyer',
+    path: 'approvingLawyer',
     element: (
-        <RoleProtectedRoute allowedRoles={['lawyer']}>
+        <RoleProtectedRoute allowedRoles={['approvingLawyer']}>
             <ApprovedLawyerLayout />
     </RoleProtectedRoute>
     ),
     children: [
         { index: true, element: <ApprovedLawyerPage /> },
         { path: "notifications", element: <ApprovedLawyerNotifications /> },
-     
     ]
 }

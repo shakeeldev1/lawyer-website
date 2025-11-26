@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import ClientInfoForm from "./ClientInfoForm";
 import CaseDetailsForm from "./CaseDetailsForm";
 import DocumentDetailsForm from "./DocumentDetailsForm";
+import {
+  useCreateCaseMutation,
+  useUpdateCaseMutation,
+  useGetAllClientsQuery,
+} from "../../api/secretaryApi";
+import { toast } from "react-toastify";
 
 const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
   const [step, setStep] = useState(1);
+  const prevOpenState = useRef(false);
+  const [selectedClientId, setSelectedClientId] = useState(null);
 
   const [clientInfo, setClientInfo] = useState({
     name: "",
@@ -27,48 +35,123 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
     documents: [],
   });
 
-  // Pre-fill form if editing
+  // Only run when modal transitions from closed to open
   useEffect(() => {
-    if (caseData) {
-      setClientInfo({ ...caseData.client });
-      setCaseInfo({ ...caseData.case });
-    } else {
-      setClientInfo({
-        name: "",
-        contact: "",
-        email: "",
-        nationalId: "",
-        address: "",
-        additionalInformation: "",
-      });
-      setCaseInfo({
-        caseType: "",
-        description: "",
-        assignedLawyer: "",
-        hearingDate: "",
-        filingDate: new Date().toISOString().slice(0, 10),
-        status: "Pending",
-        stage: "Main Case",
-        documents: [],
-      });
+    // Detect when modal just opened
+    if (isOpen && !prevOpenState.current) {
+      if (caseData) {
+        setClientInfo({ ...caseData.client });
+        // When editing, use assignedLawyerId for the dropdown value
+        setCaseInfo({
+          ...caseData.case,
+          assignedLawyer:
+            caseData.case.assignedLawyerId ||
+            caseData.case.assignedLawyer ||
+            "",
+        });
+      } else {
+        // Reset for new case
+        setClientInfo({
+          name: "",
+          contact: "",
+          email: "",
+          nationalId: "",
+          address: "",
+          additionalInformation: "",
+        });
+        setCaseInfo({
+          caseType: "",
+          description: "",
+          assignedLawyer: "",
+          hearingDate: "",
+          filingDate: new Date().toISOString().slice(0, 10),
+          status: "Pending",
+          stage: "Main Case",
+          documents: [],
+        });
+      }
+      setStep(1);
     }
-  }, [caseData, isOpen]);
+
+    // Update ref for next render
+    prevOpenState.current = isOpen;
+  }, [isOpen, caseData]);
 
   const handleClientChange = (e) =>
     setClientInfo({ ...clientInfo, [e.target.name]: e.target.value });
   const handleCaseChange = (e) =>
     setCaseInfo({ ...caseInfo, [e.target.name]: e.target.value });
 
+  const [createCase, { isLoading: isCreating }] = useCreateCaseMutation();
+  const [updateCase, { isLoading: isUpdating }] = useUpdateCaseMutation();
+  const { data: clientsData } = useGetAllClientsQuery();
+
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
 
-  const handleSubmit = () => {
-    const updatedCase = caseData
-      ? { id: caseData.id, client: { ...clientInfo }, case: { ...caseInfo } }
-      : { id: `C-${Date.now().toString().slice(-6)}`, client: { ...clientInfo }, case: { ...caseInfo } };
+  const handleSubmit = async () => {
+    try {
+      if (caseData) {
+        // Update existing case - use _id from MongoDB
+        await updateCase({
+          id: caseData._id || caseData.id,
+          data: {
+            caseType: caseInfo.caseType,
+            caseDescription: caseInfo.description,
+            assignedLawyer: caseInfo.assignedLawyer || null,
+            documents: caseInfo.documents,
+          },
+        }).unwrap();
+        toast.success("Case updated successfully!");
+      } else {
+        // Create new case - requires clientId
+        let clientId = selectedClientId;
 
-    onAddCase(updatedCase);
-    setStep(1);
+        // If no client selected from dropdown, try to find by email/contact
+        if (!clientId) {
+          const existingClient = clientsData?.clients?.find(
+            (c) =>
+              c.email === clientInfo.email ||
+              c.contactNumber === clientInfo.contact
+          );
+          clientId = existingClient?._id;
+        }
+
+        // If still no client, show error
+        if (!clientId) {
+          toast.error(
+            "Please select an existing client or create a new client first from the Clients page."
+          );
+          return;
+        }
+
+        // Validate required fields
+        if (!caseInfo.caseType) {
+          toast.error("Please select a case type");
+          return;
+        }
+
+        if (!caseInfo.assignedLawyer) {
+          toast.error("Please assign a lawyer to the case");
+          return;
+        }
+
+        // Create the case with assigned lawyer
+        await createCase({
+          clientId,
+          caseType: caseInfo.caseType,
+          caseDescription: caseInfo.description,
+          assignedLawyer: caseInfo.assignedLawyer,
+          documents: caseInfo.documents || [],
+        }).unwrap();
+        toast.success("Case created successfully!");
+      }
+      onAddCase();
+      onClose();
+      setSelectedClientId(null);
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to save case");
+    }
   };
 
   if (!isOpen) return null;
@@ -76,7 +159,6 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
   return (
     <div className="fixed inset-0 !z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[85vh] flex flex-col relative">
-
         {/* Fixed Header */}
         <div className="sticky top-0 bg-[#11408bee] z-10 border-b border-gray-200 px-6 py-4 rounded-t-2xl">
           <div className="flex items-center justify-between">
@@ -95,39 +177,70 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
           <div className="flex items-center justify-center mt-4 space-x-2">
             {/* Step 1 */}
             <div className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step >= 1 ? "bg-white text-[#11408bee]" : "bg-gray-300 text-gray-500"
-                }`}>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= 1
+                    ? "bg-white text-[#11408bee]"
+                    : "bg-gray-300 text-gray-500"
+                }`}
+              >
                 1
               </div>
-              <span className={`ml-2 text-sm ${step >= 1 ? "text-white" : "text-gray-300"}`}>
+              <span
+                className={`ml-2 text-sm ${
+                  step >= 1 ? "text-white" : "text-gray-300"
+                }`}
+              >
                 Client
               </span>
             </div>
 
             {/* Connector */}
-            <div className={`w-8 h-0.5 ${step >= 2 ? "bg-white" : "bg-gray-300"}`}></div>
+            <div
+              className={`w-8 h-0.5 ${step >= 2 ? "bg-white" : "bg-gray-300"}`}
+            ></div>
 
             {/* Step 2 */}
             <div className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step >= 2 ? "bg-white text-[#11408bee]" : "bg-gray-300 text-gray-500"
-                }`}>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= 2
+                    ? "bg-white text-[#11408bee]"
+                    : "bg-gray-300 text-gray-500"
+                }`}
+              >
                 2
               </div>
-              <span className={`ml-2 text-sm ${step >= 2 ? "text-white" : "text-gray-300"}`}>
+              <span
+                className={`ml-2 text-sm ${
+                  step >= 2 ? "text-white" : "text-gray-300"
+                }`}
+              >
                 Case
               </span>
             </div>
 
             {/* Connector */}
-            <div className={`w-8 h-0.5 ${step >= 3 ? "bg-white" : "bg-gray-300"}`}></div>
+            <div
+              className={`w-8 h-0.5 ${step >= 3 ? "bg-white" : "bg-gray-300"}`}
+            ></div>
 
             {/* Step 3 */}
             <div className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step >= 3 ? "bg-white text-[#11408bee]" : "bg-gray-300 text-gray-500"
-                }`}>
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= 3
+                    ? "bg-white text-[#11408bee]"
+                    : "bg-gray-300 text-gray-500"
+                }`}
+              >
                 3
               </div>
-              <span className={`ml-2 text-sm ${step >= 3 ? "text-white" : "text-gray-300"}`}>
+              <span
+                className={`ml-2 text-sm ${
+                  step >= 3 ? "text-white" : "text-gray-300"
+                }`}
+              >
                 Documents
               </span>
             </div>
@@ -137,7 +250,12 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {step === 1 && (
-            <ClientInfoForm clientInfo={clientInfo} onChange={handleClientChange} />
+            <ClientInfoForm
+              clientInfo={clientInfo}
+              onChange={handleClientChange}
+              onClientSelect={setSelectedClientId}
+              selectedClientId={selectedClientId}
+            />
           )}
 
           {step === 2 && (
@@ -148,28 +266,16 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
             <DocumentDetailsForm
               caseInfo={caseInfo}
               onChange={(e) => {
-                if (e.target.name === 'documents') {
-                  setCaseInfo(prev => ({
+                if (e.target.name === "documents") {
+                  setCaseInfo((prev) => ({
                     ...prev,
-                    documents: e.target.value
+                    documents: e.target.value,
                   }));
                 }
               }}
             />
-            // <div className="space-y-4">
-            //   <h3 className="text-lg font-semibold text-gray-800">Document Details</h3>
-            //   <p className="text-gray-600">Document upload functionality will be implemented here.</p>
-            //   {/* Add your document upload components here */}
-            //   <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-            //     <p className="text-gray-500">Drag and drop files here or click to upload</p>
-            //     <button className="mt-2 px-4 py-2 bg-[#11408bee] text-white rounded-lg hover:bg-[#0f3674] transition-colors">
-            //       Upload Documents
-            //     </button>
-            //   </div>
-            // </div>
           )}
         </div>
-
         {/* Fixed Footer */}
         <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 rounded-b-2xl">
           <div className="flex justify-between">
@@ -184,10 +290,23 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
 
             <button
               onClick={step === 3 ? handleSubmit : handleNext}
-              className={`px-6 py-2 bg-[#11408bee]/90 text-white rounded-lg hover:bg-[#11408bee] transition-colors ${step === 1 ? "ml-auto" : ""
-                }`}
+              disabled={isCreating || isUpdating}
+              className={`px-6 py-2 bg-[#11408bee]/90 text-white rounded-lg hover:bg-[#11408bee] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                step === 1 ? "ml-auto" : ""
+              }`}
             >
-              {step === 3 ? "Save Case" : "Next"}
+              {step === 3 ? (
+                isCreating || isUpdating ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Saving...
+                  </span>
+                ) : (
+                  "Save Case"
+                )
+              ) : (
+                "Next"
+              )}
             </button>
           </div>
         </div>

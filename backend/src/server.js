@@ -15,10 +15,24 @@ const app = express();
 app.use(express.json())
 app.use(cookieParser())
 
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true,
-}));
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("CORS not allowed for this origin: " + origin));
+            }
+        },
+        credentials: true,
+    })
+);
 
 
 app.get("/api-docs", (req, res) => {
