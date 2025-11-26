@@ -4,7 +4,7 @@ const CasesTable = ({ cases, onView, onDelete,sidebarOpen }) => {
   return (
   <div
       className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
-        sidebarOpen ? "lg:w-[980px] md:w-[420px]" : "lg:w-full md:w-[640px]"
+        sidebarOpen ? "lg:w-[980px] md:w-[440px]" : "lg:w-full md:w-[640px]"
       }`}
     >
       {/* ===== Desktop Table ===== */}

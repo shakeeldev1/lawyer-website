@@ -1,18 +1,47 @@
 // src/components/FinalApprovalTable.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, Trash2 } from "lucide-react";
 
 const FinalApprovalTable = ({ cases, onView, onDelete }) => {
-  console.log(cases);
+   // Sidebar state
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+  
+     useEffect(() => {
+       const handleResize = () => {
+         const desktop = window.innerWidth >= 1024;
+         setSidebarOpen(desktop);
+       };
+   
+       const handleSidebarToggle = () => {
+         const sidebar = document.querySelector('aside');
+         if (sidebar) {
+           const isOpen = sidebar.classList.contains('w-64');
+           setSidebarOpen(isOpen);
+         }
+       };
+   
+       window.addEventListener('resize', handleResize);
+   
+       const interval = setInterval(handleSidebarToggle, 100);
+   
+       return () => {
+         window.removeEventListener('resize', handleResize);
+         clearInterval(interval);
+       };
+     }, []);
 
   return (
-    <div className="bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden">
+    <div
+      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? "lg:w-[980px] md:w-[420px]" : "lg:w-full md:w-[640px]"
+      }`}
+    >
       {/* ===== Desktop View ===== */}
-      <div className="hidden lg:block">
+      <div className="block">
         <div className="overflow-x-auto">
           <table className="w-full table-auto text-sm min-w-[700px] border-collapse">
             <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
-              <tr>
+              <tr className="whitespace-nowrap">
                 <th className="px-4 py-3 text-left">Case #</th>
                 <th className="px-4 py-3 text-left">Client</th>
                 <th className="px-4 py-3 text-left">Lawyer</th>
@@ -27,13 +56,13 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
               {cases.map((c) => (
                 <tr
                   key={c._id}
-                  className="border-t whitespace-normal border-[#fe9a00]/10 hover:bg-[#f9f9f9] transition-all duration-200"
+                  className="border-t whitespace-nowrap border-[#fe9a00]/10 hover:bg-[#f9f9f9] transition-all duration-200"
                 >
-                  <td className="px-4 py-3 break-words">{c.caseNumber}</td>
-                  <td className="px-4 py-3 break-words">{c.clientId.name}</td>
-                  <td className="px-4 py-3 break-words">{c.assignedLawyer.name}</td>
-                  <td className="px-4 py-3 break-words">{c.currentStage}</td>
-                  <td className="px-4 py-3 break-words">
+                  <td className="px-4 py-3 ">{c.caseNumber}</td>
+                  <td className="px-4 py-3 ">{c.clientId.name}</td>
+                  <td className="px-4 py-3 ">{c.assignedLawyer.name}</td>
+                  <td className="px-4 py-3 ">{c.currentStage}</td>
+                  <td className="px-4 py-3 ">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         c.status === "Draft"
@@ -46,10 +75,10 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
                       {c.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3 break-words">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     {new Date(c.updatedAt).toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 text-center flex flex-wrap justify-center gap-2">
+                  <td className="px-4 py-3 text-center flex flex-nowrap justify-center gap-2">
                     <button
                       onClick={() => onView(c)}
                       className="flex items-center justify-center gap-1 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/90 px-3 py-1.5 rounded-full font-medium transition-all duration-200 shadow-sm hover:shadow-md"
@@ -71,70 +100,7 @@ const FinalApprovalTable = ({ cases, onView, onDelete }) => {
         </div>
       </div>
 
-      {/* ===== Mobile View (Card Layout) ===== */}
-      <div className="lg:hidden flex flex-col gap-4 p-4">
-        {cases.map((c) => (
-          <div
-            key={c._id}
-            className="bg-[#f9f9f9] border border-[#fe9a00]/30 rounded-2xl shadow-lg p-5 transition-all duration-300 hover:shadow-xl hover:border-[#fe9a00]/60"
-          >
-            {/* Header: Case Number + Status */}
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-bold text-slate-800 tracking-wide">
-                {c.caseNumber}
-              </h2>
-              <span
-                className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  c.status === "Draft"
-                    ? "bg-yellow-500/20 text-yellow-600 border border-yellow-500/30"
-                    : c.status === "Approved & Signed"
-                    ? "bg-green-500/20 text-green-600 border border-green-500/30"
-                    : "bg-red-500/20 text-red-600 border border-red-500/30"
-                }`}
-              >
-                {c.status}
-              </span>
-            </div>
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-1 gap-2 text-sm text-gray-800 break-words">
-              <p>
-                <span className="font-semibold text-gray-800">Client:</span>{" "}
-                {c.clientId.name}
-              </p>
-              <p>
-                <span className="font-semibold text-gray-800">Lawyer:</span>{" "}
-                {c.assignedLawyer.name}
-              </p>
-              <p>
-                <span className="font-semibold text-gray-800">Stage:</span>{" "}
-                {c.currentStage}
-              </p>
-              <p>
-                <span className="font-semibold text-gray-800">Updated:</span>{" "}
-                {new Date(c.updatedAt).toLocaleString()}
-              </p>
-            </div>
-
-            {/* Footer Actions */}
-            <div className="flex justify-center mt-4 gap-3 flex-wrap">
-              <button
-                onClick={() => onView(c)}
-                className="flex items-center gap-1 bg-[#fe9a00]/10 text-[#fe9a00] px-4 py-2 rounded-full text-sm font-medium hover:bg-[#fe9a00]/20 hover:text-amber-950 transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                <Eye className="w-4 h-4" /> View
-              </button>
-
-              <button
-                onClick={() => onDelete(c)}
-                className="flex items-center gap-1 bg-red-600/10 text-red-400 px-4 py-2 rounded-full text-sm font-medium hover:bg-red-600/20 hover:text-gray-800 transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                <Trash2 className="w-4 h-4" /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+     
 
       {/* Bottom Accent Line */}
       <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00]" />
