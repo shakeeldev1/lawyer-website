@@ -14,7 +14,7 @@ export const directorApi = createApi({
                 url: "/stats",
                 method: "GET",
             }),
-            providesTags: ["Users"],
+            providesTags: ["director"],
         }),
         allUsers: builder.query({
             query: (search = "") => ({
@@ -24,10 +24,10 @@ export const directorApi = createApi({
             providesTags: (result) =>
                 result
                     ? [
-                        ...result.users.map(({ _id }) => ({ type: "Users", id: _id })),
-                        { type: "Users", id: "LIST" },
+                        ...result.users.map(({ _id }) => ({ type: "director", id: _id })),
+                        { type: "director", id: "LIST" },
                     ]
-                    : [{ type: "Users", id: "LIST" }],
+                    : [{ type: "director", id: "LIST" }],
         }),
         updateRole: builder.mutation({
             query: ({ id, data }) => ({
@@ -35,7 +35,7 @@ export const directorApi = createApi({
                 method: "PUT",
                 body: data,
             }),
-            providesTags: ["Users"],
+            providesTags: ["director"],
         }),
         addUser: builder.mutation({
             query: (data) => ({
@@ -43,7 +43,7 @@ export const directorApi = createApi({
                 method: "POST",
                 body: data,
             }),
-            providesTags: ["Users"],
+            providesTags: ["director"],
         }),
 
 
@@ -52,7 +52,7 @@ export const directorApi = createApi({
                 url: `/delete-user/${id}`,
                 method: "DELETE",
             }),
-            providesTags: ["Users"],
+            providesTags: ["director"],
         }),
 
         getAllCases: builder.query({
@@ -60,7 +60,7 @@ export const directorApi = createApi({
                 url: `/cases?search=${search}`,
                 method: 'GET',
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: ["director"],
         }),
 
         getAllArchieve: builder.query({
@@ -68,7 +68,7 @@ export const directorApi = createApi({
                 url: `/director-archive?search=${encodeURIComponent(search)}`,
                 method: 'GET'
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: ["director"],
         }),
 
         getAllReminders: builder.query({
@@ -76,7 +76,7 @@ export const directorApi = createApi({
                 url: `/reminders`,
                 method: "GET"
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: ["director"],
         }),
 
         getPendingSignature: builder.query({
@@ -84,7 +84,7 @@ export const directorApi = createApi({
                 url: `/getPendingSignature`,
                 method: "GET"
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: ["director"],
         }),
 
         updateStatusReadyForSubmission: builder.mutation({
@@ -93,7 +93,15 @@ export const directorApi = createApi({
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: ["director"],
+        }),
+
+        deleteCase: builder.mutation({
+            query: (id) => ({
+                url: `/delete-case/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["director"],
         }),
     }),
 });
@@ -109,4 +117,5 @@ export const {
     useGetAllRemindersQuery,
     useGetPendingSignatureQuery,
     useUpdateStatusReadyForSubmissionMutation,
+    useDeleteCaseMutation,
 } = directorApi;

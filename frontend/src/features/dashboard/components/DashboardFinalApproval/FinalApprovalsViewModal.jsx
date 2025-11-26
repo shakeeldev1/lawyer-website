@@ -106,7 +106,7 @@ const FinalApprovalsViewModal = ({
 
         {/* Action Buttons */}
         <div className='flex flex-col sm:flex-row justify-end gap-3 mt-6 w-full sm:w-auto'>
-          <button
+          {/* <button
             onClick={() => onRequestChanges(caseItem)}
             disabled={loading}
             className='flex-1 sm:flex-none md:px-5 px-6 md:py-2.5 py-2 rounded-full flex items-center justify-center gap-2 
@@ -115,7 +115,7 @@ const FinalApprovalsViewModal = ({
           >
             <XCircle className='w-4 h-4' />
             Request Changes
-          </button>
+          </button> */}
 
           <button
             onClick={handleApprove}

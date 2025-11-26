@@ -1,6 +1,6 @@
 import express from "express";
 import { loginRequired } from "../../utils/loginRequired.js";
-import { addUser, deleteUser, getAllArchivedCases, getAllCases, getAllReminders, getAllUsers, getPendingSignature, updateStatusReadyForSubmission, updateUserRole, userStats } from "./director.controller.js";
+import { addUser, deleteCase, deleteUser, getAllArchivedCases, getAllCases, getAllReminders, getAllUsers, getPendingSignature, updateStatusReadyForSubmission, updateUserRole, userStats } from "./director.controller.js";
 import { allowedRoles } from "../../utils/allowedRoles.js";
 const router = express.Router();
 
@@ -16,5 +16,5 @@ router.get("/stats", userStats);
 router.get("/cases", getAllCases);
 router.put("/updateStatusReadyForSubmission/:id", updateStatusReadyForSubmission);
 router.get("/getPendingSignature",getPendingSignature);
-
+router.delete("/delete-case/:id", deleteCase);
 export default router;

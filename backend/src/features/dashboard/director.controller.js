@@ -226,3 +226,14 @@ export const updateStatusReadyForSubmission = asyncHandler(async (req, res) => {
   });
 })
 
+export const deleteCase = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+  await Case.findByIdAndDelete(req.params.id);
+  res.status(200).json({
+    success: true,
+    message: "Case deleted successfully",
+  });
+});
