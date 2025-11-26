@@ -106,6 +106,7 @@ const AllCases = () => {
           cases={filteredCases}
           onView={handleViewTimeline}
           onDelete={handleDeleteClick}
+          sidebarOpen={sidebarOpen}
         />
       )}
 

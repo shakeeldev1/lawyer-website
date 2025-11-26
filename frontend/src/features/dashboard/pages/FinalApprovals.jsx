@@ -21,11 +21,29 @@ const FinalApprovals = () => {
   // Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
-  useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+   useEffect(() => {
+     const handleResize = () => {
+       const desktop = window.innerWidth >= 1024;
+       setSidebarOpen(desktop);
+     };
+ 
+     const handleSidebarToggle = () => {
+       const sidebar = document.querySelector('aside');
+       if (sidebar) {
+         const isOpen = sidebar.classList.contains('w-64');
+         setSidebarOpen(isOpen);
+       }
+     };
+ 
+     window.addEventListener('resize', handleResize);
+ 
+     const interval = setInterval(handleSidebarToggle, 100);
+ 
+     return () => {
+       window.removeEventListener('resize', handleResize);
+       clearInterval(interval);
+     };
+   }, []);
 
   // Filter cases that require final approval
   const pendingCases = allCases.filter((c) =>

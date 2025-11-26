@@ -6,7 +6,7 @@ const FeedbackModal = ({ onCancel, onSubmit }) => {
   const [feedback, setFeedback] = useState("");
 
   return (
-    <div className="px-4 fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50">
+    <div className="px-4 fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

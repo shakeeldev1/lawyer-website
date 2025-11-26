@@ -94,7 +94,7 @@ const FinalApprovalsViewModal = ({
                     href={doc.url || '#'}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-[#fe9a00] hover:underline'
+                    className='text-gray-800 hover:underline'
                   >
                     {doc.name}
                   </a>

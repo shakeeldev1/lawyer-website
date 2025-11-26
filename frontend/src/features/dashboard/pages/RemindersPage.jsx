@@ -33,11 +33,28 @@ const RemindersPage = () => {
   const reminders = data?.reminders || [];
   const totalPages = data?.totalPages || 1;
 
-  // Sidebar resize logic
   useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector('aside');
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains('w-64');
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearInterval(interval);
+    };
   }, []);
 
   // Add reminder handler
@@ -107,10 +124,10 @@ const RemindersPage = () => {
   return (
     <div
       className={`min-h-screen
-        px-3 sm:px-4 md:px-6 lg:px-2
-        py-3 sm:py-4 md:py-5
+        px-3 sm:px-4  border-2 md:px-6 lg:px-2
+        py-3 sm:py-4 md:py-5 
         transition-all duration-300 ease-in-out
-        ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+        ${sidebarOpen ? " md:ml-64 lg:ml-64" : "lg:ml-20 md:ml-15"}`}
     >
       {/* Header */}
       <RemindersHeader

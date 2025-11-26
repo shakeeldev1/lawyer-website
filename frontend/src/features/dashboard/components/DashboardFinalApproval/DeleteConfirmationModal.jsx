@@ -5,7 +5,7 @@ const DeleteConfirmationModal = ({ caseItem, onConfirm, onCancel }) => {
   if (!caseItem) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[9999]">
       <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 relative text-center border border-[#fe9a00]/30">
         {/* Close Button */}
         <button

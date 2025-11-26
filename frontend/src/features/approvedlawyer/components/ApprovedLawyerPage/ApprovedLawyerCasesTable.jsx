@@ -38,8 +38,10 @@ export default function ApprovedLawyerCasesTable ({
   }
 
   return (
-    <div
-      className={`bg-white w-full rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 overflow-x-auto`}
+   <div
+      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? "lg:w-[980px] md:w-[500px]" : "lg:w-[1200px] md:w-[680px]"
+      }`}
     >
       <div className='overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse'>
         <table className='w-full min-w-[1000px] text-left border-collapse'>

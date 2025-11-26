@@ -8,7 +8,7 @@ const UserTable = ({ users, updateStatus, updateRole, onView, onDelete, roles })
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
-              <tr className="text-left">
+              <tr className="text-left whitespace-nowrap">
                 <th className="py-3 px-4">Name</th>
                 <th className="py-3 px-4">Role</th>
                 <th className="py-3 px-4">Email</th>
@@ -22,7 +22,7 @@ const UserTable = ({ users, updateStatus, updateRole, onView, onDelete, roles })
               {users.map((u, idx) => (
                 <tr
                   key={u._id} // ✅ use MongoDB _id
-                  className={`${idx % 2 === 0 ? "bg-[#E1E1E2]" : "bg-white"} hover:bg-slate-100 transition`}
+                  className={`${idx % 2 === 0 ? "bg-[#E1E1E2]" : "bg-white"} hover:bg-slate-100 transition whitespace-nowrap`}
                 >
                   <td className="py-3 px-4 font-semibold">{u.name}</td>
                   <td className="py-3 px-4">

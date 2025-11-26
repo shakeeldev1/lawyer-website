@@ -26,16 +26,29 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 768;
-      setIsDesktop(desktop);
-      setIsOpen(desktop ? false : false);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+   useEffect(() => {
+     const handleResize = () => {
+       const desktop = window.innerWidth >= 1024;
+       setSidebarOpen(desktop);
+     };
+ 
+     const handleSidebarToggle = () => {
+       const sidebar = document.querySelector('aside');
+       if (sidebar) {
+         const isOpen = sidebar.classList.contains('w-64');
+         setSidebarOpen(isOpen);
+       }
+     };
+ 
+     window.addEventListener('resize', handleResize);
+ 
+     const interval = setInterval(handleSidebarToggle, 100);
+ 
+     return () => {
+       window.removeEventListener('resize', handleResize);
+       clearInterval(interval);
+     };
+   }, []);
 
   const links = [
     { name: "Overview", icon: <LayoutDashboard size={22} />, },

@@ -12,12 +12,12 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
   if (!isOpen || !caseData) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-start z-50 pt-10 md:pt-20 px-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-start z-[9999] pt-10 md:pt-20 px-4 ">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
-        className="relative bg-white text-gray-800 rounded-2xl shadow-2xl w-full max-w-5xl p-6 md:p-8 border border-[#fe9a00]/20 overflow-y-auto max-h-[90vh]"
+        className="relative bg-white text-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl p-6 md:p-8 border border-[#fe9a00]/20 overflow-y-auto max-h-[80vh]"
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
