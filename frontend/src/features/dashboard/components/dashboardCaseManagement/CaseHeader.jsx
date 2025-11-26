@@ -71,7 +71,7 @@ const CasesHeader = ({
         </select>
 
         {/* Add Button */}
-        <button
+        {/* <button
           onClick={onAddClick}
           className="bg-slate-700 text-white 
                      px-5 py-2 rounded-lg font-semibold 
@@ -80,7 +80,7 @@ const CasesHeader = ({
                      w-full sm:w-auto"
         >
           + Add Case
-        </button>
+        </button> */}
       </div>
     </div>
   );
