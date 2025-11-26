@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle, Loader2, XCircle } from 'lucide-react';
 
@@ -6,7 +6,7 @@ const FinalApprovalsViewModal = ({
   caseItem,
   onClose,
   onApprove,
-  onRequestChanges
+  // onRequestChanges
 }) => {
   const [loading, setLoading] = useState(false);
 
