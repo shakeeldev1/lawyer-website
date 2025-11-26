@@ -30,6 +30,13 @@ export default function ApprovedLawyerCasesTable ({
       clearInterval(interval)
     }
   }, [])
+
+  // Stage conversion (0,1,2 → Main, Appeal, Cassation)
+  const convertStage = (stageNum) => {
+    const stages = ["Main", "Appeal", "Cassation"]
+    return stages[stageNum] || "Unknown"
+  }
+
   return (
     <div
       className={`bg-white w-full rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 overflow-x-auto`}
@@ -41,11 +48,10 @@ export default function ApprovedLawyerCasesTable ({
               {[
                 'Case #',
                 'Client Name',
-                'Email',
                 'Phone',
                 'Case Type',
                 'Stage',
-                'Additional Info',
+                'Secretary',
                 'Lawyer',
                 'Status',
                 'Actions'
@@ -59,31 +65,54 @@ export default function ApprovedLawyerCasesTable ({
               ))}
             </tr>
           </thead>
+
           <tbody className='divide-y divide-slate-200'>
             {cases.map((c, idx) => (
               <tr
-                key={c.id}
+                key={c._id}
                 className={`${
                   idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
                 } hover:bg-slate-100 transition`}
               >
+                {/* Case number */}
                 <td className='p-4 font-semibold whitespace-nowrap'>
                   {c.caseNumber}
                 </td>
-                <td className='p-4 whitespace-nowrap'>{c.client.name}</td>
-                <td className='p-4 whitespace-nowrap'>{c.client.email}</td>
-                <td className='p-4 whitespace-nowrap'>{c.client.phone}</td>
+
+                {/* Client Name */}
+                <td className='p-4 whitespace-nowrap'>
+                  {c.clientId?.name}
+                </td>
+
+                {/* Phone */}
+                <td className='p-4 whitespace-nowrap'>
+                  {c.clientId?.contactNumber || '—'}
+                </td>
+
+                {/* Case Type */}
                 <td className='p-4 whitespace-nowrap'>{c.caseType}</td>
+
+                {/* Stage */}
                 <td className='p-4 whitespace-nowrap'>
-                  <StatusPill status={c.currentStage} />
+                  <StatusPill status={convertStage(c.currentStage)} />
                 </td>
+
+                {/* Secretary */}
                 <td className='p-4 whitespace-nowrap'>
-                  {c.client.additionalInfo || '—'}
+                  {c.secretary?.name}
                 </td>
-                <td className='p-4 whitespace-nowrap'>{c.assignedLawyer}</td>
+
+                {/* Lawyer */}
+                <td className='p-4 whitespace-nowrap'>
+                  {c.assignedLawyer?.name}
+                </td>
+
+                {/* Status */}
                 <td className='p-4 whitespace-nowrap'>
                   <StatusPill status={c.status} />
                 </td>
+
+                {/* Actions */}
                 <td className='p-4 whitespace-nowrap flex justify-end gap-2'>
                   <button
                     onClick={() => openModal(c)}
@@ -91,6 +120,7 @@ export default function ApprovedLawyerCasesTable ({
                   >
                     <FiChevronRight /> Open
                   </button>
+
                   <button
                     onClick={() => openDeleteModal(c)}
                     className='inline-flex items-center px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 gap-1'
@@ -101,6 +131,7 @@ export default function ApprovedLawyerCasesTable ({
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
     </div>

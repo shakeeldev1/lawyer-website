@@ -1,14 +1,16 @@
 import { useState, useMemo, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 import ApprovedLawyerCasesTable from "../components/ApprovedLawyerPage/ApprovedLawyerCasesTable";
 import ApprovedLawyerViewModal from "../components/ApprovedLawyerPage/ApprovedLawyerViewModal";
 import ModificationModal from "../components/ApprovedLawyerPage/ModificationModal";
 import DeleteModal from "../components/ApprovedLawyerPage/DeleteModal";
-import { usePendingApprovalsQuery } from "../api/approvedLawyerApi";
-
+import { usePendingApprovalsQuery, useRequestModificationBALMutation, useUpdateCaseApprovalMutation } from "../api/approvedLawyerApi";
 export default function ApprovedLawyerPage() {
   const { data, error, isLoading } = usePendingApprovalsQuery();
+  const [updateCaseApproval] = useUpdateCaseApprovalMutation();
+  const [requestModificationBAL] = useRequestModificationBALMutation();
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [cases, setCases] = useState([]);
@@ -31,7 +33,6 @@ export default function ApprovedLawyerPage() {
       setCases(data.data);
     }
   }, [data]);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -88,35 +89,36 @@ export default function ApprovedLawyerPage() {
   };
 
   const handleApproval = (id, status, note = "") => {
-    setCases((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? {
-              ...c,
-              status,
-              modificationMessage: note,
-              notes: note || `${c.notes} | ${status}`,
-              history: [
-                ...(c.history || []),
-                `${new Date().toLocaleString()}: ${status}`,
-              ],
-            }
-          : c
-      )
-    );
+    updateCaseApproval({
+      caseId: id,
+      approvalData: { status, note },
+    });
 
     closeModal();
     closeModificationModal();
   };
 
-  const sendModificationRequest = () => {
+  const sendModificationRequest = async() => {
     const msg =
       modificationMessage.trim() === ""
         ? "Modification requested"
         : modificationMessage;
 
-    handleApproval(selectedCase.id, "Modification Requested", msg);
+    console.log("message for modification....", msg);
+    console.log("selected case....", selectedCase._id);
+
+    const res = await requestModificationBAL({
+      id: selectedCase._id,
+      modificationData: { note: msg },
+    });
+    toast.success(res?.data?.message || "Modification request sent.");
+    closeModal();
+    closeModificationModal();
+
+    // FIXED HERE
+    // handleApproval(selectedCase._id, "Modification Requested", msg);
   };
+
 
   const handleDelete = (id) => {
     setCases((prev) => prev.filter((c) => c.id !== id));
@@ -135,9 +137,8 @@ export default function ApprovedLawyerPage() {
 
   return (
     <div
-      className={`mt-20 min-h-screen px-3 mr-20 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-14"
-      }`}
+      className={`mt-20 min-h-screen px-3 mr-20 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-14"
+        }`}
     >
       <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C]">
         Memorandums Management

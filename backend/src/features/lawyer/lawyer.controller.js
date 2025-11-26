@@ -213,9 +213,8 @@ export const uploadMemorandumFile = asyncHandler(async (req, res) => {
       caseId: caseData._id,
       userId: req.user._id,
       action: "MEMORANDUM_SUBMITTED",
-      description: `Memorandum file submitted for stage ${
-        parseInt(stageIndex) + 1
-      } of case ${caseData.caseNumber}`,
+      description: `Memorandum file submitted for stage ${parseInt(stageIndex) + 1
+        } of case ${caseData.caseNumber}`,
     });
 
     res.status(200).json({
@@ -325,9 +324,8 @@ export const uploadCaseDocuments = asyncHandler(async (req, res) => {
       caseId: caseData._id,
       userId: req.user._id,
       action: "DOCUMENTS_UPLOADED",
-      description: `${req.files.length} document(s) uploaded for stage ${
-        parseInt(stageIndex) + 1
-      } of case ${caseData.caseNumber}`,
+      description: `${req.files.length} document(s) uploaded for stage ${parseInt(stageIndex) + 1
+        } of case ${caseData.caseNumber}`,
     });
 
     res.status(200).json({
@@ -491,8 +489,8 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const cases = await Case.find({
     // approvingLawyer: req.user._id,
-    // status: "PendingApproval",
-    // archived: false,
+    status: "PendingApproval" || "PendingSignature",
+    archived: false,
   })
     .populate("clientId", "name contactNumber")
     .populate("assignedLawyer", "name email")
@@ -501,7 +499,6 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     .skip((page - 1) * limit)
     .sort({ updatedAt: -1 });
 
-  console.log("Cases fetched:", cases[0]);
   const count = await Case.countDocuments({
     approvingLawyer: req.user._id,
     status: "PendingApproval",
@@ -513,6 +510,43 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     data: cases,
     totalPages: Math.ceil(count / limit),
     currentPage: page,
+  });
+});
+
+export const updateStatusPendingSignature = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+  caseData.status = req.body.status || "PendingSignature";
+  await caseData.save();
+  res.status(200).json({
+    success: true,
+    message: "Case status updated to Pending Signature",
+    data: caseData,
+  });
+})
+
+export const requestModificationBAL = asyncHandler(async (req, res) => {
+  console.log("api is running....");
+  const { note } = req.body;
+  console.log("body data....",req.params.id, note);
+  const caseData = await Case.findById(req.params.id);
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+  caseData.status = "UnderReview";
+  caseData.modificationRequests.push({
+    requestedBy: req.user._id,
+    note,
+    requestedAt: new Date(),
+  });
+  await caseData.save();
+  res.status(200).json({
+    success: true,
+    message: "Modification request sent to lawyer",
+    data: caseData,
   });
 });
 
@@ -860,9 +894,8 @@ export const getNotifications = asyncHandler(async (req, res) => {
             message:
               daysUntil === 0
                 ? `Hearing for ${stageName} stage is today!`
-                : `Hearing for ${stageName} stage in ${daysUntil} day${
-                    daysUntil > 1 ? "s" : ""
-                  }.`,
+                : `Hearing for ${stageName} stage in ${daysUntil} day${daysUntil > 1 ? "s" : ""
+                }.`,
             status: daysUntil <= 3 ? "unread" : "read",
             timestamp: hearingDate,
             daysUntil,
