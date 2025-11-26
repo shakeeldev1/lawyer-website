@@ -12,7 +12,7 @@ const RemindersConfirmationModal = ({ message, onClose, type = "success" }) => {
   const { icon, title } = iconStyles[type] || iconStyles.info;
 
   return (
-    <div className="px-4 fixed inset-0 bg-black/50 flex justify-center items-center z-50 backdrop-blur-sm">
+    <div className="px-4 fixed inset-0 bg-black/50 flex justify-center items-center z-[9999] backdrop-blur-sm">
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

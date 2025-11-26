@@ -1,73 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Eye } from "lucide-react";
 
 const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+
+    const handleSidebarToggle = () => {
+      const sidebar = document.querySelector("aside");
+      if (sidebar) setSidebarOpen(sidebar.classList.contains("w-64"));
+    };
+
+    window.addEventListener("resize", handleResize);
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
+  }, []);
+
   if (!reminders || reminders.length === 0)
     return <p className="text-center mt-6">No reminders found.</p>;
 
-  const renderStatus = (reminder) =>
-    reminder.isCompleted ? "Completed" : "Pending";
-
+  const renderStatus = (reminder) => (reminder.isCompleted ? "Completed" : "Pending");
   const renderStatusClass = (reminder) =>
     reminder.isCompleted
       ? "bg-green-500/20 text-green-800 border border-green-500/30"
       : "bg-yellow-500/20 text-yellow-800 border border-yellow-500/30";
 
   return (
-    <div className="mt-6">
-      {/* Desktop / Tablet */}
-      <div className="overflow-x-auto bg-white text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20">
-        <table className="min-w-full text-sm border-collapse">
-          <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
-            <tr>
-              {["Case Name", "Stage", "Type", "Lawyer", "Date", "Status", "Actions"].map((h, i) => (
-                <th key={i} className={`py-2 px-4 text-left whitespace-nowrap`}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {reminders.map((r, idx) => (
-              <tr key={r._id} className={`${idx % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"} hover:bg-[#E1E1E2] transition-all border-t border-[#fe9a00]/10`}>
-                <td className="px-4 py-2">{r.caseName}</td>
-                <td className="px-4 py-2">{r.stage}</td>
-                <td className="px-4 py-2">{r.type}</td>
-                <td className="px-4 py-2">{r.lawyer || "-"}</td>
-                <td className="px-4 py-2">{new Date(r.date).toLocaleDateString()}</td>
-                <td className="px-4 py-2 text-center">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${renderStatusClass(r)}`}>
-                    {renderStatus(r)}
-                  </span>
-                </td>
-                <td className="px-4 py-2 text-center">
-                  <div className="flex justify-left gap-2 flex-wrap">
-                    <button
-                      onClick={() => onAction("View", r)}
-                      className="flex items-center gap-1 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
-                    >
-                      <Eye className="w-3 h-3" /> View
-                    </button>
-                    <button
-                      onClick={() => onAction("Resend", r)}
-                      className="text-green-600 hover:text-white hover:bg-green-500/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
-                    >
-                      Resend
-                    </button>
-                    {!r.isCompleted && (
-                      <button
-                        onClick={() => onAction("Mark Complete", r)}
-                        className="text-gray-600 hover:text-[#fe9a00] hover:bg-[#fe9a00]/20 px-3 py-1 rounded-full text-xs font-medium transition-all"
-                      >
-                        Done
-                      </button>
-                    )}
-                  </div>
-                </td>
+     <div
+      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? "lg:w-[980px] md:w-[420px]" : "lg:w-full md:w-[640px]"
+      }`}
+    >
+      {/* ===== Desktop View ===== */}
+      <div className="block">
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto text-sm min-w-[700px] border-collapse">
+            <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
+              <tr className="whitespace-nowrap">
+                {["Case Name", "Stage", "Type", "Lawyer", "Date", "Status", "Actions"].map(
+                  (h, i) => (
+                    <th key={i} className="py-2 px-4 text-left whitespace-nowrap">
+                      {h}
+                    </th>
+                  )
+                )}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {reminders.map((r, idx) => (
+                <tr
+                  key={r._id}
+                  className={`${
+                    idx % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"
+                  } hover:bg-[#E1E1E2] transition-all border-t border-[#fe9a00]/10 whitespace-nowrap`}
+                >
+                  <td className="px-4 py-1">{r.caseName}</td>
+                  <td className="px-4 py-1">{r.stage}</td>
+                  <td className="px-4 py-1">{r.type}</td>
+                  <td className="px-4 py-1">{r.lawyer || "-"}</td>
+                  <td className="px-4 py-1">{new Date(r.date).toLocaleDateString()}</td>
+                  <td className="px-4 py-1 text-left">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${renderStatusClass(
+                        r
+                      )}`}
+                    >
+                      {renderStatus(r)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 text-center whitespace-nowrap">
+                    <div className="flex justify-left gap-2 flex-nowrap">
+                      <button
+                        onClick={() => onAction("View", r)}
+                        className="flex  items-center gap-1 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                      >
+                        <Eye className="w-3 h-3" /> View
+                      </button>
+                      <button
+                        onClick={() => onAction("Resend", r)}
+                        className="text-green-600 hover:text-white hover:bg-green-500/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                      >
+                        Resend
+                      </button>
+                      {!r.isCompleted && (
+                        <button
+                          onClick={() => onAction("Mark Complete", r)}
+                          className="text-gray-600 hover:text-[#fe9a00] hover:bg-[#fe9a00]/20 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                        >
+                          Done
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
@@ -86,7 +120,7 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
           </div>
         )}
       </div>
-    </div>
+     </div>
   );
 };
 
