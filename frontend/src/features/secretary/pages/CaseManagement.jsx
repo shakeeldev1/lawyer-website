@@ -7,6 +7,7 @@ import ViewCaseModal from "../components/cases/ViewCaseModal";
 import CaseDeleteModal from "../components/cases/CaseDeleteModal";
 import ArchiveCaseModal from "../components/cases/ArchiveCaseModal";
 import AddReminderModal from "../components/cases/AddReminderModal";
+import AddHearingDateModal from "../components/cases/AddHearingDateModal";
 import {
   useGetAllCasesQuery,
   useUpdateCaseMutation,
@@ -39,6 +40,7 @@ const CaseManagement = () => {
   const [deleteCase, setdeleteCase] = useState(null);
   const [archiveCase, setarchiveCase] = useState(null);
   const [reminderCase, setReminderCase] = useState(null);
+  const [hearingCase, setHearingCase] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -88,7 +90,10 @@ const CaseManagement = () => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
     const handleSidebarToggle = () => {
       const sidebar = document.querySelector("aside");
-      if (sidebar) setSidebarOpen(sidebar.classList.contains("w-64"));
+      if (sidebar) {
+        const width = sidebar.offsetWidth;
+        setSidebarOpen(width > 100);
+      }
     };
 
     window.addEventListener("resize", handleResize);
@@ -178,27 +183,27 @@ const CaseManagement = () => {
 
   return (
     <div
-      className={`max-w-6xl min-h-screen transition-all duration-300 ease-in-out mt-16 sm:px-2 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 mt-8 sm:py-4 ${
+        sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
       }`}
     >
-      {/* Header - Updated to match Archive styling */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 pl-5">
+      {/* Header - Compact and minimalist */}
+      <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+          <h2 className="text-base sm:text-lg font-bold text-slate-800">
             Case Management
           </h2>
-          <p className="text-slate-600 mt-1">
+          <p className="text-[10px] sm:text-[11px] text-slate-600 mt-0.5">
             {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""}{" "}
             found
           </p>
         </div>
-        <div className="flex gap-3 mt-4 lg:mt-0">
+        <div className="flex gap-2">
           <button
             onClick={handleOpenAddModal}
-            className="flex items-center gap-2 bg-[#11408bee] hover:bg-[#0f3674] text-white px-4 py-2 rounded-lg transition-all"
+            className="flex items-center gap-1.5 bg-[#11408bee] hover:bg-[#0f3674] text-white px-3 py-1.5 rounded-lg transition-all text-xs"
           >
-            <Plus size={18} /> Add Case
+            <Plus size={14} /> Add Case
           </button>
         </div>
       </div>
@@ -210,13 +215,18 @@ const CaseManagement = () => {
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-slate-800"></div>
         </div>
       )}
       {error && (
-        <div className="text-center py-10 text-red-600">
-          Error loading cases: {error?.data?.message || "Something went wrong"}
+        <div className="text-center py-8">
+          <p className="text-red-600 text-xs font-medium">
+            Error loading cases
+          </p>
+          <p className="text-red-500 text-xs mt-1">
+            {error?.data?.message || "Something went wrong"}
+          </p>
         </div>
       )}
 
@@ -229,6 +239,7 @@ const CaseManagement = () => {
           onDeleteCase={handleDeleteCase}
           onArchive={handleArchiveCase}
           onAddReminder={(caseData) => setReminderCase(caseData)}
+          onScheduleHearing={(caseData) => setHearingCase(caseData)}
         />
       )}
 
@@ -253,6 +264,13 @@ const CaseManagement = () => {
         isOpen={!!reminderCase}
         onClose={() => setReminderCase(null)}
         caseData={reminderCase}
+      />
+
+      {/* ADD HEARING DATE MODAL */}
+      <AddHearingDateModal
+        isOpen={!!hearingCase}
+        onClose={() => setHearingCase(null)}
+        caseData={hearingCase}
       />
 
       <AddCase

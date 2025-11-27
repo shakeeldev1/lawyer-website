@@ -50,10 +50,10 @@ const ClientInfoForm = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Client Selection Toggle */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-center gap-3">
+      <div className="bg-blue-50 border border-blue-200 rounded p-3">
+        <div className="flex items-center gap-2">
           <input
             type="checkbox"
             id="useExisting"
@@ -64,22 +64,22 @@ const ClientInfoForm = ({
                 setSelectedClientId("");
               }
             }}
-            className="w-4 h-4 text-blue-600"
+            className="w-3 h-3 text-blue-600"
           />
           <label
             htmlFor="useExisting"
-            className="text-sm font-medium text-gray-700"
+            className="text-xs font-medium text-slate-700"
           >
             Select from existing clients
           </label>
         </div>
 
         {useExistingClient && (
-          <div className="mt-3">
+          <div className="mt-2">
             <select
               value={selectedClientId}
               onChange={handleClientSelect}
-              className="w-full rounded-lg p-2 border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded px-2 py-1.5 border border-blue-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
             >
               <option value="">-- Select a client --</option>
               {clientsData?.clients?.map((client) => (
@@ -93,10 +93,10 @@ const ClientInfoForm = ({
       </div>
 
       {/* Personal Information Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Client Name */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Client Name *
           </label>
           <input
@@ -105,14 +105,14 @@ const ClientInfoForm = ({
             placeholder="Enter name"
             value={clientInfo.name}
             onChange={onChange}
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20 "
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
             required
           />
         </div>
 
         {/* Contact Number */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Contact Number *
           </label>
           <input
@@ -121,14 +121,14 @@ const ClientInfoForm = ({
             placeholder="Enter contact number"
             value={clientInfo.contact}
             onChange={onChange}
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200  border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
             required
           />
         </div>
 
         {/* Email */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Email Address *
           </label>
           <input
@@ -137,14 +137,14 @@ const ClientInfoForm = ({
             placeholder="Enter email address"
             value={clientInfo.email}
             onChange={onChange}
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200  border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
             required
           />
         </div>
 
         {/* National ID / Passport */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             National ID / Passport *
           </label>
           <input
@@ -153,17 +153,17 @@ const ClientInfoForm = ({
             placeholder="Enter ID or passport number"
             value={clientInfo.nationalId}
             onChange={onChange}
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200  border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
             required
           />
         </div>
       </div>
 
       {/* Full Width Fields */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {/* Address */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Address *
           </label>
           <textarea
@@ -171,24 +171,24 @@ const ClientInfoForm = ({
             placeholder="Enter complete address"
             value={clientInfo.address}
             onChange={onChange}
-            rows="3"
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200  border border-amber-600/20"
+            rows="2"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs resize-y"
             required
           />
         </div>
 
         {/* Additional Information */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Additional Information
           </label>
           <textarea
             name="additionalInformation"
-            placeholder="Any additional notes or information about the client"
+            placeholder="Any additional notes"
             value={clientInfo.additionalInformation}
             onChange={onChange}
-            rows="3"
-            className="w-full rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200  border border-amber-600/20"
+            rows="2"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs resize-y"
           />
         </div>
       </div>

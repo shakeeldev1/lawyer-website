@@ -50,31 +50,31 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
   );
 
   // ✅ Sync with sidebar state
-   useEffect(() => {
-     const handleResize = () => {
-       const desktop = window.innerWidth >= 1024;
-       setSidebarOpen(desktop);
-     };
- 
-     const handleSidebarToggle = () => {
-       // Listen for sidebar state changes from the sidebar component
-       const sidebar = document.querySelector("aside");
-       if (sidebar) {
-         const isOpen = sidebar.classList.contains("w-64");
-         setSidebarOpen(isOpen);
-       }
-     };
- 
-     window.addEventListener("resize", handleResize);
- 
-     // Check sidebar state periodically (you can use a better state management approach)
-     const interval = setInterval(handleSidebarToggle, 100);
- 
-     return () => {
-       window.removeEventListener("resize", handleResize);
-       clearInterval(interval);
-     };
-   }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setSidebarOpen(desktop);
+    };
+
+    const handleSidebarToggle = () => {
+      // Listen for sidebar state changes from the sidebar component
+      const sidebar = document.querySelector("aside");
+      if (sidebar) {
+        const isOpen = sidebar.classList.contains("w-64");
+        setSidebarOpen(isOpen);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Check sidebar state periodically (you can use a better state management approach)
+    const interval = setInterval(handleSidebarToggle, 100);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearInterval(interval);
+    };
+  }, []);
 
   // ▌ DATE FORMATTER
   const formatDate = (iso) => (iso ? new Date(iso).toLocaleString() : "—");
@@ -101,62 +101,46 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
     );
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 md:px-4">
-      {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-3 p-4 border-b border-gray-200 bg-gray-50">
-        <div className="relative w-full md:w-1/3">
-          <FiSearch className="absolute left-3 top-3 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by case number, client name, email or phone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-600 focus:border-slate-600"
-          />
-        </div>
-
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slate-600"
-          >
-            {statuses.map((s) => (
-              <option key={s} value={s}>
-                {s === "all" ? "All Statuses" : s}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="bg-white rounded border border-slate-200 overflow-hidden">
+      {/* Filter */}
+      <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-slate-200 bg-slate-50">
+        <span className="text-[10px] text-slate-600 font-medium">
+          {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""}
+        </span>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="px-2 py-1 border border-slate-300 rounded text-[10px] focus:ring-1 focus:ring-slate-600"
+        >
+          {statuses.map((s) => (
+            <option key={s} value={s}>
+              {s === "all" ? "All Statuses" : s}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Table */}
-        <div
-      className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
-    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
-  `}
-    >
-      {/* ✅ Responsive container width based on sidebar */}
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse">
-        <table className="w-full min-w-[1000px] text-left border-collapse">
-          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-slate-800 text-white hidden md:table-header-group">
             <tr>
               {[
-                "Case #",
-                "Client Name",
-                "Email",
-                "Phone",
-                "Type",
-                "Stage",
-                "Hearing",
-                "Status",
-                "Actions",
+                { label: "Case #", class: "" },
+                { label: "Client", class: "" },
+                { label: "Email", class: "hidden lg:table-cell" },
+                { label: "Phone", class: "hidden xl:table-cell" },
+                { label: "Type", class: "" },
+                { label: "Stage", class: "hidden lg:table-cell" },
+                { label: "Hearing", class: "hidden xl:table-cell" },
+                { label: "Status", class: "" },
+                { label: "Actions", class: "text-right" },
               ].map((h) => (
                 <th
-                  key={h}
-                  className="p-4 text-sm font-semibold uppercase whitespace-nowrap"
+                  key={h.label}
+                  className={`px-3 py-2 text-[10px] font-semibold uppercase ${h.class}`}
                 >
-                  {h}
+                  {h.label}
                 </th>
               ))}
             </tr>
@@ -164,69 +148,128 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
 
           <tbody className="divide-y divide-slate-200">
             {filteredCases.map((c, idx) => (
-              <tr
-                key={c.id}
-                className={`transition-all duration-200 hover:bg-slate-50 ${
-                  idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                }`}
-              >
-                <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
-                  {c.caseNumber}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientName}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientEmail}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientPhone}
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
-                    {c.caseType}
-                  </span>
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <StatusPill status={c.assignedStage} />
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  {c.hearing?.nextHearing ? (
-                    <div className="flex flex-col text-xs">
-                      <span>{formatDate(c.hearing.nextHearing)}</span>
-                      {threeDaysBefore(c.hearing.nextHearing) && (
-                        <span className="text-orange-600 flex items-center gap-1">
-                          <FiClock /> 3-day reminder
+              <React.Fragment key={c.id}>
+                {/* Desktop Row */}
+                <tr className="hidden md:table-row hover:bg-slate-50">
+                  <td className="px-3 py-2 text-xs font-semibold text-slate-800">
+                    {c.caseNumber}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-800">
+                    {c.clientName}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-700 hidden lg:table-cell truncate max-w-[150px]">
+                    {c.clientEmail}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-700 hidden xl:table-cell">
+                    {c.clientPhone}
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-medium">
+                      {c.caseType}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 hidden lg:table-cell">
+                    <StatusPill status={c.assignedStage} />
+                  </td>
+                  <td className="px-3 py-2 hidden xl:table-cell">
+                    {c.hearing?.nextHearing ? (
+                      <div className="flex flex-col text-[10px]">
+                        <span className="text-slate-700">
+                          {formatDate(c.hearing.nextHearing)}
                         </span>
-                      )}
+                        {threeDaysBefore(c.hearing.nextHearing) && (
+                          <span className="text-orange-600 flex items-center gap-0.5">
+                            <FiClock size={10} /> Alert
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-slate-500">—</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2">
+                    <StatusPill status={c.status} />
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="flex justify-end gap-1">
+                      <button
+                        onClick={() => onOpen(c)}
+                        className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                        title="Open"
+                      >
+                        <FiChevronRight size={16} />
+                      </button>
+                      <button
+                        onClick={() => onDelete(c)}
+                        className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition"
+                        title="Delete"
+                      >
+                        <FiTrash2 size={16} />
+                      </button>
                     </div>
-                  ) : (
-                    "—"
-                  )}
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <StatusPill status={c.status} />
-                </td>
-                <td className="p-4 whitespace-nowrap flex justify-end gap-2">
-                  <button
-                    onClick={() => onOpen(c)}
-                    className="inline-flex items-center px-3 py-2 text-sm rounded bg-slate-800 text-white hover:bg-slate-700"
-                  >
-                    <FiChevronRight /> Open
-                  </button>
-                  <button
-                    onClick={() => onDelete(c)}
-                    className="inline-flex items-center px-3 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-                  >
-                    <FiTrash2 />
-                  </button>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+
+                {/* Mobile Card */}
+                <tr className="md:hidden">
+                  <td colSpan="9" className="p-0">
+                    <div className="p-3 border-b border-slate-200 hover:bg-slate-50">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <h3 className="text-xs font-semibold text-slate-800">
+                            {c.caseNumber}
+                          </h3>
+                          <p className="text-[10px] text-slate-500 mt-0.5">
+                            {c.clientName}
+                          </p>
+                        </div>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => onOpen(c)}
+                            className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                          >
+                            <FiChevronRight size={16} />
+                          </button>
+                          <button
+                            onClick={() => onDelete(c)}
+                            className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition"
+                          >
+                            <FiTrash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-1 text-[10px]">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Type:</span>
+                          <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium">
+                            {c.caseType}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Stage:</span>
+                          <StatusPill status={c.assignedStage} />
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Status:</span>
+                          <StatusPill status={c.status} />
+                        </div>
+                        {c.hearing?.nextHearing && (
+                          <div className="flex justify-between pt-1 border-t border-slate-200 mt-1">
+                            <span className="text-slate-500">Hearing:</span>
+                            <span className="text-slate-700">
+                              {formatDate(c.hearing.nextHearing)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
     </div>
   );
 }

@@ -11,32 +11,34 @@ export default function DeleteModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-[9999]">
-      <div className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Confirm Delete
-        </h2>
-        <p className="text-gray-600 mb-6">
-          Are you sure you want to delete{" "}
-          <span className="font-medium">{name}</span>? This action cannot be
-          undone.
-        </p>
-        <div className="flex justify-end gap-3">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[10000] p-4">
+      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full">
+        <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700">
+          <h2 className="text-sm font-semibold text-white">Confirm Delete</h2>
+        </div>
+        <div className="p-4">
+          <p className="text-xs text-slate-700">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{name}</span>? This action cannot be
+            undone.
+          </p>
+        </div>
+        <div className="flex justify-end gap-2 px-4 py-3 bg-slate-50 rounded-b-lg">
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="px-4 py-2 rounded border text-gray-700 hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 rounded border border-slate-300 text-slate-700 text-xs hover:bg-slate-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={onDelete}
             disabled={isDeleting}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-3 py-1.5 rounded bg-red-600 text-white text-xs hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
           >
             {isDeleting ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Deleting...
               </>
             ) : (

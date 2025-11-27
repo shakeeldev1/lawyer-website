@@ -66,11 +66,9 @@ export default function LawyerArchive() {
 
   return (
     <div
-      className={`min-h-screen 
-                 px-3 sm:px-4 md:px-6 lg:px-4
-                 py-3 sm:py-4 md:py-5
-                 transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${
+        sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
+      }`}
     >
       <ArchiveHeader caseCount={filteredCases.length} />
 

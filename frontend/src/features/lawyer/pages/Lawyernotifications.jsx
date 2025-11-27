@@ -69,19 +69,14 @@ export default function LawyerNotifications() {
   if (isLoading) {
     return (
       <div
-        className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+        className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 ${
+          sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
         }`}
       >
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight mb-6 mt-20">
-          Notifications
-        </h1>
         <div className="flex items-center justify-center h-64">
-          <div className="flex flex-col items-center gap-3">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-800"></div>
-            <p className="text-slate-600 font-medium">
-              Loading notifications...
-            </p>
+          <div className="flex flex-col items-center gap-2">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-slate-800"></div>
+            <p className="text-xs text-slate-600">Loading notifications...</p>
           </div>
         </div>
       </div>
@@ -91,21 +86,18 @@ export default function LawyerNotifications() {
   if (isError) {
     return (
       <div
-        className={`min-h-screen px-3 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+        className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${
+          sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
         }`}
       >
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight mb-6 mt-20">
-          Notifications
-        </h1>
-        <div className="bg-red-50 p-6 rounded-xl border border-red-200">
-          <div className="flex items-center gap-3 text-red-600">
-            <AlertCircle className="w-5 h-5" />
+        <div className="bg-red-50 p-3 rounded border border-red-200">
+          <div className="flex items-center gap-2 text-red-600">
+            <AlertCircle size={14} />
             <div>
-              <p className="font-medium">Failed to load notifications</p>
-              <p className="text-sm text-red-500">
-                Please try refreshing the page
+              <p className="text-xs font-medium">
+                Failed to load notifications
               </p>
+              <p className="text-[10px] text-red-500">Please try refreshing</p>
             </div>
           </div>
         </div>
@@ -117,20 +109,25 @@ export default function LawyerNotifications() {
 
   return (
     <div
-      className={`min-h-screen 
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
-                 transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${
+        sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
+      }`}
     >
-      <div className="flex items-center justify-between mb-6 mt-20">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
-          Notifications
-        </h1>
+      {/* Header - Compact */}
+      <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
+        <div>
+          <h2 className="text-base sm:text-lg font-bold text-slate-800">
+            Notifications
+          </h2>
+          <p className="text-[10px] sm:text-[11px] text-slate-600 mt-0.5">
+            {filteredNotifications.length} notification
+            {filteredNotifications.length !== 1 ? "s" : ""}
+          </p>
+        </div>
         {unreadCount > 0 && (
-          <div className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full border border-blue-200">
-            <Bell className="w-4 h-4 text-blue-600" />
-            <span className="text-blue-700 font-semibold">
+          <div className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded border border-blue-200">
+            <Bell size={12} className="text-blue-600" />
+            <span className="text-[10px] text-blue-700 font-medium">
               {unreadCount} unread
             </span>
           </div>
@@ -138,20 +135,20 @@ export default function LawyerNotifications() {
       </div>
 
       {/* Search & Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2 w-full md:w-1/3">
-          <Search size={18} />
+      <div className="flex flex-col md:flex-row gap-2 mb-3">
+        <div className="flex items-center gap-1.5 border border-slate-300 rounded px-2 py-1.5 w-full md:w-1/3">
+          <Search size={12} className="text-slate-400" />
           <input
             type="text"
-            placeholder="Search by case, client, or type"
-            className="outline-none w-full"
+            placeholder="Search notifications..."
+            className="outline-none w-full text-xs"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         <select
-          className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-1/6"
+          className="border border-slate-300 rounded px-2 py-1.5 text-xs w-full md:w-auto focus:ring-1 focus:ring-slate-600"
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
         >
@@ -163,7 +160,7 @@ export default function LawyerNotifications() {
         </select>
 
         <select
-          className="border border-gray-300 rounded-lg px-3 py-2 w-full md:w-1/6"
+          className="border border-slate-300 rounded px-2 py-1.5 text-xs w-full md:w-auto focus:ring-1 focus:ring-slate-600"
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
         >
@@ -176,37 +173,39 @@ export default function LawyerNotifications() {
 
       {/* Notifications List */}
       {filteredNotifications.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {filteredNotifications.map((n) => (
             <div
               key={n.id}
-              className={`p-4 rounded-lg border flex flex-col md:flex-row justify-between items-start md:items-center gap-3 shadow-sm hover:shadow-md transition ${
+              className={`p-3 rounded border flex flex-col md:flex-row justify-between items-start md:items-center gap-2 hover:bg-slate-50 transition ${
                 n.status === "unread"
-                  ? "bg-blue-50 border-blue-300"
-                  : "bg-white border-gray-200"
+                  ? "bg-blue-50 border-blue-200"
+                  : "bg-white border-slate-200"
               }`}
             >
-              <div className="flex flex-col md:flex-row md:items-center gap-3">
-                <span className="font-semibold">{n.caseNumber}</span>
-                <span className="text-gray-700">{n.clientName}</span>
-                <span className="text-gray-600 text-sm">{n.caseType}</span>
-                <span className="text-sm font-medium px-2 py-1 bg-gray-200 rounded">
+              <div className="flex flex-col md:flex-row md:items-center gap-2 flex-1">
+                <span className="text-xs font-semibold text-slate-800">
+                  {n.caseNumber}
+                </span>
+                <span className="text-xs text-slate-700">{n.clientName}</span>
+                <span className="text-[10px] text-slate-600">{n.caseType}</span>
+                <span className="text-[10px] font-medium px-1.5 py-0.5 bg-slate-100 rounded">
                   {n.stage}
                 </span>
-                <span className="text-xs font-medium px-2 py-1 bg-slate-200 rounded">
+                <span className="text-[9px] font-medium px-1.5 py-0.5 bg-slate-200 rounded">
                   {n.type}
                 </span>
               </div>
 
-              <div className="flex flex-col md:flex-row md:items-center gap-3">
-                <p className="text-gray-800 text-sm">{n.message}</p>
-                <span className="text-gray-500 text-xs">
-                  {new Date(n.timestamp).toLocaleString()}
+              <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
+                <p className="text-xs text-slate-800">{n.message}</p>
+                <span className="text-[9px] text-slate-500">
+                  {new Date(n.timestamp).toLocaleDateString()}
                 </span>
                 {n.status === "unread" && (
                   <button
                     onClick={() => handleMarkAsRead(n.id)}
-                    className="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1 rounded text-sm whitespace-nowrap"
+                    className="bg-slate-700 hover:bg-slate-800 text-white px-2 py-1 rounded text-[10px] whitespace-nowrap"
                   >
                     Mark Read
                   </button>
@@ -216,12 +215,12 @@ export default function LawyerNotifications() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <Bell className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-gray-600">
+        <div className="text-center py-8 bg-white rounded border border-slate-200">
+          <Bell size={32} className="text-slate-400 mx-auto mb-2" />
+          <h3 className="text-sm font-medium text-slate-600">
             No notifications
           </h3>
-          <p className="text-gray-500 mt-1">You're all caught up!</p>
+          <p className="text-xs text-slate-500 mt-1">You're all caught up!</p>
         </div>
       )}
     </div>

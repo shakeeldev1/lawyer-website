@@ -2,107 +2,102 @@ import { motion } from "framer-motion";
 import { X, Archive, AlertCircle, Briefcase } from "lucide-react";
 
 const ArchiveCaseModal = ({ isOpen, caseItem, onClose, onConfirm }) => {
-    if (!isOpen || !caseItem) return null;
+  if (!isOpen || !caseItem) return null;
 
-    return (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center !z-[10000] p-4">
-            <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col"
-            >
-                {/* Header */}
-                <div className="flex items-center bg-[#24344f] justify-between border-b border-gray-200 p-5 rounded-t-2xl">
-                    <h3 className="text-xl font-semibold flex items-center gap-2 text-white">
-                        <Archive className="w-5 h-5 text-[#fe9a00]" />
-                        Archive Case
-                    </h3>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-[#fe9a00] transition-colors"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Body */}
-                <div className="overflow-y-auto space-y-6 p-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-100 rounded-full">
-                            <Archive className="text-blue-500" size={24} />
-                        </div>
-                        <div>
-                            <p className="font-medium text-gray-800 text-lg">
-                                Archive this case?
-                            </p>
-                            <p className="text-sm text-gray-600 mt-1">
-                                Case ID: <strong className="text-[#fe9a00]">{caseItem.id}</strong>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                        <div className="space-y-2">
-                            <p className="font-medium text-gray-800">{caseItem.case?.description || 'Case'}</p>
-                            {caseItem.client && (
-                                <p className="text-sm text-gray-600">
-                                    Client: <strong className="text-[#fe9a00]">{caseItem.client?.name}</strong>
-                                </p>
-                            )}
-                            {caseItem.case?.status && (
-                                <p className="text-sm text-gray-600">
-                                    Current Status: <span className="capitalize">{caseItem.case.status}</span>
-                                </p>
-                            )}
-                            {caseItem.case?.hearingDate && (
-                                <p className="text-sm text-gray-600">
-                                    Hearing Date: {caseItem.case.hearingDate}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                        <div className="flex items-start gap-3">
-                            <AlertCircle className="text-blue-500 mt-0.5 flex-shrink-0" size={18} />
-                            <div>
-                                <p className="text-sm text-gray-700 font-semibold text-blue-600 mb-1">
-                                    What happens when you archive a case?
-                                </p>
-                                <ul className="text-sm text-gray-600 space-y-1">
-                                    <li>• Case will be moved to archives</li>
-                                    <li>• All data will be preserved</li>
-                                    <li>• Case will no longer appear in active cases</li>
-                                    <li>• Can be restored anytime from archives</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="flex justify-end px-8 py-4 border-t border-gray-200 bg-gray-50">
-                    <button
-                        onClick={onClose}
-                        className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all duration-200 mr-3"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={onConfirm}
-                        className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all duration-200"
-                    >
-                        <Archive className="w-4 h-4" />
-                        Archive Case
-                    </button>
-                </div>
-                
-                {/* Gradient Border Bottom */}
-                <div className="h-2 bg-gradient-to-r from-[#fe9a00] to-[#24344f] rounded-b-2xl"></div>
-            </motion.div>
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center !z-[10000] p-4">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="relative bg-white rounded-lg shadow-lg w-full max-w-md flex flex-col"
+      >
+        {/* Header */}
+        <div className="flex items-center bg-slate-800 justify-between p-3 rounded-t-lg">
+          <h3 className="text-sm font-semibold flex items-center gap-1.5 text-white">
+            <Archive className="w-4 h-4" />
+            Archive Case
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-slate-300 hover:text-white transition-colors p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
-    );
+
+        {/* Body */}
+        <div className="space-y-3 p-4">
+          <div className="flex items-start gap-2">
+            <Archive
+              className="text-purple-600 flex-shrink-0 mt-0.5"
+              size={16}
+            />
+            <div>
+              <p className="font-semibold text-slate-800 text-xs">
+                Archive Case {caseItem.id}?
+              </p>
+              <p className="text-[10px] text-slate-600 mt-0.5">
+                {caseItem.client?.name} - {caseItem.case?.description || "Case"}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded p-2">
+            <div className="space-y-1 text-[10px] text-slate-600">
+              {caseItem.case?.status && (
+                <p>
+                  Status:{" "}
+                  <span className="font-medium text-slate-800">
+                    {caseItem.case.status}
+                  </span>
+                </p>
+              )}
+              {caseItem.case?.hearingDate && (
+                <p>
+                  Hearing:{" "}
+                  <span className="font-medium text-slate-800">
+                    {caseItem.case.hearingDate}
+                  </span>
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-purple-50 border border-purple-200 rounded p-2">
+            <div className="flex items-start gap-1.5">
+              <AlertCircle
+                className="text-purple-600 flex-shrink-0"
+                size={12}
+              />
+              <ul className="text-[10px] text-slate-700 space-y-0.5">
+                <li>• Moved to archives</li>
+                <li>• Data preserved</li>
+                <li>• Can be restored anytime</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-2 px-4 py-2 border-t border-slate-200 bg-slate-50 rounded-b-lg">
+          <button
+            onClick={onClose}
+            className="px-3 py-1 border border-slate-300 text-slate-700 rounded text-xs hover:bg-white transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex items-center gap-1 px-3 py-1 bg-purple-600 text-white rounded text-xs font-medium hover:bg-purple-700 transition"
+          >
+            <Archive className="w-3 h-3" />
+            Archive
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
 };
 
 export default ArchiveCaseModal;

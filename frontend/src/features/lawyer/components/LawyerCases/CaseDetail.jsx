@@ -18,148 +18,195 @@ export default function CaseDetail({ selectedCase }) {
   } = selectedCase;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Basic Info */}
-      <div className="bg-white shadow p-4 rounded-lg">
-        <h2 className="text-xl font-bold mb-2">{caseNumber}</h2>
-        <p>
-          <strong>Case Type:</strong> {caseType || "—"}
-        </p>
-        <p>
-          <strong>Status:</strong> {status || "—"}
-        </p>
-        <p>
-          <strong>Client Name:</strong> {clientName || "—"}
-        </p>
-        <p>
-          <strong>Client Email:</strong> {clientEmail || "—"}
-        </p>
-        <p>
-          <strong>Client Phone:</strong> {clientPhone || "—"}
-        </p>
-        {hearing && (
-          <p>
-            <strong>Hearing Date:</strong> {new Date(hearing).toLocaleString()}
-          </p>
-        )}
+      <div className="bg-white shadow-sm border border-slate-200 p-3 rounded">
+        <h2 className="text-sm font-semibold mb-2 text-slate-800">
+          {caseNumber}
+        </h2>
+        <div className="space-y-1.5 text-xs">
+          <div className="flex justify-between">
+            <span className="text-slate-500">Case Type:</span>
+            <span className="text-slate-700 font-medium">
+              {caseType || "—"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Status:</span>
+            <span className="text-slate-700 font-medium">{status || "—"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Client Name:</span>
+            <span className="text-slate-700 font-medium">
+              {clientName || "—"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Email:</span>
+            <span className="text-slate-700">{clientEmail || "—"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-500">Phone:</span>
+            <span className="text-slate-700">{clientPhone || "—"}</span>
+          </div>
+          {hearing && (
+            <div className="flex justify-between">
+              <span className="text-slate-500">Hearing:</span>
+              <span className="text-slate-700">
+                {new Date(hearing).toLocaleString()}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stages */}
-      <div className="bg-white shadow p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Stages</h3>
+      <div className="bg-white shadow-sm border border-slate-200 p-3 rounded">
+        <h3 className="text-xs font-semibold mb-2 text-slate-800">Stages</h3>
         {stages.length > 0 ? (
-          <ul className="list-disc list-inside space-y-1">
+          <div className="space-y-1">
             {stages.map((stage, idx) => (
-              <li key={idx}>
-                {stage.title || `Stage ${idx + 1}`} -{" "}
-                {stage.description || "No description"}
-              </li>
+              <div
+                key={idx}
+                className="text-xs p-2 bg-slate-50 rounded border border-slate-200"
+              >
+                <span className="font-medium text-slate-700">
+                  {stage.title || `Stage ${idx + 1}`}
+                </span>
+                <span className="text-slate-500">
+                  {" "}
+                  — {stage.description || "No description"}
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-slate-500">No stages available.</p>
+          <p className="text-[10px] text-slate-500">No stages available.</p>
         )}
       </div>
 
       {/* Documents */}
-      <div className="bg-white shadow p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Documents</h3>
+      <div className="bg-white shadow-sm border border-slate-200 p-3 rounded">
+        <h3 className="text-xs font-semibold mb-2 text-slate-800">Documents</h3>
         {documents.length > 0 ? (
-          <ul className="list-disc list-inside space-y-1">
+          <div className="space-y-1">
             {documents.map((doc) => (
-              <li key={doc._id}>
+              <div
+                key={doc._id}
+                className="flex items-center justify-between p-2 bg-slate-50 rounded border border-slate-200"
+              >
                 <a
                   href={doc.url}
-                  download={doc.name} // forces download
-                  className="text-blue-600 hover:underline"
+                  download={doc.name}
+                  className="text-xs text-blue-600 hover:underline flex-1 truncate"
                 >
                   {doc.name}
-                </a>{" "}
-                ({new Date(doc.uploadedAt).toLocaleString()})
-              </li>
+                </a>
+                <span className="text-[10px] text-slate-500 ml-2">
+                  {new Date(doc.uploadedAt).toLocaleDateString()}
+                </span>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-slate-500">No documents uploaded.</p>
+          <p className="text-[10px] text-slate-500">No documents uploaded.</p>
         )}
       </div>
 
       {/* Notes */}
-      <div className="bg-white shadow p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Notes</h3>
+      <div className="bg-white shadow-sm border border-slate-200 p-3 rounded">
+        <h3 className="text-xs font-semibold mb-2 text-slate-800">Notes</h3>
         {notes.length > 0 ? (
-          <ul className="list-disc list-inside space-y-1">
+          <div className="space-y-1">
             {notes.map((note, idx) => (
-              <li key={idx}>{note}</li>
+              <div
+                key={idx}
+                className="text-xs p-2 bg-slate-50 rounded border border-slate-200 text-slate-700"
+              >
+                {note}
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="text-slate-500">No notes available.</p>
+          <p className="text-[10px] text-slate-500">No notes available.</p>
         )}
       </div>
 
       {/* Memorandum Status by Stage */}
-      <div className="bg-white shadow p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Memorandum Status</h3>
+      <div className="bg-white shadow-sm border border-slate-200 p-3 rounded">
+        <h3 className="text-xs font-semibold mb-2 text-slate-800">
+          Memorandum Status
+        </h3>
         {stages.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {stages.map((stage, idx) => {
               const stageMemo = stage.memorandum;
               return (
-                <div key={idx} className="border-l-4 border-blue-500 pl-4">
-                  <p className="font-semibold">
+                <div
+                  key={idx}
+                  className="border-l-2 border-slate-300 pl-2 py-1"
+                >
+                  <p className="font-semibold text-xs text-slate-700">
                     {stage.stageType || `Stage ${idx + 1}`}
                   </p>
                   {stageMemo ? (
-                    <div className="mt-2 space-y-1 text-sm">
-                      <p>
-                        <strong>Status:</strong>{" "}
+                    <div className="mt-1 space-y-1 text-[10px]">
+                      <div className="flex items-center gap-1">
+                        <span className="text-slate-500">Status:</span>
                         <span
-                          className={`px-2 py-1 rounded text-xs ${
+                          className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${
                             stageMemo.status === "Approved"
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-green-50 text-green-700 border border-green-200"
                               : stageMemo.status === "Rejected"
-                              ? "bg-red-100 text-red-700"
+                              ? "bg-red-50 text-red-700 border border-red-200"
                               : stageMemo.status === "Pending"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-gray-100 text-gray-700"
+                              ? "bg-yellow-50 text-yellow-700 border border-yellow-200"
+                              : "bg-slate-50 text-slate-700 border border-slate-200"
                           }`}
                         >
                           {stageMemo.status}
                         </span>
-                      </p>
+                      </div>
                       {stageMemo.content && (
-                        <p>
-                          <strong>Content:</strong> {stageMemo.content}
-                        </p>
+                        <div>
+                          <span className="text-slate-500">Content:</span>
+                          <p className="text-slate-700 mt-0.5">
+                            {stageMemo.content}
+                          </p>
+                        </div>
                       )}
                       {stageMemo.fileUrl && (
-                        <p>
-                          <strong>File:</strong>{" "}
+                        <div>
+                          <span className="text-slate-500">File:</span>
                           <a
                             href={stageMemo.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-blue-600 hover:underline ml-1"
                           >
                             View Document
                           </a>
-                        </p>
+                        </div>
                       )}
                       {stageMemo.preparedAt && (
-                        <p className="text-xs text-slate-500">
+                        <p className="text-[9px] text-slate-500">
                           Prepared:{" "}
                           {new Date(stageMemo.preparedAt).toLocaleString()}
                         </p>
                       )}
                       {stageMemo.feedback && (
-                        <p className="text-red-600">
-                          <strong>Feedback:</strong> {stageMemo.feedback}
-                        </p>
+                        <div className="p-1.5 bg-red-50 rounded border border-red-200">
+                          <span className="text-red-600 font-medium">
+                            Feedback:
+                          </span>
+                          <p className="text-red-600 mt-0.5">
+                            {stageMemo.feedback}
+                          </p>
+                        </div>
                       )}
                     </div>
                   ) : (
-                    <p className="text-slate-500 text-sm mt-1">
+                    <p className="text-[10px] text-slate-500 mt-0.5">
                       No memorandum submitted yet
                     </p>
                   )}
@@ -168,7 +215,7 @@ export default function CaseDetail({ selectedCase }) {
             })}
           </div>
         ) : (
-          <p className="text-slate-500">No stages available.</p>
+          <p className="text-[10px] text-slate-500">No stages available.</p>
         )}
       </div>
     </div>

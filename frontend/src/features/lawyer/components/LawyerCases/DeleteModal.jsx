@@ -6,7 +6,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -14,33 +14,39 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
       ></div>
 
       {/* Modal */}
-      <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl z-10 p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Delete Case</h2>
+      <div className="relative bg-white w-full max-w-sm rounded-lg shadow-lg">
+        <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700 flex justify-between items-center">
+          <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+            <Trash2 size={16} /> Delete Case?
+          </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full transition"
+            className="p-1 hover:bg-slate-700 rounded transition"
           >
-            <X size={20} />
+            <X size={14} className="text-white" />
           </button>
         </div>
 
-        <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <span className="font-medium">{caseName}</span>? This action cannot be undone.
-        </p>
+        <div className="p-4">
+          <p className="text-xs text-slate-700">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{caseName}</span>? This action
+            cannot be undone.
+          </p>
+        </div>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-2 px-4 py-3 bg-slate-50 rounded-b-lg">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
+            className="px-3 py-1.5 border border-slate-300 text-slate-700 rounded text-xs hover:bg-slate-100 transition"
           >
             Cancel
           </button>
           <button
             onClick={onDelete}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-2 transition"
+            className="px-3 py-1.5 bg-red-600 text-white rounded text-xs hover:bg-red-700 flex items-center gap-1 transition"
           >
-            <Trash2 size={16} /> Delete
+            <Trash2 size={12} /> Delete
           </button>
         </div>
       </div>

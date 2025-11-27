@@ -88,47 +88,47 @@ export default function MemorandumTab({
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-3">
-          <div className="text-sm font-medium">
+      <div className="mb-3 flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <div className="text-[10px] font-medium text-slate-800">
             Memorandum -{" "}
             <span className="text-slate-600">
               {currentStage?.stageType || `Stage ${selectedStage + 1}`}
             </span>
           </div>
-          <div className="text-xs text-slate-500">
-            Last updated:{" "}
+          <div className="text-[9px] text-slate-500">
+            Updated:{" "}
             {memo?.preparedAt
-              ? new Date(memo.preparedAt).toLocaleString()
+              ? new Date(memo.preparedAt).toLocaleDateString()
               : "—"}
           </div>
           {status && <StatusPill status={status} />}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {/* Lawyer Actions */}
           {userRole === "Lawyer" && (
             <>
               <button
                 onClick={handleUploadClick}
                 disabled={isUploading}
-                className="inline-flex items-center gap-2 px-3 py-2 border rounded text-sm hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 rounded text-[10px] hover:bg-slate-50 disabled:opacity-50"
               >
-                <FiUpload /> Choose File
+                <FiUpload size={12} /> Choose
               </button>
               {(localFile || content) && (
                 <button
                   onClick={handleSubmitMemorandum}
                   disabled={isUploading}
-                  className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition disabled:opacity-50"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-slate-700 text-white rounded text-[10px] hover:bg-slate-800 transition disabled:opacity-50"
                 >
                   {isUploading ? (
                     <>
-                      <FiLoader className="animate-spin" /> Uploading...
+                      <FiLoader size={12} className="animate-spin" /> Uploading
                     </>
                   ) : (
                     <>
-                      <FiUpload /> Submit Memorandum
+                      <FiUpload size={12} /> Submit
                     </>
                   )}
                 </button>
@@ -148,33 +148,35 @@ export default function MemorandumTab({
 
       {/* Upload Form */}
       {userRole === "Lawyer" && !memo?.fileUrl && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
-          <h4 className="font-semibold text-sm mb-3 text-blue-900">
+        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded">
+          <h4 className="font-semibold text-[10px] mb-2 text-blue-800">
             Upload New Memorandum
           </h4>
 
           {/* Content Textarea */}
-          <div className="mb-3">
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Memorandum Content (Optional)
+          <div className="mb-2">
+            <label className="block text-[10px] font-medium text-slate-700 mb-1">
+              Content (Optional)
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Enter memorandum content..."
-              className="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
-              rows={4}
+              className="w-full px-2 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none text-xs"
+              rows={3}
             />
           </div>
 
           {/* File Selection Display */}
           {localFile && (
-            <div className="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded text-sm">
-              <FiFileText className="text-blue-600" />
-              <span className="flex-1 text-slate-700">{localFile.name}</span>
+            <div className="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded text-[10px]">
+              <FiFileText size={12} className="text-blue-600" />
+              <span className="flex-1 text-slate-700 truncate">
+                {localFile.name}
+              </span>
               <button
                 onClick={() => setLocalFile(null)}
-                className="text-red-500 hover:text-red-700 text-xs"
+                className="text-red-500 hover:text-red-700 text-[9px] shrink-0"
               >
                 Remove
               </button>
@@ -185,14 +187,14 @@ export default function MemorandumTab({
 
       {/* Display memorandum content and file */}
       {memo && (memo.content || memo.fileUrl) ? (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {/* Content */}
           {memo.content && (
-            <div className="p-4 bg-slate-50 border rounded">
-              <h4 className="font-semibold text-sm mb-2">
-                Memorandum Content:
+            <div className="p-3 bg-slate-50 border rounded">
+              <h4 className="font-semibold text-[10px] mb-1 text-slate-800">
+                Content:
               </h4>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">
+              <p className="text-xs text-slate-700 whitespace-pre-wrap">
                 {memo.content}
               </p>
             </div>
@@ -200,28 +202,32 @@ export default function MemorandumTab({
 
           {/* File */}
           {memo.fileUrl && (
-            <div className="flex items-center gap-3 p-3 border rounded bg-white">
-              <FiFileText className="text-slate-700" />
-              <div className="flex-1">
-                <div className="font-medium">Memorandum Document</div>
-                <div className="text-xs text-slate-500">
+            <div className="flex items-center gap-2 p-2 border rounded bg-white">
+              <FiFileText size={14} className="text-slate-600 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] font-medium text-slate-800">
+                  Memorandum Document
+                </div>
+                <div className="text-[9px] text-slate-500">
                   {memo.preparedAt &&
-                    `Uploaded: ${new Date(memo.preparedAt).toLocaleString()}`}
+                    `Uploaded: ${new Date(
+                      memo.preparedAt
+                    ).toLocaleDateString()}`}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 shrink-0">
                 <a
                   href={memo.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1 rounded border text-sm hover:bg-slate-50"
+                  className="px-2 py-1 rounded border text-[10px] hover:bg-slate-50"
                 >
                   View
                 </a>
                 <a
                   href={memo.fileUrl}
                   download
-                  className="px-3 py-1 rounded border text-sm hover:bg-slate-50"
+                  className="px-2 py-1 rounded border text-[10px] hover:bg-slate-50"
                 >
                   Download
                 </a>
@@ -231,25 +237,25 @@ export default function MemorandumTab({
 
           {/* Feedback if rejected */}
           {memo.feedback && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded">
-              <h4 className="font-semibold text-sm text-red-700 mb-2">
-                Feedback from Ragab:
+            <div className="p-2 bg-red-50 border border-red-200 rounded">
+              <h4 className="font-semibold text-[10px] text-red-700 mb-1">
+                Feedback:
               </h4>
-              <p className="text-sm text-red-600">{memo.feedback}</p>
+              <p className="text-xs text-red-600">{memo.feedback}</p>
             </div>
           )}
 
           {/* Approval info */}
           {memo.status === "Approved" && memo.approvedAt && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded">
-              <p className="text-sm text-green-700">
-                ✓ Approved on {new Date(memo.approvedAt).toLocaleString()}
+            <div className="p-2 bg-green-50 border border-green-200 rounded">
+              <p className="text-xs text-green-700">
+                ✓ Approved on {new Date(memo.approvedAt).toLocaleDateString()}
               </p>
             </div>
           )}
         </div>
       ) : (
-        <div className="p-4 text-slate-500 bg-slate-50 rounded border">
+        <div className="p-3 text-[10px] text-slate-500 bg-slate-50 rounded border">
           No memorandum uploaded for this stage yet.
         </div>
       )}

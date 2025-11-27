@@ -1,28 +1,7 @@
 // src/components/lawyer/RecentActivitiesTable.jsx
 import React from "react";
-import {
-  FileText,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGetDashboardStatsQuery } from "../../api/lawyerApi";
-
-const getActivityIcon = (action) => {
-  switch (action) {
-    case "MEMORANDUM_SUBMITTED":
-    case "MEMORANDUM_APPROVED":
-      return <CheckCircle className="w-4 h-4" />;
-    case "MEMORANDUM_REJECTED":
-      return <XCircle className="w-4 h-4" />;
-    case "CASE_ACCEPTED":
-      return <FileText className="w-4 h-4" />;
-    default:
-      return <Clock className="w-4 h-4" />;
-  }
-};
 
 const getActivityStatus = (action) => {
   switch (action) {
@@ -64,28 +43,22 @@ const RecentActivitiesTable = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-[#E1E1E2] p-6 rounded-2xl shadow-md border border-slate-200 h-[400px] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-800"></div>
-          <p className="text-slate-600 font-medium">Loading activities...</p>
-        </div>
+      <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200 h-[200px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-slate-800"></div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="bg-[#E1E1E2] p-6 rounded-2xl shadow-md border border-slate-200">
-        <div className="bg-red-50 p-4 rounded-xl border border-red-200">
-          <div className="flex items-center gap-3 text-red-600">
-            <AlertCircle className="w-5 h-5" />
-            <div>
-              <p className="font-medium">Failed to load activities</p>
-              <p className="text-sm text-red-500">
-                Please try refreshing the page
-              </p>
-            </div>
-          </div>
+      <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+        <div className="bg-red-50 p-2 rounded-md border border-red-200">
+          <p className="text-red-600 font-medium text-xs">
+            Failed to load activities
+          </p>
+          <p className="text-xs text-red-500 mt-0.5">
+            Please try refreshing the page
+          </p>
         </div>
       </div>
     );
@@ -98,51 +71,48 @@ const RecentActivitiesTable = () => {
       stage: activity.action,
       date: formatDate(activity.timestamp || activity.createdAt),
       status: getActivityStatus(activity.action),
-      icon: getActivityIcon(activity.action),
     })) || [];
 
   if (recentActivitiesData.length === 0) {
     return (
-      <div className="bg-[#E1E1E2] p-6 rounded-2xl shadow-md border border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800 mb-4">
+      <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+        <h2 className="text-sm font-semibold text-slate-800 mb-2">
           Recent Activities
         </h2>
-        <div className="bg-white p-8 rounded-xl text-center">
-          <FileText className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <p className="text-slate-600 font-medium">No recent activities</p>
-          <p className="text-slate-500 text-sm mt-1">
-            Your recent case activities will appear here
-          </p>
+        <div className="bg-slate-50 p-4 rounded-md text-center">
+          <p className="text-slate-600 text-xs">No recent activities</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#E1E1E2] p-6 rounded-2xl shadow-md border border-slate-200 transition-all duration-300">
+    <div className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold text-slate-800">Recent Activities</h2>
-        <span className="text-sm text-slate-600 bg-white px-3 py-1 rounded-full border border-slate-300 shadow-sm">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-slate-800">
+          Recent Activities
+        </h2>
+        <span className="text-[10px] text-slate-600 bg-slate-50 px-2 py-0.5 rounded">
           {recentActivitiesData.length} total
         </span>
       </div>
 
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full bg-white rounded-xl overflow-hidden">
-          <thead className="bg-slate-800 text-white">
+        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+          <thead className="bg-slate-100 border-b border-slate-200">
             <tr>
-              <th className="px-5 py-3 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                 Case
               </th>
-              <th className="px-5 py-3 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                 Activity
               </th>
-              <th className="px-5 py-3 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                 Date
               </th>
-              <th className="px-5 py-3 text-center text-sm font-semibold uppercase tracking-wide">
+              <th className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-600">
                 Status
               </th>
             </tr>
@@ -151,31 +121,20 @@ const RecentActivitiesTable = () => {
             {recentActivitiesData.map((item, index) => (
               <tr
                 key={index}
-                className="hover:bg-slate-50 transition-all duration-200"
+                className="hover:bg-slate-50 transition-colors duration-150"
               >
-                <td className="px-5 py-4 flex items-center gap-3 font-semibold text-slate-800">
-                  <div
-                    className={`p-2 rounded-lg shadow-sm ${
-                      item.status === "completed"
-                        ? "bg-emerald-500 text-white"
-                        : item.status === "rejected"
-                        ? "bg-red-500 text-white"
-                        : item.status === "pending"
-                        ? "bg-amber-500 text-white"
-                        : "bg-blue-500 text-white"
-                    }`}
-                  >
-                    {item.icon}
-                  </div>
+                <td className="px-3 py-2 font-medium text-slate-800 text-xs">
                   {item.caseId}
                 </td>
-                <td className="px-5 py-4 text-slate-700 font-medium">
+                <td className="px-3 py-2 text-slate-700 text-xs">
                   {item.activity}
                 </td>
-                <td className="px-5 py-4 text-slate-600">{item.date}</td>
-                <td className="px-5 py-4 text-center">
+                <td className="px-3 py-2 text-slate-600 text-xs">
+                  {item.date}
+                </td>
+                <td className="px-3 py-2 text-center">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColors(
+                    className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusColors(
                       item.status
                     )}`}
                   >
@@ -189,54 +148,37 @@ const RecentActivitiesTable = () => {
       </div>
 
       {/* Mobile Cards */}
-      <div className="md:hidden space-y-4">
+      <div className="md:hidden space-y-2">
         {recentActivitiesData.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition-all duration-200"
+            className="bg-slate-50 rounded-md p-2 border border-slate-200"
           >
-            <div className="flex justify-between items-center mb-3">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`p-2 rounded-lg ${
-                    item.status === "completed"
-                      ? "bg-emerald-500 text-white"
-                      : item.status === "rejected"
-                      ? "bg-red-500 text-white"
-                      : item.status === "pending"
-                      ? "bg-amber-500 text-white"
-                      : "bg-blue-500 text-white"
-                  }`}
-                >
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-800">{item.caseId}</p>
-                </div>
-              </div>
-              <span className="text-xs text-slate-500">{item.date}</span>
+            <div className="flex justify-between items-center mb-1">
+              <p className="font-medium text-slate-800 text-xs">
+                {item.caseId}
+              </p>
+              <span className="text-[10px] text-slate-500">{item.date}</span>
             </div>
-            <p className="text-slate-700 font-medium">{item.activity}</p>
-            <div className="mt-3 flex justify-between items-center">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColors(
-                  item.status
-                )}`}
-              >
-                {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-              </span>
-            </div>
+            <p className="text-slate-700 text-xs mb-2">{item.activity}</p>
+            <span
+              className={`px-2 py-0.5 rounded text-[10px] font-medium inline-block ${getStatusColors(
+                item.status
+              )}`}
+            >
+              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+            </span>
           </div>
         ))}
       </div>
 
       {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-slate-200">
+      <div className="mt-3 pt-2 border-t border-slate-200">
         <Link
           to="my-cases"
-          className="w-full py-2 flex justify-end  text-slate-700 hover:text-slate-900 font-medium text-sm transition-colors duration-200 "
+          className="flex justify-end text-slate-700 hover:text-slate-900 font-medium text-xs transition-colors"
         >
-          View All Activities →
+          View All →
         </Link>
       </div>
     </div>

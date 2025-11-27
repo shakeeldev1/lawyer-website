@@ -105,32 +105,33 @@ export default function DocumentsTab({
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <div className="text-sm text-slate-700">
-          Documents for <span className="font-medium">{selectedStage}</span>
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[10px] text-slate-600">
+          Documents for{" "}
+          <span className="font-medium text-slate-800">{selectedStage}</span>
         </div>
         {userRole !== "Client" && (
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={handleUploadClick}
               disabled={isUploading}
-              className="inline-flex items-center gap-2 bg-white border px-3 py-2 rounded text-sm hover:bg-slate-50 disabled:opacity-50"
+              className="inline-flex items-center gap-1 bg-white border border-slate-300 px-2 py-1 rounded text-[10px] hover:bg-slate-50 disabled:opacity-50"
             >
-              <FiUpload /> Choose Files
+              <FiUpload size={12} /> Choose
             </button>
             {localFiles.length > 0 && (
               <button
                 onClick={handleSubmitDocuments}
                 disabled={isUploading}
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+                className="inline-flex items-center gap-1 bg-slate-700 text-white px-2 py-1 rounded text-[10px] hover:bg-slate-800 disabled:opacity-50"
               >
                 {isUploading ? (
                   <>
-                    <FiLoader className="animate-spin" /> Uploading...
+                    <FiLoader size={12} className="animate-spin" /> Uploading
                   </>
                 ) : (
                   <>
-                    <FiUpload /> Upload {localFiles.length} file(s)
+                    <FiUpload size={12} /> Upload ({localFiles.length})
                   </>
                 )}
               </button>
@@ -149,20 +150,20 @@ export default function DocumentsTab({
 
       {/* Selected Files Preview */}
       {localFiles.length > 0 && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-          <h4 className="text-sm font-semibold mb-2 text-blue-900">
-            Selected Files:
+        <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded">
+          <h4 className="text-[10px] font-semibold mb-1 text-blue-800">
+            Selected:
           </h4>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {localFiles.map((file, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-2 text-sm text-slate-700"
+                className="flex items-center gap-1.5 text-[10px] text-slate-700"
               >
-                <FiFileText className="text-blue-600" />
-                <span>{file.name}</span>
-                <span className="text-xs text-slate-500">
-                  ({(file.size / 1024).toFixed(1)} KB)
+                <FiFileText size={12} className="text-blue-600" />
+                <span className="truncate flex-1">{file.name}</span>
+                <span className="text-[9px] text-slate-500">
+                  ({(file.size / 1024).toFixed(1)}KB)
                 </span>
               </div>
             ))}
@@ -171,46 +172,48 @@ export default function DocumentsTab({
       )}
 
       {/* Uploaded Documents List */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {docs.length > 0 ? (
           docs.map((doc, idx) => (
             <div
               key={doc._id || idx}
-              className="flex items-center justify-between p-3 border rounded hover:bg-slate-50 transition"
+              className="flex items-center justify-between p-2 border rounded hover:bg-slate-50 transition"
             >
-              <div className="flex items-center gap-3">
-                <FiFileText className="text-slate-700 text-lg" />
-                <div>
-                  <div className="font-medium text-slate-900">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <FiFileText size={14} className="text-slate-600 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] font-medium text-slate-800 truncate">
                     {doc.name || doc.title || "Document"}
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-[9px] text-slate-500">
                     {doc.uploadedAt
                       ? new Date(doc.uploadedAt).toLocaleDateString()
                       : "No date"}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   onClick={() => handleView(doc)}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded border text-sm hover:bg-white transition"
+                  className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                  title="View"
                 >
-                  <FiEye /> View
+                  <FiEye size={14} />
                 </button>
                 <button
                   onClick={() => handleDownload(doc)}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded border text-sm hover:bg-white transition"
+                  className="p-1 text-slate-600 hover:text-green-600 hover:bg-green-50 rounded transition"
+                  title="Download"
                 >
-                  <FiDownload /> Download
+                  <FiDownload size={14} />
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <div className="p-6 text-center text-slate-500 border border-dashed rounded">
-            <FiFileText className="mx-auto text-3xl mb-2 text-slate-400" />
-            <p>No documents uploaded for this stage yet.</p>
+          <div className="p-4 text-center text-slate-500 border border-dashed rounded">
+            <FiFileText size={24} className="mx-auto mb-1 text-slate-400" />
+            <p className="text-[10px]">No documents uploaded yet.</p>
           </div>
         )}
       </div>

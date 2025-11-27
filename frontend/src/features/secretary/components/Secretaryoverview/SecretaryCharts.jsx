@@ -1,16 +1,29 @@
 // src/components/dashboard/Charts.jsx
 import React from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 
 export default function SecretaryCharts({ caseTypeData, pendingDocsData }) {
-  const pieColors = ["#162030", "#24344F", "#FE9A00"];
-  
+  const pieColors = ["#1e293b", "#475569", "#94a3b8"];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 ">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
       {/* Pie Chart */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Cases by Type</h3>
-        <ResponsiveContainer width="100%" height={250}>
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-3">
+        <h3 className="text-sm font-semibold text-slate-800 mb-3">
+          Cases by Type
+        </h3>
+        <ResponsiveContainer width="100%" height={180}>
           <PieChart>
             <Pie
               data={caseTypeData}
@@ -18,11 +31,18 @@ export default function SecretaryCharts({ caseTypeData, pendingDocsData }) {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={80}
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              outerRadius={60}
+              innerRadius={30}
+              label={({ name, percent }) =>
+                `${name} ${(percent * 100).toFixed(0)}%`
+              }
+              labelLine={false}
             >
               {caseTypeData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={pieColors[index % pieColors.length]}
+                />
               ))}
             </Pie>
             <Tooltip />
@@ -31,17 +51,42 @@ export default function SecretaryCharts({ caseTypeData, pendingDocsData }) {
       </div>
 
       {/* Bar Chart */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Pending Documents Status</h3>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={pendingDocsData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="status" />
-            <YAxis />
-            <Tooltip 
-              contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-3">
+        <h3 className="text-sm font-semibold text-slate-800 mb-3">
+          Pending Documents
+        </h3>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart
+            data={pendingDocsData}
+            margin={{ top: 10, right: 10, left: 5, bottom: 40 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#f1f5f9"
+              vertical={false}
             />
-            <Bar dataKey="count" fill="#24344F" radius={[4, 4, 0, 0]} />
+            <XAxis
+              dataKey="status"
+              fontSize={10}
+              angle={-30}
+              textAnchor="end"
+              height={40}
+            />
+            <YAxis fontSize={10} width={30} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                fontSize: "11px",
+              }}
+            />
+            <Bar
+              dataKey="count"
+              fill="#1e293b"
+              radius={[3, 3, 0, 0]}
+              barSize={35}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { Eye, Trash2, ChevronRight, FileText } from "lucide-react";
 
 const ArchiveTable = ({ cases, onView, onDelete }) => {
@@ -86,133 +86,194 @@ const ArchiveTable = ({ cases, onView, onDelete }) => {
 
   if (!cases.length)
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-        <FileText className="w-10 h-10 text-blue-500 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+      <div className="bg-white rounded shadow-sm border border-slate-200 p-8 text-center mt-4">
+        <FileText className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+        <h3 className="text-sm font-semibold text-slate-700 mb-1">
           No Archived Cases
         </h3>
-        <p className="text-gray-500 text-sm">
+        <p className="text-[10px] text-slate-500">
           Completed cases will appear here once archived.
         </p>
       </div>
     );
 
   return (
-    <div
-      className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
-    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
-  `}
-    >
-      {/* ✅ Responsive container width based on sidebar */}
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse">
-        <table className="w-full min-w-[1000px] text-left border-collapse">
-          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
+    <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden mt-4">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-slate-800 text-white hidden md:table-header-group">
             <tr>
               {[
-                "Archive ID",
-                "Case Number",
-                "Client Name",
-                "Phone",
-                "Email",
-                "National ID",
-                "Address",
-                "Additional Info",
-                "Case Type",
-                "Lawyer",
-                "Date",
-                "Stages",
-                "Actions",
+                { label: "ID", class: "" },
+                { label: "Case #", class: "" },
+                { label: "Client", class: "" },
+                { label: "Phone", class: "hidden lg:table-cell" },
+                { label: "Email", class: "hidden xl:table-cell" },
+                { label: "Type", class: "" },
+                { label: "Lawyer", class: "hidden lg:table-cell" },
+                { label: "Date", class: "hidden lg:table-cell" },
+                { label: "Stages", class: "hidden xl:table-cell" },
+                { label: "Actions", class: "text-right" },
               ].map((h) => (
                 <th
-                  key={h}
-                  className="p-4 text-sm font-semibold tracking-wide text-white uppercase whitespace-nowrap"
+                  key={h.label}
+                  className={`px-3 py-2 text-[10px] font-semibold uppercase tracking-wide ${h.class}`}
                 >
-                  {h}
+                  {h.label}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
             {cases.map((c, idx) => (
-              <tr
-                key={c._id || c.id}
-                className={`transition-all duration-200 hover:bg-slate-50 ${
-                  idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                }`}
-              >
-                <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
-                  {c._id?.slice(-6) || "N/A"}
-                </td>
-                <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
-                  {c.caseNumber || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.name || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.contactNumber || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.email || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.nationalId || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.address || "N/A"}
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.clientId?.additionalInfo || "N/A"}
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold whitespace-nowrap">
-                    {c.caseType || "N/A"}
-                  </span>
-                </td>
-                <td className="p-4 text-slate-800 whitespace-nowrap">
-                  {c.assignedLawyer?.name || "Unassigned"}
-                </td>
-                <td className="p-4 text-slate-600 whitespace-nowrap">
-                  {c.archivedAt
-                    ? new Date(c.archivedAt).toLocaleDateString()
-                    : "N/A"}
-                </td>
-                <td className="p-4">
-                  <div className="space-y-1">
-                    {c.stages && c.stages.length > 0 ? (
-                      c.stages.map((s, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center gap-2 text-sm text-slate-700 whitespace-nowrap"
-                        >
-                          <ChevronRight size={14} className="text-slate-500" />
-                          <span>{s.stage}</span>
-                          <span className="text-slate-500 text-xs">
-                            ({s.documents?.length || 0} doc
-                            {s.documents?.length !== 1 ? "s" : ""})
+              <React.Fragment key={c._id || c.id}>
+                {/* Desktop Row */}
+                <tr className="hidden md:table-row hover:bg-slate-50 transition">
+                  <td className="px-3 py-2 text-[10px] font-medium text-slate-600">
+                    {c._id?.slice(-6) || "N/A"}
+                  </td>
+                  <td className="px-3 py-2 text-xs font-semibold text-slate-800">
+                    {c.caseNumber || "N/A"}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-800">
+                    {c.clientId?.name || "N/A"}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-700 hidden lg:table-cell">
+                    {c.clientId?.contactNumber || "N/A"}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-700 hidden xl:table-cell truncate max-w-[150px]">
+                    {c.clientId?.email || "N/A"}
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[10px] font-medium">
+                      {c.caseType || "N/A"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-700 hidden lg:table-cell">
+                    {c.assignedLawyer?.name || "Unassigned"}
+                  </td>
+                  <td className="px-3 py-2 text-[10px] text-slate-600 hidden lg:table-cell">
+                    {c.archivedAt
+                      ? new Date(c.archivedAt).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td className="px-3 py-2 hidden xl:table-cell">
+                    <div className="space-y-0.5">
+                      {c.stages && c.stages.length > 0 ? (
+                        c.stages.slice(0, 2).map((s, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center gap-1 text-[10px] text-slate-700"
+                          >
+                            <ChevronRight
+                              size={10}
+                              className="text-slate-500"
+                            />
+                            <span className="truncate max-w-[100px]">
+                              {s.stage}
+                            </span>
+                            <span className="text-slate-500">
+                              ({s.documents?.length || 0})
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-slate-500 text-[10px]">-</span>
+                      )}
+                      {c.stages?.length > 2 && (
+                        <span className="text-[10px] text-slate-500">
+                          +{c.stages.length - 2} more
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="flex justify-end gap-1">
+                      <button
+                        className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        onClick={() => onView(c)}
+                        title="View"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        onClick={() => onDelete(c)}
+                        title="Delete"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                {/* Mobile Card */}
+                <tr className="md:hidden">
+                  <td colSpan="10" className="p-0">
+                    <div className="p-3 border-b border-slate-200 hover:bg-slate-50">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <h3 className="text-xs font-semibold text-slate-800">
+                            {c.caseNumber || "N/A"}
+                          </h3>
+                          <p className="text-[10px] text-slate-500 mt-0.5">
+                            {c.clientId?.name || "N/A"}
+                          </p>
+                        </div>
+                        <div className="flex gap-1">
+                          <button
+                            className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            onClick={() => onView(c)}
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                            onClick={() => onDelete(c)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-1 text-[10px]">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Type:</span>
+                          <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-medium">
+                            {c.caseType || "N/A"}
                           </span>
                         </div>
-                      ))
-                    ) : (
-                      <span className="text-slate-500 text-sm">No stages</span>
-                    )}
-                  </div>
-                </td>
-                <td className="p-4 text-right flex justify-end mt-4 gap-2">
-                  <button
-                    className="inline-flex items-center justify-center w-8 h-8 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition-colors duration-200 shadow-sm"
-                    onClick={() => onView(c)}
-                  >
-                    <Eye size={14} />
-                  </button>
-                  <button
-                    className="inline-flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 shadow-sm"
-                    onClick={() => onDelete(c)}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </td>
-              </tr>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Phone:</span>
+                          <span className="text-slate-700 font-medium">
+                            {c.clientId?.contactNumber || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Lawyer:</span>
+                          <span className="text-slate-700">
+                            {c.assignedLawyer?.name || "Unassigned"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Archived:</span>
+                          <span className="text-slate-700">
+                            {c.archivedAt
+                              ? new Date(c.archivedAt).toLocaleDateString()
+                              : "N/A"}
+                          </span>
+                        </div>
+                        {c.stages && c.stages.length > 0 && (
+                          <div className="pt-1 border-t border-slate-200 mt-1">
+                            <span className="text-slate-500">
+                              Stages: {c.stages.length}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </React.Fragment>
             ))}
           </tbody>
         </table>

@@ -30,11 +30,15 @@ const Sidebar = () => {
 
   // ✅ Secretary-specific menu items
   const links = [
-     { name: "Overview", icon: <Home size={20} /> },
-    { name: "Clients", icon: <Users size={22} />, path: "clients" },
-    { name: "Cases", icon: <Scale size={22} />, path: "case-management" },
-    { name: "Reminders", icon: <Bell size={22} />, path: "reminders" },
-    { name: "Archive", icon: <FolderArchive size={22} />, path: "archive-cases" },
+    { name: "Overview", icon: <Home size={16} />, path: "." },
+    { name: "Clients", icon: <Users size={16} />, path: "clients" },
+    { name: "Cases", icon: <Scale size={16} />, path: "case-management" },
+    { name: "Reminders", icon: <Bell size={16} />, path: "reminders" },
+    {
+      name: "Archive",
+      icon: <FolderArchive size={16} />,
+      path: "archive-cases",
+    },
   ];
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
@@ -58,78 +62,93 @@ const Sidebar = () => {
       {/* Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed top-4 z-[9999] p-2 rounded-full shadow-md text-white transition-all duration-300
+        className={`fixed z-[55] p-1.5 rounded-full shadow-md text-white transition-all duration-300
           bg-[#11408bee] hover:bg-[#0f3674]
-          ${isDesktop ? (isOpen ? "left-60" : "left-16") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
+          ${
+            isDesktop
+              ? isOpen
+                ? "left-48 top-3"
+                : "left-12 top-3"
+              : isOpen
+              ? "left-[180px] top-2"
+              : "left-4 top-4"
+          }
         `}
       >
-        {isOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
+        {isOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full border-r border-blue-100
-          bg-gradient-to-b from-blue-50 to-indigo-50/80 backdrop-blur-xl
-          text-slate-700 shadow-lg transition-all duration-300 ease-in-out z-50
-          ${isDesktop ? (isOpen ? "w-64" : "w-20") : isOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"}
+        className={`fixed top-0 left-0 h-full border-r border-slate-200
+          bg-white
+          text-slate-700 shadow-sm transition-all duration-300 ease-in-out z-50
+          ${
+            isDesktop
+              ? isOpen
+                ? "w-52"
+                : "w-14"
+              : isOpen
+              ? "translate-x-0 w-52"
+              : "-translate-x-full w-52"
+          }
           flex flex-col
         `}
       >
         {/* Header */}
         <div
-          className={`flex items-center gap-3 px-5 py-6 border-b border-blue-100 ${
-            isOpen ? "justify-start" : "justify-center"
+          className={`h-12 flex items-center border-b border-slate-200 ${
+            isOpen ? "justify-start px-2.5" : "justify-center"
           }`}
         >
-          <div className="p-2 bg-[#11408bee] rounded-xl shadow-md">
-            <Scale size={24} className="text-white" />
-          </div>
           {isOpen && (
-            <div className="transition-all">
-              <h2 className="text-base font-semibold text-slate-800">
-                Secretary Panel
-              </h2>
-              <p className="text-xs text-slate-500">Justice Law Firm</p>
-            </div>
+            <h2 className="text-sm font-semibold text-slate-800">Secretary</h2>
           )}
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto py-4">
+        <nav className="flex-1 overflow-y-auto py-2">
           {links.map((link, i) => (
             <NavLink
               key={i}
               to={link.path}
               onClick={handleLinkClick}
+              end={link.path === undefined}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-5 py-3 rounded-lg mx-2 my-1 transition-all duration-200
+                `flex items-center rounded-md mx-2 my-0.5 transition-colors duration-200
                   ${
                     isActive
-                      ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-medium border border-blue-200 shadow-sm"
-                      : "text-slate-700 hover:bg-white/80 hover:text-blue-600 hover:shadow-sm"
+                      ? "bg-[#11408bee] text-white"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }
-                  ${isOpen || !isDesktop ? "justify-start" : "justify-center"}
+                  ${
+                    isOpen || !isDesktop
+                      ? "justify-start gap-2 px-2.5 py-2"
+                      : "justify-center py-2"
+                  }
                 `
               }
             >
-              {link.icon}
-              {(isOpen || !isDesktop) && <span className="text-sm">{link.name}</span>}
+              {React.cloneElement(link.icon, { size: 16 })}
+              {(isOpen || !isDesktop) && (
+                <span className="text-xs">{link.name}</span>
+              )}
             </NavLink>
           ))}
         </nav>
 
-        
-
         {/* Logout Button */}
-        <div className="px-5 mt-auto mb-4">
+        <div className="px-2 mt-auto mb-2">
           <button
             onClick={handleLogout}
-            className={`flex items-center ${
-              isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
-            } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
+            className={`flex items-center rounded-md transition-colors duration-200 text-red-600 hover:bg-red-50 hover:text-red-700 ${
+              isOpen
+                ? "justify-start gap-2 px-2.5 py-2 w-full"
+                : "justify-center w-full py-2"
+            }`}
           >
-            <LogOut size={22} />
-            {isOpen && <span className="text-sm font-medium">Logout</span>}
+            <LogOut size={16} />
+            {isOpen && <span className="text-xs font-medium">Logout</span>}
           </button>
         </div>
       </aside>

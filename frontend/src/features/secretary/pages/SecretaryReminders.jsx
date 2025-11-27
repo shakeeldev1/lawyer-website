@@ -84,45 +84,45 @@ const SecretaryReminders = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`min-h-screen  mt-20
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
-                 transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+      transition={{ duration: 0.3 }}
+      className={`min-h-screen pt-16
+                 px-2 sm:px-3
+                 py-3 sm:py-4
+                 transition-all duration-300 ease-in-out mt-8
+                 ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
     >
       {/* Title & Subtitle */}
-      <div className="mb-6 text-center md:text-left">
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight flex items-center justify-center md:justify-start gap-2">
-          <Bell className="text-[#fe9a00]" /> Secretary Reminders
+      <div className="mb-4">
+        <h2 className="text-base sm:text-lg font-semibold text-slate-800 flex items-center gap-1.5">
+          Reminders
         </h2>
-        <p className="text-gray-500 mt-1 text-sm md:text-base">
-          All pending tasks, upcoming hearings, and action-required alerts
+        <p className="text-[10px] text-slate-500 mt-0.5">
+          Upcoming hearings and action-required alerts
         </p>
       </div>
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
-          <p className="text-gray-600 mt-4">Loading reminders...</p>
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <p className="text-xs text-slate-500 mt-2">Loading reminders...</p>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-          <h3 className="text-red-800 font-semibold mb-2">
+        <div className="bg-red-50 border border-red-200 rounded p-3 mb-4">
+          <h3 className="text-xs font-semibold text-red-800 mb-1">
             Error Loading Reminders
           </h3>
-          <p className="text-red-600">
+          <p className="text-[10px] text-red-600">
             {error?.data?.message ||
               "Unable to fetch reminders. Please try again."}
           </p>
           <button
             onClick={() => refetch()}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+            className="mt-2 px-3 py-1 bg-red-600 text-white rounded text-[10px] hover:bg-red-700 transition"
           >
             Retry
           </button>
@@ -130,90 +130,102 @@ const SecretaryReminders = () => {
       )}
 
       {!isLoading && !error && reminders.length === 0 && (
-        <div className="text-center py-16">
-          <div className="text-gray-400 mb-4">
-            <Bell size={64} className="mx-auto" />
+        <div className="text-center py-12">
+          <div className="text-slate-300 mb-3">
+            <Bell size={40} className="mx-auto" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-semibold text-slate-700 mb-1">
             No Reminders
           </h3>
-          <p className="text-gray-500">
-            You have no upcoming reminders. They will appear here when hearings
-            or submissions are scheduled.
+          <p className="text-[10px] text-slate-500">
+            Reminders will appear here when hearings or submissions are
+            scheduled.
           </p>
         </div>
       )}
 
       {!isLoading && !error && reminders.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {reminders.map((reminder) => (
             <motion.div
               key={reminder._id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`p-4 rounded-xl ${
-                reminder.color
-              } shadow-sm border-l-4 ${
-                reminder.isOverdue ? "border-red-500" : "border-[#fe9a00]"
-              } flex items-start gap-3 hover:shadow-md transition-shadow`}
+              className={`p-2.5 rounded bg-white shadow-sm border-l-2 ${
+                reminder.isOverdue ? "border-red-500" : "border-blue-500"
+              } flex items-start gap-2 hover:shadow-md transition`}
             >
-              <div className="mt-1">
+              <div
+                className={`mt-0.5 ${
+                  reminder.isOverdue ? "text-red-600" : "text-blue-600"
+                }`}
+              >
                 {getIcon(reminder.reminderType, reminder.isOverdue)}
               </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                      {reminder.caseName}
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start mb-1">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-xs text-slate-800 flex items-center gap-1 flex-wrap">
+                      <span className="truncate">{reminder.caseName}</span>
                       {reminder.isToday && (
-                        <span className="text-xs bg-orange-500 text-white px-2 py-0.5 rounded-full">
+                        <span className="text-[9px] bg-orange-500 text-white px-1 py-0.5 rounded shrink-0 font-medium">
                           TODAY
                         </span>
                       )}
                       {reminder.isOverdue && (
-                        <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
+                        <span className="text-[9px] bg-red-500 text-white px-1 py-0.5 rounded shrink-0 font-medium">
                           OVERDUE
                         </span>
                       )}
                     </h3>
-                    <p className="text-xs text-gray-600 mt-0.5">
-                      Case: {reminder.caseNumber} • {reminder.caseType}
+                    <p className="text-[10px] text-slate-600 mt-0.5">
+                      {reminder.caseNumber} • {reminder.caseType}
                     </p>
                   </div>
                   <button
                     onClick={() => handleDeleteReminder(reminder._id)}
                     disabled={isDeleting}
-                    className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-                    title="Delete reminder"
+                    className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition shrink-0 ml-2"
+                    title="Delete"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
 
-                <p className="text-sm mt-2 text-gray-700">{reminder.message}</p>
+                <p className="text-[10px] mt-1 text-slate-700">
+                  {reminder.message}
+                </p>
 
-                <div className="flex items-center justify-between mt-3 text-xs">
-                  <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1 text-gray-600">
-                      <Calendar size={13} /> {reminder.dueDate}
+                <div className="flex items-center justify-between mt-1.5 text-[10px]">
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-0.5 text-slate-600">
+                      <Calendar size={10} /> {reminder.dueDate}
                     </span>
-                    <span className="flex items-center gap-1 text-gray-600">
-                      <Clock size={13} />
+                    <span
+                      className={`flex items-center gap-0.5 ${
+                        reminder.isOverdue
+                          ? "text-red-600 font-medium"
+                          : "text-slate-600"
+                      }`}
+                    >
+                      <Clock size={10} />
                       {reminder.isOverdue
-                        ? `${reminder.daysUntil} days overdue`
+                        ? `${reminder.daysUntil}d overdue`
                         : reminder.isToday
                         ? "Today"
-                        : `${reminder.daysUntil} days left`}
+                        : `${reminder.daysUntil}d left`}
                     </span>
                   </div>
-                  <span className="px-2 py-1 bg-white/50 rounded-md font-medium">
+                  <span className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[9px] font-medium text-slate-700">
                     {reminder.type}
                   </span>
                 </div>
 
-                <p className="text-xs mt-2 text-gray-500 italic">
-                  Stage: {reminder.stage}
-                </p>
+                {reminder.stage && (
+                  <p className="text-[9px] mt-1 text-slate-500">
+                    Stage: {reminder.stage}
+                  </p>
+                )}
               </div>
             </motion.div>
           ))}

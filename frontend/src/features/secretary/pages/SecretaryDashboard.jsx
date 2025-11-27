@@ -41,8 +41,8 @@ const SecretaryDashboard = () => {
     const handleSidebarToggle = () => {
       const sidebar = document.querySelector("aside");
       if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
-        setSidebarOpen(isOpen);
+        const width = sidebar.offsetWidth;
+        setSidebarOpen(width > 100);
       }
     };
 
@@ -106,37 +106,34 @@ const SecretaryDashboard = () => {
   return (
     <div
       className={`min-h-screen text-gray-900 
-      px-4 sm:px-6 md:px-8 
-      py-6 
       transition-all duration-300 ease-in-out
-      ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-16"}
-      pt-[100px]`} // 👈 this ensures nothing overlaps topbar
+      pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8
+      ${sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"}`}
     >
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
+      <div className="mb-3">
+        <h1 className="text-lg sm:text-xl font-bold text-slate-800">
           Overview
         </h1>
-        <p className="text-gray-600 mt-2">
-          Manage cases, documents, and client information efficiently
+        <p className="text-[11px] sm:text-xs text-slate-600 mt-0.5">
+          Manage cases, documents, and client information
         </p>
       </div>
 
       {/* Loading State */}
       {(statsLoading || activityLoading) && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
-          <p className="text-gray-600 mt-4">Loading dashboard data...</p>
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-slate-800"></div>
         </div>
       )}
 
       {/* Error State */}
       {(statsError || activityError) && !statsLoading && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-          <h3 className="text-red-800 font-semibold mb-2">
+        <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+          <h3 className="text-red-800 font-semibold text-xs mb-1">
             Error Loading Dashboard
           </h3>
-          <p className="text-red-600">
+          <p className="text-red-600 text-xs">
             {statsError?.data?.message ||
               activityError?.data?.message ||
               "Unable to fetch dashboard data. Please try again."}
@@ -145,7 +142,7 @@ const SecretaryDashboard = () => {
             onClick={() => {
               refetchStats();
             }}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+            className="mt-2 px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 transition"
           >
             Retry
           </button>
@@ -154,26 +151,21 @@ const SecretaryDashboard = () => {
 
       {/* Dashboard Content */}
       {!statsLoading && !statsError && (
-        <div className="space-y-10 pb-10">
+        <div className="space-y-4 pb-4">
           <StatCards metrics={metrics} />
 
-          <div className="mt-6">
-            <SecretaryCharts
-              caseTypeData={caseTypeData}
-              pendingDocsData={pendingDocsData}
-            />
-          </div>
+          <SecretaryCharts
+            caseTypeData={caseTypeData}
+            pendingDocsData={pendingDocsData}
+          />
 
           {!activityLoading && !activityError && (
-            <div className="mt-8">
-              <RecentActivity recentActivities={recentActivities} />
-            </div>
+            <RecentActivity recentActivities={recentActivities} />
           )}
 
           {activityLoading && (
-            <div className="text-center py-6">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#fe9a00]"></div>
-              <p className="text-gray-600 mt-2">Loading recent activities...</p>
+            <div className="text-center py-4">
+              <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-slate-800"></div>
             </div>
           )}
         </div>

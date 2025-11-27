@@ -157,38 +157,38 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 !z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[85vh] flex flex-col relative">
+    <div className="fixed inset-0 !z-[10000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Fixed Header */}
-        <div className="sticky top-0 bg-[#11408bee] z-10 border-b border-gray-200 px-6 py-4 rounded-t-2xl">
+        <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-100">
+            <h2 className="text-sm font-semibold text-white">
               {caseData ? "Edit Case" : "Add New Case"}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition"
+              className="p-1 hover:bg-slate-700 rounded transition"
             >
-              <X className="w-5 h-5 text-gray-100" />
+              <X className="w-4 h-4 text-white" />
             </button>
           </div>
 
           {/* Mini Step Indicator */}
-          <div className="flex items-center justify-center mt-4 space-x-2">
+          <div className="flex items-center justify-center mt-3 space-x-2">
             {/* Step 1 */}
             <div className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 1
-                    ? "bg-white text-[#11408bee]"
-                    : "bg-gray-300 text-gray-500"
+                    ? "bg-white text-slate-800"
+                    : "bg-slate-600 text-slate-400"
                 }`}
               >
                 1
               </div>
               <span
-                className={`ml-2 text-sm ${
-                  step >= 1 ? "text-white" : "text-gray-300"
+                className={`ml-1.5 text-[10px] ${
+                  step >= 1 ? "text-white" : "text-slate-400"
                 }`}
               >
                 Client
@@ -197,23 +197,23 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
 
             {/* Connector */}
             <div
-              className={`w-8 h-0.5 ${step >= 2 ? "bg-white" : "bg-gray-300"}`}
+              className={`w-6 h-0.5 ${step >= 2 ? "bg-white" : "bg-slate-600"}`}
             ></div>
 
             {/* Step 2 */}
             <div className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 2
-                    ? "bg-white text-[#11408bee]"
-                    : "bg-gray-300 text-gray-500"
+                    ? "bg-white text-slate-800"
+                    : "bg-slate-600 text-slate-400"
                 }`}
               >
                 2
               </div>
               <span
-                className={`ml-2 text-sm ${
-                  step >= 2 ? "text-white" : "text-gray-300"
+                className={`ml-1.5 text-[10px] ${
+                  step >= 2 ? "text-white" : "text-slate-400"
                 }`}
               >
                 Case
@@ -222,23 +222,23 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
 
             {/* Connector */}
             <div
-              className={`w-8 h-0.5 ${step >= 3 ? "bg-white" : "bg-gray-300"}`}
+              className={`w-6 h-0.5 ${step >= 3 ? "bg-white" : "bg-slate-600"}`}
             ></div>
 
             {/* Step 3 */}
             <div className="flex items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 3
-                    ? "bg-white text-[#11408bee]"
-                    : "bg-gray-300 text-gray-500"
+                    ? "bg-white text-slate-800"
+                    : "bg-slate-600 text-slate-400"
                 }`}
               >
                 3
               </div>
               <span
-                className={`ml-2 text-sm ${
-                  step >= 3 ? "text-white" : "text-gray-300"
+                className={`ml-1.5 text-[10px] ${
+                  step >= 3 ? "text-white" : "text-slate-400"
                 }`}
               >
                 Documents

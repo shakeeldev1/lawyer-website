@@ -19,19 +19,19 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
   }, [lawyersData, lawyersError]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Case Information Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Case Type */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Case Type *
           </label>
           <select
             name="caseType"
             value={caseInfo.caseType}
             onChange={onChange}
-            className="w-full rounded-lg p-2   focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
             required
           >
             <option value="">Select Case Type</option>
@@ -45,15 +45,15 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
         </div>
 
         {/* Assigned Lawyer */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Assigned Lawyer *
           </label>
           <select
             name="assignedLawyer"
             value={caseInfo.assignedLawyer}
             onChange={onChange}
-            className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
             required
             disabled={loadingLawyers}
           >
@@ -72,26 +72,26 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
             )}
           </select>
           {loadingLawyers && (
-            <p className="text-xs text-blue-500 flex items-center gap-2">
-              <span className="inline-block w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+            <p className="text-[10px] text-blue-500 flex items-center gap-1 mt-0.5">
+              <span className="inline-block w-2.5 h-2.5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
               Loading lawyers...
             </p>
           )}
           {lawyersError && (
-            <p className="text-xs text-red-500">
+            <p className="text-[10px] text-red-500 mt-0.5">
               Error: {lawyersError?.data?.message || "Failed to load lawyers"}
             </p>
           )}
           {!lawyersData?.data?.length && !loadingLawyers && !lawyersError && (
-            <p className="text-xs text-orange-500">
-              No active lawyers found. Please add lawyers first.
+            <p className="text-[10px] text-orange-500 mt-0.5">
+              No active lawyers found.
             </p>
           )}
         </div>
 
         {/* Hearing Date */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Hearing Date *
           </label>
           <input
@@ -99,14 +99,14 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
             name="hearingDate"
             value={caseInfo.hearingDate}
             onChange={onChange}
-            className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
             required
           />
         </div>
 
         {/* Filing Date */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Filing Date *
           </label>
           <input
@@ -114,28 +114,28 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
             name="filingDate"
             value={caseInfo.filingDate}
             onChange={onChange}
-            className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20 bg-gray-50"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-100 focus:ring-1 focus:ring-blue-500 text-xs"
             required
             readOnly
           />
-          <p className="text-xs text-gray-500">
-            Automatically set to today's date
+          <p className="text-[10px] text-slate-500 mt-0.5">
+            Automatically set to today
           </p>
         </div>
       </div>
 
       {/* Status and Stage Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Case Status */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Case Status *
           </label>
           <select
             name="status"
             value={caseInfo.status}
             onChange={onChange}
-            className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
             required
           >
             <option value="Pending">Pending</option>
@@ -148,15 +148,15 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
         </div>
 
         {/* Case Stage */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
             Case Stage *
           </label>
           <select
             name="stage"
             value={caseInfo.stage}
             onChange={onChange}
-            className="w-full  rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20"
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
             required
           >
             <option value="Main Case">Main Case</option>
@@ -169,17 +169,17 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
       </div>
 
       {/* Full Width Description */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
+      <div className="space-y-1">
+        <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
           Case Description *
         </label>
         <textarea
           name="description"
-          placeholder="Provide detailed description of the case, including key facts, parties involved, and any special considerations..."
+          placeholder="Provide detailed description of the case"
           value={caseInfo.description}
           onChange={onChange}
-          rows="4"
-          className="w-full rounded-lg p-2  focus:outline-none focus:ring-1 focus:ring-amber-200 border border-amber-600/20 resize-vertical"
+          rows="3"
+          className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs resize-y"
           required
         />
       </div>

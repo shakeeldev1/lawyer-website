@@ -56,18 +56,23 @@ const ClientsPage = () => {
 
   return (
     <div
-      className={`min-h-screen mt-20
-        px-3 sm:px-4 md:px-6 lg:px-2
-        py-3 sm:py-4 md:py-5 
-        transition-all duration-300 ease-in-out
-        ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+      className={`min-h-screen pt-16
+        px-2 sm:px-3
+        py-3 sm:py-4
+        transition-all duration-300 ease-in-out mt-8
+        ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
     >
-      <div className="p-5 space-y-4">
+      <div className="space-y-3">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
-            Client Management
-          </h2>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-slate-800">
+              Client Management
+            </h2>
+            <p className="text-[10px] text-slate-500 mt-0.5">
+              Manage client information and records
+            </p>
+          </div>
           <button
             onClick={() => {
               setSelectedClient({
@@ -81,9 +86,9 @@ const ClientsPage = () => {
               setIsCreatingNew(true);
               setShowForm(true);
             }}
-            className="flex items-center gap-2 bg-[#11408bee] hover:bg-[#0f3674] text-white px-4 py-2 rounded-lg transition-all"
+            className="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded text-xs transition"
           >
-            <Plus size={18} /> Add Client
+            <Plus size={14} /> Add Client
           </button>
         </div>
       </div>
@@ -136,14 +141,16 @@ const ClientsPage = () => {
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <p className="text-xs text-slate-500 mt-2">Loading clients...</p>
         </div>
       )}
       {error && (
-        <div className="text-center py-10 text-red-600">
-          Error loading clients:{" "}
-          {error?.data?.message || "Something went wrong"}
+        <div className="bg-red-50 border border-red-200 rounded p-3 text-center">
+          <p className="text-xs text-red-600">
+            Error: {error?.data?.message || "Failed to load clients"}
+          </p>
         </div>
       )}
     </div>

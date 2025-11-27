@@ -12,25 +12,23 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
   if (!viewModal) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4 sm:px-6 py-4">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur transition-opacity"
+        className="absolute inset-0"
         onClick={() => setViewModal(null)}
       ></div>
 
-      <div className="relative bg-white w-full max-w-3xl max-h-[60vh] lg:max-h-[80vh] overflow-y-auto rounded-2xl shadow-2xl z-10 flex flex-col">
+      <div className="relative bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg flex flex-col">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl px-4 sm:px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-800 rounded-lg">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
+        <div className="sticky top-0 bg-slate-800 text-white px-4 py-3 flex justify-between items-center border-b border-slate-700 rounded-t-lg">
+          <div className="flex items-center gap-2">
+            <FileText size={16} />
             <div>
-              <h2 className="text-base sm:text-lg md:text-xl font-semibold">
+              <h2 className="text-sm font-semibold">
                 {viewModal.clientId?.name || "Unknown Client"}
               </h2>
-              <p className="text-yellow-200 text-xs sm:text-sm">
-                Client Number: {viewModal.clientId?.contactNumber || "N/A"} |{" "}
+              <p className="text-[10px] text-slate-300">
+                {viewModal.clientId?.contactNumber || "N/A"} |{" "}
                 {viewModal.caseType || "N/A"}
               </p>
             </div>
@@ -38,19 +36,19 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
 
           <button
             onClick={() => setViewModal(null)}
-            className="p-2 hover:bg-white/10 rounded-lg transition"
+            className="p-1 hover:bg-slate-700 rounded transition"
           >
-            <X className="w-5 h-5 text-white" />
+            <X size={16} />
           </button>
         </div>
 
-        {/* 🔵 NEW — FULL CASE DETAILS BLOCK */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-b border-slate-200">
-          <h3 className="text-lg font-semibold text-amber-800 mb-3">
+        {/* Case Details */}
+        <div className="p-3 bg-slate-50 border-b border-slate-200">
+          <h3 className="text-xs font-semibold text-slate-800 mb-2">
             Case Details
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-700">
             <p>
               <strong>Archive ID:</strong> {viewModal._id?.slice(-6) || "N/A"}
             </p>
@@ -99,68 +97,69 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
           </div>
         </div>
 
-        {/* Body Content – Stages */}
-        <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+        {/* Stages */}
+        <div className="p-3 space-y-3">
           {(viewModal.stages || []).map((stage, sIdx) => (
             <div
               key={sIdx}
-              className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all duration-200"
+              className="bg-white border border-slate-200 rounded p-3 shadow-sm"
             >
-              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 mb-4">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1">
+              <div className="flex justify-between items-start gap-2 mb-2">
+                <div className="flex-1">
+                  <h3 className="text-xs font-semibold text-slate-800">
                     Stage {sIdx + 1}: {stage.stage || "Unnamed Stage"}
                   </h3>
 
-                  <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600">
-                    <Clock className="w-4 h-4" />
-                    <span className="font-medium">
-                      Locked / Completed Date: {stage.hearingDate || "N/A"}
-                    </span>
+                  <div className="flex items-center gap-1 text-[10px] text-slate-600 mt-0.5">
+                    <Clock size={10} />
+                    <span>Date: {stage.hearingDate || "N/A"}</span>
                   </div>
                 </div>
 
                 {/* Status Badges */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1 ${
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-medium flex items-center gap-0.5 ${
                       stage.memorandums?.every((m) => m.approved)
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-yellow-50 text-yellow-700 border border-yellow-200"
                     }`}
                   >
                     {stage.memorandums?.every((m) => m.approved) ? (
-                      <CheckCircle size={14} />
+                      <CheckCircle size={10} />
                     ) : (
-                      <Clock size={14} />
+                      <Clock size={10} />
                     )}
                     {stage.memorandums?.every((m) => m.approved)
                       ? "Approved"
                       : "Pending"}
                   </span>
 
-                  <span className="px-3 py-1 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1 bg-blue-100 text-blue-800">
-                    <Shield size={14} /> Director Signed
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-medium flex items-center gap-0.5 bg-blue-50 text-blue-700 border border-blue-200">
+                    <Shield size={10} /> Signed
                   </span>
                 </div>
               </div>
 
               {/* Memorandums */}
               {stage.memorandums?.length > 0 && (
-                <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="mb-2 space-y-1">
+                  <p className="text-[10px] font-medium text-slate-600">
+                    Memorandums:
+                  </p>
                   {stage.memorandums.map((m, i) => (
                     <div
                       key={i}
-                      className="p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm flex justify-between items-center"
+                      className="p-2 bg-slate-50 border border-slate-200 rounded flex justify-between items-center"
                     >
-                      <span className="text-sm sm:text-base text-slate-800 truncate max-w-[70%]">
+                      <span className="text-xs text-slate-800 truncate flex-1">
                         {m.name || "Unnamed Memo"}
                       </span>
                       <a
                         href={m.downloadLink || "#"}
-                        className="p-2 text-slate-600 hover:text-yellow-500 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                       >
-                        <Download size={16} />
+                        <Download size={12} />
                       </a>
                     </div>
                   ))}
@@ -169,20 +168,23 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
 
               {/* Documents */}
               {stage.documents?.length > 0 && (
-                <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-medium text-slate-600">
+                    Documents:
+                  </p>
                   {stage.documents.map((doc, dIdx) => (
                     <div
                       key={dIdx}
-                      className="p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm flex justify-between items-center"
+                      className="p-2 bg-slate-50 border border-slate-200 rounded flex justify-between items-center"
                     >
-                      <span className="text-sm sm:text-base text-slate-800 truncate max-w-[70%]">
+                      <span className="text-xs text-slate-800 truncate flex-1">
                         {doc.name || "Unnamed Document"}
                       </span>
                       <a
                         href={doc.downloadLink || "#"}
-                        className="p-2 text-slate-600 hover:text-yellow-500 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                       >
-                        <Download size={16} />
+                        <Download size={12} />
                       </a>
                     </div>
                   ))}
@@ -193,16 +195,15 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
 
           {/* Notifications */}
           {(viewModal.notifications || []).length > 0 && (
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
-              <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2 text-sm sm:text-base">
-                <FileText size={16} className="text-yellow-500" /> Notifications
-                & Logs
+            <div className="bg-slate-50 border border-slate-200 rounded p-3">
+              <h4 className="font-semibold text-slate-800 mb-2 flex items-center gap-1 text-xs">
+                <FileText size={12} className="text-blue-600" /> Notifications
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {viewModal.notifications.map((n, idx) => (
                   <div
                     key={idx}
-                    className="p-3 bg-white rounded-lg border border-slate-200 text-slate-800 shadow-sm text-xs sm:text-sm"
+                    className="p-2 bg-white rounded border border-slate-200 text-slate-800 text-[10px]"
                   >
                     {n}
                   </div>
@@ -213,24 +214,24 @@ const ViewCaseModal = ({ viewModal, setViewModal }) => {
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-slate-200 rounded-b-2xl px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <span className="text-xs sm:text-sm text-slate-800">
-            Total: {(viewModal.stages || []).length} stage
-            {(viewModal.stages || []).length !== 1 ? "s" : ""} archived
+        <div className="sticky bottom-0 bg-slate-50 border-t border-slate-200 px-4 py-3 flex justify-between items-center gap-2 rounded-b-lg">
+          <span className="text-[10px] text-slate-700">
+            {(viewModal.stages || []).length} stage
+            {(viewModal.stages || []).length !== 1 ? "s" : ""}
           </span>
 
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-2">
             <button
               onClick={() => setViewModal(null)}
-              className="px-5 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition"
+              className="px-3 py-1.5 border border-slate-300 text-slate-700 rounded text-xs hover:bg-slate-100 transition"
             >
               Close
             </button>
             <a
               href={`/download/archive/${viewModal._id}`}
-              className="flex items-center gap-2 px-5 py-2 bg-yellow-700 text-white rounded-lg font-medium hover:bg-yellow-800 transition shadow-sm"
+              className="flex items-center gap-1 px-3 py-1.5 bg-slate-700 text-white rounded text-xs hover:bg-slate-800 transition"
             >
-              <Download size={16} /> Download All
+              <Download size={12} /> Download
             </a>
           </div>
         </div>

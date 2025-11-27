@@ -1,5 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Upload, FileText, X, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Upload,
+  FileText,
+  X,
+  Trash2,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 
 const DocumentDetailsForm = ({ caseInfo, onChange }) => {
   const [documents, setDocuments] = useState(caseInfo?.documents || []);
@@ -12,9 +19,9 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
     if (onChange) {
       onChange({
         target: {
-          name: 'documents',
-          value: documents
-        }
+          name: "documents",
+          value: documents,
+        },
       });
     }
   }, [documents, onChange]);
@@ -22,22 +29,24 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
   // Validate documents
   const validateDocuments = () => {
     const newErrors = [];
-    
+
     if (documents.length < 3) {
-      newErrors.push(`At least 3 documents are required. Currently have ${documents.length}.`);
+      newErrors.push(
+        `At least 3 documents are required. Currently have ${documents.length}.`
+      );
     }
-    
+
     // Validate file types and sizes
     documents.forEach((doc, index) => {
       if (doc.file) {
         const maxSize = 10 * 1024 * 1024; // 10MB
         const allowedTypes = [
-          'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'image/jpeg',
-          'image/png',
-          'image/jpg'
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "image/jpeg",
+          "image/png",
+          "image/jpg",
         ];
 
         if (doc.file.size > maxSize) {
@@ -56,13 +65,13 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
 
   // Handle file selection
   const handleFileSelect = (files) => {
-    const newDocuments = Array.from(files).map(file => ({
+    const newDocuments = Array.from(files).map((file) => ({
       name: file.name,
       url: URL.createObjectURL(file),
-      file: file // Store the actual file object
+      file: file, // Store the actual file object
     }));
 
-    setDocuments(prev => [...prev, ...newDocuments]);
+    setDocuments((prev) => [...prev, ...newDocuments]);
   };
 
   // Handle drag and drop
@@ -92,76 +101,77 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
       handleFileSelect(files);
     }
     // Reset input to allow selecting same files again
-    e.target.value = '';
+    e.target.value = "";
   };
 
   // Remove document
   const removeDocument = (index) => {
-    setDocuments(prev => prev.filter((_, i) => i !== index));
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Get file icon based on type
   const getFileIcon = (fileName) => {
-    const extension = fileName.split('.').pop()?.toLowerCase();
+    const extension = fileName.split(".").pop()?.toLowerCase();
     switch (extension) {
-      case 'pdf':
-        return '📄';
-      case 'doc':
-      case 'docx':
-        return '📝';
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return '🖼️';
+      case "pdf":
+        return "📄";
+      case "doc":
+      case "docx":
+        return "📝";
+      case "jpg":
+      case "jpeg":
+      case "png":
+        return "🖼️";
       default:
-        return '📎';
+        return "📎";
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Validation Status */}
-      <div className={`p-4 rounded-lg border ${
-        documents.length >= 3 
-          ? "bg-green-50 border-green-200 text-green-800" 
-          : "bg-yellow-50 border-yellow-200 text-yellow-800"
-      }`}>
-        <div className="flex items-center gap-2">
+      <div
+        className={`p-2 rounded border ${
+          documents.length >= 3
+            ? "bg-green-50 border-green-200 text-green-800"
+            : "bg-yellow-50 border-yellow-200 text-yellow-800"
+        }`}
+      >
+        <div className="flex items-center gap-1.5">
           {documents.length >= 3 ? (
-            <CheckCircle size={18} className="text-green-600" />
+            <CheckCircle size={14} className="text-green-600" />
           ) : (
-            <AlertCircle size={18} className="text-yellow-600" />
+            <AlertCircle size={14} className="text-yellow-600" />
           )}
-          <span className="font-medium">
+          <span className="font-medium text-xs">
             {documents.length} / 3 documents uploaded
           </span>
         </div>
-        <p className="text-sm mt-1">
-          {documents.length >= 3 
-            ? "Great! Minimum requirement met."
-            : `Need ${3 - documents.length} more document(s) to proceed.`
-          }
+        <p className="text-[10px] mt-0.5">
+          {documents.length >= 3
+            ? "Minimum requirement met."
+            : `Need ${3 - documents.length} more.`}
         </p>
       </div>
 
       {/* Upload Area */}
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${
-          isDragging 
-            ? "border-blue-400 bg-blue-50" 
-            : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+        className={`border-2 border-dashed rounded p-4 text-center transition-all cursor-pointer ${
+          isDragging
+            ? "border-blue-400 bg-blue-50"
+            : "border-slate-300 bg-slate-50 hover:bg-slate-100"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
       >
-        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-gray-600 mb-2 font-medium">
-          Drag and drop files here or click to upload
+        <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+        <p className="text-slate-600 mb-1 font-medium text-xs">
+          Drag and drop or click to upload
         </p>
-        <p className="text-sm text-gray-500">
-          Supported formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB each)
+        <p className="text-[10px] text-slate-500">
+          PDF, DOC, DOCX, JPG, PNG (Max 10MB)
         </p>
         <input
           type="file"
@@ -175,12 +185,12 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
 
       {/* Error Messages */}
       {errors.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-red-800 mb-2">
-            <AlertCircle size={18} />
-            <h4 className="font-semibold">Please fix the following issues:</h4>
+        <div className="bg-red-50 border border-red-200 rounded p-2">
+          <div className="flex items-center gap-1.5 text-red-800 mb-1">
+            <AlertCircle size={14} />
+            <h4 className="font-semibold text-xs">Please fix:</h4>
           </div>
-          <ul className="text-sm text-red-700 space-y-1">
+          <ul className="text-[10px] text-red-700 space-y-0.5">
             {errors.map((error, index) => (
               <li key={index}>• {error}</li>
             ))}
@@ -190,39 +200,41 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
 
       {/* Uploaded Documents List */}
       {documents.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <FileText size={20} className="text-blue-600" />
+        <div className="space-y-2">
+          <h3 className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+            <FileText size={14} className="text-blue-600" />
             Uploaded Documents ({documents.length})
           </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className="grid grid-cols-1 gap-2">
             {documents.map((doc, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-all"
+                className="flex items-center justify-between p-2 bg-white border border-slate-200 rounded hover:shadow-sm transition"
               >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <span className="text-2xl">{getFileIcon(doc.name)}</span>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <span className="text-lg">{getFileIcon(doc.name)}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate">
+                    <p className="text-xs font-medium text-slate-800 truncate">
                       {doc.name}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {doc.file ? `Size: ${(doc.file.size / 1024 / 1024).toFixed(2)}MB` : 'Uploaded'}
+                    <p className="text-[10px] text-slate-500">
+                      {doc.file
+                        ? `${(doc.file.size / 1024 / 1024).toFixed(2)}MB`
+                        : "Uploaded"}
                     </p>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     removeDocument(index);
                   }}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Remove document"
+                  className="p-1 text-red-500 hover:bg-red-50 rounded transition"
+                  title="Remove"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={14} />
                 </button>
               </div>
             ))}
@@ -231,16 +243,15 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
       )}
 
       {/* Instructions */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
-          <AlertCircle size={16} />
-          Required Documents
+      <div className="bg-blue-50 border border-blue-200 rounded p-2">
+        <h4 className="font-semibold text-blue-800 mb-1 flex items-center gap-1.5 text-xs">
+          <AlertCircle size={12} />
+          Required
         </h4>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>• At least 3 documents are mandatory</li>
-          <li>• Supported formats: PDF, Word documents, Images</li>
-          <li>• Maximum file size: 10MB per document</li>
-          <li>• Recommended: Case files, evidence, contracts, identification</li>
+        <ul className="text-[10px] text-blue-700 space-y-0.5">
+          <li>• At least 3 documents mandatory</li>
+          <li>• PDF, Word, Images supported</li>
+          <li>• Max 10MB per file</li>
         </ul>
       </div>
     </div>

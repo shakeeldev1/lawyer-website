@@ -68,79 +68,143 @@ export default function ClientTable({
 
   if (!clients.length)
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-        <FileText className="w-10 h-10 text-blue-500 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+      <div className="bg-white rounded shadow-sm border border-slate-200 p-8 text-center mt-4">
+        <FileText className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+        <h3 className="text-sm font-semibold text-slate-700 mb-1">
           No Clients Found
         </h3>
-        <p className="text-gray-500 text-sm">
+        <p className="text-[10px] text-slate-500">
           Clients will appear here once added.
         </p>
       </div>
     );
 
   const TableRow = ({ c, idx }) => (
-    <tr
-      className={`transition-all duration-200 hover:bg-slate-50 ${
-        idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-      }`}
-    >
-      <td className="p-4 font-semibold text-slate-800 whitespace-nowrap">
-        {c._id?.slice(-6) || c.id}
-      </td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">{c.name}</td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">{c.email}</td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">
-        {c.contactNumber}
-      </td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">{c.nationalId}</td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">{c.address}</td>
-      <td className="p-4 text-slate-800 whitespace-nowrap">
-        {c.additionalInfo}
-      </td>
-      <td className="p-4 text-right flex justify-end mt-4 gap-2">
-        <button
-          className="inline-flex items-center justify-center w-8 h-8 bg-slate-800 text-white rounded-md hover:bg-slate-700 transition-colors duration-200 shadow-sm"
-          onClick={() => handleEditClick(c)}
-        >
-          <Edit size={14} />
-        </button>
-        <button
-          className="inline-flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 shadow-sm"
-          onClick={() => handleDeleteClick(c)}
-        >
-          <Trash2 size={14} />
-        </button>
-      </td>
-    </tr>
+    <>
+      {/* Desktop Row */}
+      <tr className="hidden md:table-row hover:bg-slate-50 transition">
+        <td className="px-3 py-2 text-[10px] font-medium text-slate-600">
+          {c._id?.slice(-6) || c.id}
+        </td>
+        <td className="px-3 py-2 text-xs text-slate-800">{c.name}</td>
+        <td className="px-3 py-2 text-xs text-slate-700 hidden lg:table-cell">
+          {c.email}
+        </td>
+        <td className="px-3 py-2 text-xs text-slate-700">{c.contactNumber}</td>
+        <td className="px-3 py-2 text-xs text-slate-700 hidden xl:table-cell">
+          {c.nationalId}
+        </td>
+        <td className="px-3 py-2 text-xs text-slate-700 hidden lg:table-cell truncate max-w-[150px]">
+          {c.address}
+        </td>
+        <td className="px-3 py-2 text-xs text-slate-700 hidden xl:table-cell truncate max-w-[150px]">
+          {c.additionalInfo || "-"}
+        </td>
+        <td className="px-3 py-2">
+          <div className="flex justify-end gap-1">
+            <button
+              className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+              onClick={() => handleEditClick(c)}
+              title="Edit"
+            >
+              <Edit size={16} />
+            </button>
+            <button
+              className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+              onClick={() => handleDeleteClick(c)}
+              title="Delete"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      {/* Mobile Card */}
+      <tr className="md:hidden">
+        <td colSpan="8" className="p-0">
+          <div className="p-3 border-b border-slate-200 hover:bg-slate-50">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1">
+                <h3 className="text-xs font-semibold text-slate-800">
+                  {c.name}
+                </h3>
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  ID: {c._id?.slice(-6) || c.id}
+                </p>
+              </div>
+              <div className="flex gap-1">
+                <button
+                  className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  onClick={() => handleEditClick(c)}
+                >
+                  <Edit size={16} />
+                </button>
+                <button
+                  className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                  onClick={() => handleDeleteClick(c)}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+            <div className="space-y-1 text-[10px]">
+              <div className="flex justify-between">
+                <span className="text-slate-500">Contact:</span>
+                <span className="text-slate-700 font-medium">
+                  {c.contactNumber}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Email:</span>
+                <span className="text-slate-700 truncate ml-2">{c.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">National ID:</span>
+                <span className="text-slate-700 font-medium">
+                  {c.nationalId}
+                </span>
+              </div>
+              {c.address && (
+                <div>
+                  <span className="text-slate-500">Address:</span>
+                  <p className="text-slate-700 mt-0.5">{c.address}</p>
+                </div>
+              )}
+              {c.additionalInfo && (
+                <div>
+                  <span className="text-slate-500">Info:</span>
+                  <p className="text-slate-700 mt-0.5">{c.additionalInfo}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </>
   );
 
   return (
-    <div
-      className={`bg-white rounded-2xl w-[330px] shadow-sm border border-gray-200 overflow-hidden transition-all duration-300
-    ${sidebarOpen ? "md:w-[510px] lg:w-[980px]" : "md:w-[700px] lg:w-[1160px]"}
-  `}
-    >
-      {/* ✅ Responsive container width based on sidebar */}
-      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse">
-        <table className="w-full min-w-[1000px] text-left border-collapse">
-          <thead className="bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10">
+    <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden mt-4">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-slate-800 text-white hidden md:table-header-group">
             <tr>
               {[
-                "Client ID",
-                "Name",
-                "Email",
-                "Contact Number",
-                "National ID",
-                "Address",
-                "Additional Info",
-                "Actions",
+                { label: "ID", class: "" },
+                { label: "Name", class: "" },
+                { label: "Email", class: "hidden lg:table-cell" },
+                { label: "Contact", class: "" },
+                { label: "National ID", class: "hidden xl:table-cell" },
+                { label: "Address", class: "hidden lg:table-cell" },
+                { label: "Info", class: "hidden xl:table-cell" },
+                { label: "Actions", class: "text-right" },
               ].map((h) => (
                 <th
-                  key={h}
-                  className="p-4 text-sm font-semibold tracking-wide text-white uppercase whitespace-nowrap"
+                  key={h.label}
+                  className={`px-3 py-2 text-[10px] font-semibold uppercase tracking-wide ${h.class}`}
                 >
-                  {h}
+                  {h.label}
                 </th>
               ))}
             </tr>

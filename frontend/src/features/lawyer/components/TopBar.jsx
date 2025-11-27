@@ -8,7 +8,7 @@ import { useGetDashboardStatsQuery } from "../api/lawyerApi";
 
 const TopBar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   const user = useSelector(selectUserProfile); // can be null initially
   const dispatch = useDispatch();
@@ -35,25 +35,19 @@ const TopBar = () => {
     };
   }, []);
 
-  // Watch for sidebar changes
+  // Watch for sidebar width changes
   useEffect(() => {
-    const handleResize = () => {
-      setSidebarOpen(window.innerWidth >= 1024);
-    };
-
-    const handleSidebarToggle = () => {
+    const checkSidebarWidth = () => {
       const sidebar = document.querySelector("aside");
       if (sidebar) {
-        setSidebarOpen(sidebar.classList.contains("w-64"));
+        const width = sidebar.offsetWidth;
+        setSidebarExpanded(width > 100); // expanded if width > 100px
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
+    checkSidebarWidth();
+    const interval = setInterval(checkSidebarWidth, 100);
+    return () => clearInterval(interval);
   }, []);
 
   // Logout handler
@@ -70,48 +64,36 @@ const TopBar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 h-16 sm:h-20
-      bg-linear-to-r from-blue-50 to-indigo-50/90
-      shadow-md border-b border-blue-100
-      flex items-center justify-between
-      px-4 sm:px-6 md:px-10 md:z-40
-      transition-all duration-300 ease-in-out
-      lg:left-${sidebarOpen ? "64" : "20"} lg:right-0`}
+      className={`fixed top-0 right-0 h-12 bg-white/95 backdrop-blur-sm
+      border-b border-slate-200 flex items-center justify-between px-4 z-40 transition-all duration-300
+      ${sidebarExpanded ? "left-52" : "left-14"}`}
     >
       {/* Left Quick Stats */}
-      <div
-        className={`flex items-center gap-4 sm:gap-6 ${
-          sidebarOpen ? "ml-20 md:ml-[300px]" : "ml-14 md:ml-[130px]"
-        }`}
-      >
+      <div className="flex items-center gap-3">
         {/* Active Cases */}
-        <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <Briefcase size={18} className="text-blue-600" />
-          <div className="text-left">
-            <p className="text-xs text-slate-500">Active Cases</p>
-            {statsLoading ? (
-              <div className="h-5 w-8 bg-slate-200 animate-pulse rounded"></div>
-            ) : (
-              <p className="text-lg font-semibold text-slate-800">
-                {statsData?.data?.totalAssigned || 0}
-              </p>
-            )}
-          </div>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-slate-500">Active:</span>
+          {statsLoading ? (
+            <div className="h-3 w-6 bg-slate-200 animate-pulse rounded"></div>
+          ) : (
+            <span className="text-xs font-semibold text-slate-800">
+              {statsData?.data?.totalAssigned || 0}
+            </span>
+          )}
         </div>
 
-        {/* Today's Hearings */}
-        <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-all duration-200">
-          <Calendar size={18} className="text-amber-600" />
-          <div className="text-left whitespace-nowrap">
-            <p className="text-xs text-slate-500">Upcoming</p>
-            {statsLoading ? (
-              <div className="h-5 w-8 bg-slate-200 animate-pulse rounded"></div>
-            ) : (
-              <p className="text-lg font-semibold text-slate-800">
-                {statsData?.data?.upcomingHearings?.length || 0}
-              </p>
-            )}
-          </div>
+        <div className="h-3 w-px bg-slate-300"></div>
+
+        {/* Upcoming Hearings */}
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-slate-500">Upcoming:</span>
+          {statsLoading ? (
+            <div className="h-3 w-6 bg-slate-200 animate-pulse rounded"></div>
+          ) : (
+            <span className="text-xs font-semibold text-slate-800">
+              {statsData?.data?.upcomingHearings?.length || 0}
+            </span>
+          )}
         </div>
       </div>
 
@@ -119,31 +101,31 @@ const TopBar = () => {
       <div className="relative dropdown-container">
         <button
           onClick={() => setDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-3 p-1.5 rounded-2xl 
-               bg-white/80 hover:bg-white 
-               border border-blue-100
-               shadow-sm hover:shadow-md
+          className="flex items-center gap-1.5 px-2 py-1 rounded 
+               bg-slate-50 hover:bg-slate-100 
+               border border-slate-200
+               shadow-sm
                transition-all duration-200"
         >
           <img
             src={`https://ui-avatars.com/api/?name=${
               user?.name || "User"
-            }&background=3b82f6&color=fff&bold=true&size=128`}
+            }&background=475569&color=fff&bold=true&size=128`}
             alt="User Avatar"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-blue-300 shadow-sm object-cover"
+            className="w-6 h-6 rounded-full border border-slate-300 object-cover"
           />
           <div className="hidden sm:block text-left">
-            <p className="text-sm font-semibold text-slate-800">
+            <p className="text-[10px] font-semibold text-slate-800 leading-tight">
               {user?.name || ""}
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-[9px] text-slate-500 leading-tight">
               {user?.role
                 ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
                 : ""}
             </p>
           </div>
           <ChevronDown
-            size={14}
+            size={10}
             className={`text-slate-500 transition-transform duration-200 ${
               isDropdownOpen ? "rotate-180" : ""
             }`}
@@ -153,32 +135,31 @@ const TopBar = () => {
         {/* Dropdown Menu */}
         {isDropdownOpen && (
           <div
-            className="absolute right-0 mt-3 w-52 bg-white/95 border border-blue-100 
-                 rounded-2xl shadow-xl py-3 z-50 backdrop-blur-xl"
+            className="absolute right-0 mt-1 w-40 bg-white border border-slate-200 
+                 rounded shadow-lg py-1 z-50"
           >
-            <div className="px-4 py-2 border-b border-blue-100">
-              <p className="text-xs text-slate-500">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-800 truncate">
+            <div className="px-3 py-1.5 border-b border-slate-200">
+              <p className="text-[9px] text-slate-500">Signed in as</p>
+              <p className="text-[10px] font-semibold text-slate-800 truncate">
                 {user?.email || ""}
               </p>
             </div>
 
-            <div className="py-2">
+            <div className="py-1">
               <Link
                 to="/my-profile"
-                className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 text-sm font-medium"
+                className="flex items-center gap-1.5 w-full px-3 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors duration-200 text-[10px] font-medium"
               >
-                <User size={16} /> My Profile
+                My Profile
               </Link>
             </div>
 
-            <div className="border-t border-blue-100 pt-2">
+            <div className="border-t border-slate-200 pt-1">
               <button
                 onClick={handleLogout}
                 disabled={isLoading}
-                className="flex items-center gap-3 w-full px-4 py-2 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 text-sm font-medium"
+                className="flex items-center gap-1.5 w-full px-3 py-1.5 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors duration-200 text-[10px] font-medium"
               >
-                <LogOut size={16} />
                 {isLoading ? "Logging out..." : "Sign Out"}
               </button>
             </div>

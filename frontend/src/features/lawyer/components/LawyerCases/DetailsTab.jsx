@@ -3,55 +3,62 @@ import StatusPill from "./StatusPill";
 
 export default function DetailsTab({ selectedCase }) {
   return (
-    <div className="flex flex-col md:flex-row gap-4">
-      
+    <div className="flex flex-col md:flex-row gap-3">
       {/* Left Panel: Case Info */}
-      <div className="flex-1 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-        <div className="bg-slate-800 text-white px-5 py-3 font-semibold text-lg">
-          Case Details
+      <div className="flex-1 bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-slate-800 text-white px-4 py-2">
+          <h3 className="text-xs font-semibold">Case Details</h3>
         </div>
-        <div className="p-5 space-y-4 text-slate-800">
+        <div className="p-3 space-y-2 text-xs">
           <div className="flex justify-between">
-            <span className="font-medium">Case Number:</span>
-            <span className="text-slate-600">{selectedCase.caseNumber}</span>
+            <span className="text-slate-500">Case Number:</span>
+            <span className="text-slate-800 font-medium">
+              {selectedCase.caseNumber}
+            </span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">Client:</span>
-            <span className="text-slate-600">{selectedCase.clientName}</span>
+            <span className="text-slate-500">Client:</span>
+            <span className="text-slate-800">{selectedCase.clientName}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">Case Type:</span>
-            <span className="text-slate-600">{selectedCase.caseType}</span>
+            <span className="text-slate-500">Case Type:</span>
+            <span className="text-slate-800">{selectedCase.caseType}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="font-medium">Assigned Stage:</span>
+            <span className="text-slate-500">Assigned Stage:</span>
             <StatusPill status={selectedCase.assignedStage} />
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">Assigned Date:</span>
-            <span className="text-slate-600">{selectedCase.assignedDate || "—"}</span>
+            <span className="text-slate-500">Assigned Date:</span>
+            <span className="text-slate-800">
+              {selectedCase.assignedDate || "—"}
+            </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="font-medium">Status:</span>
+            <span className="text-slate-500">Status:</span>
             <StatusPill status={selectedCase.status} />
           </div>
         </div>
       </div>
 
       {/* Right Panel: Stage Summary */}
-      <div className="flex-1 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-        <div className="bg-slate-800 text-white px-5 py-3 font-semibold text-lg">
-          Stage Timeline
+      <div className="flex-1 bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-slate-800 text-white px-4 py-2">
+          <h3 className="text-xs font-semibold">Stage Timeline</h3>
         </div>
-        <div className="p-5 flex flex-col gap-3 max-h-[500px] overflow-y-auto">
+        <div className="p-3 flex flex-col gap-2 max-h-[400px] overflow-y-auto">
           {selectedCase.stages.map((stage, idx) => (
             <div
               key={idx}
-              className="flex justify-between items-center p-4 border rounded-lg shadow-sm hover:shadow-md transition duration-200"
+              className="flex justify-between items-center p-2 border rounded hover:bg-slate-50 transition"
             >
-              <div>
-                <div className="text-slate-800 font-medium">{stage.type}</div>
-                <div className="text-slate-500 text-sm">{stage.date || "—"}</div>
+              <div className="flex-1">
+                <div className="text-xs font-medium text-slate-800">
+                  {stage.type}
+                </div>
+                <div className="text-[10px] text-slate-500">
+                  {stage.date || "—"}
+                </div>
               </div>
               <div>
                 {stage.completed ? (
@@ -64,7 +71,6 @@ export default function DetailsTab({ selectedCase }) {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

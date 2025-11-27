@@ -24,40 +24,24 @@ export default function MyCases() {
 
   useEffect(() => {
     if (data?.data) {
-      console.log("📊 Raw case data from API:", data.data[0]);
-      const mapped = data.data.map((c) => {
-        const mappedCase = {
-          ...c,
-          id: c._id || c.id,
-          _id: c._id || c.id, // Keep both for compatibility
-          clientName: c.clientId?.name || "—",
-          clientEmail: c.clientId?.email || "—",
-          clientPhone: c.clientId?.contactNumber || "—",
-          assignedStage: c.currentStage || 0,
-          currentStage: c.currentStage || 0, // Keep both
-          stages: c.stages || [],
-          notes: c.notes || [],
-          caseNumber: c.caseNumber,
-          caseType: c.caseType,
-          status: c.status,
-        };
-        return mappedCase;
-      });
-      console.log("📊 Mapped case:", mapped[0]);
+      const mapped = data.data.map((c) => ({
+        ...c,
+        id: c._id || c.id,
+        _id: c._id || c.id,
+        clientName: c.clientId?.name || "—",
+        clientEmail: c.clientId?.email || "—",
+        clientPhone: c.clientId?.contactNumber || "—",
+        assignedStage: c.currentStage || 0,
+        currentStage: c.currentStage || 0,
+        stages: c.stages || [],
+        notes: c.notes || [],
+        caseNumber: c.caseNumber,
+        caseType: c.caseType,
+        status: c.status,
+      }));
       setCases(mapped);
-
-      // Update selectedCase if it's currently open and data has changed
-      if (selectedCase) {
-        const updatedCase = mapped.find(
-          (c) => c._id === selectedCase._id || c.id === selectedCase.id
-        );
-        if (updatedCase) {
-          console.log("🔄 Updating selected case with fresh data");
-          setSelectedCase(updatedCase);
-        }
-      }
     }
-  }, [data, selectedCase]);
+  }, [data]);
 
   useEffect(() => {
     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
@@ -73,17 +57,6 @@ export default function MyCases() {
   }, []);
 
   const openCase = (c) => {
-    console.log("🔍 Opening case - Full object:", c);
-    console.log("🔍 Case details:", {
-      _id: c._id,
-      id: c.id,
-      caseNumber: c.caseNumber,
-      stagesLength: Array.isArray(c.stages) ? c.stages.length : "NOT ARRAY",
-      stagesValue: c.stages,
-      currentStage: c.currentStage,
-      assignedStage: c.assignedStage,
-    });
-
     // Ensure we have valid data
     const validCase = {
       ...c,
@@ -125,129 +98,134 @@ export default function MyCases() {
 
   if (isLoading)
     return (
-      <p className="text-center mt-20 text-slate-700 font-medium">
+      <p className="text-center mt-20 text-xs text-slate-700">
         Loading cases...
       </p>
     );
   if (isError)
     return (
-      <p className="text-center mt-20 text-red-500 font-medium">
+      <p className="text-center mt-20 text-xs text-red-500">
         Error fetching cases. Please try again.
       </p>
     );
 
   return (
     <div
-      className={`min-h-screen px-4 py-3 transition-all duration-300 ease-in-out ${
-        sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"
+      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${
+        sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
       }`}
     >
-      <div className="max-w-7xl mx-auto mt-20">
-        <header className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight">
-              My Assigned Cases
-            </h1>
-            <p className="text-sm md:text-base text-slate-600 mt-1">
-              Workspace for lawyers — review documents, manage workflow
-              efficiently.
-            </p>
-          </div>
+      {/* Header - Compact and minimalist */}
+      <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
+        <div>
+          <h2 className="text-base sm:text-lg font-bold text-slate-800">
+            My Assigned Cases
+          </h2>
+          <p className="text-[10px] sm:text-[11px] text-slate-600 mt-0.5">
+            {cases.length} case{cases.length !== 1 ? "s" : ""} assigned
+          </p>
+        </div>
 
-          <div className="relative w-full md:w-64 mt-2 md:mt-0">
-            <FiSearch className="absolute top-2.5 left-3 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search cases..."
-              className="w-full pl-10 pr-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-slate-400 focus:outline-none text-sm md:text-base"
-            />
-          </div>
-        </header>
+        <div className="relative w-full xs:w-56">
+          <FiSearch
+            size={12}
+            className="absolute top-2 left-2 text-slate-400"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search cases..."
+            className="w-full pl-7 pr-2 py-1.5 rounded border border-slate-300 focus:ring-1 focus:ring-slate-400 focus:outline-none text-xs"
+          />
+        </div>
+      </div>
 
-        <CasesTable
-          cases={cases}
-          onOpen={openCase}
-          onDelete={handleDeleteClick}
-        />
+      <CasesTable
+        cases={cases}
+        onOpen={openCase}
+        onDelete={handleDeleteClick}
+      />
 
-        {selectedCase && (
-          <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/60">
-            <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transition-transform duration-300 scale-100 md:scale-100">
-              {/* Header */}
-              <div className="flex justify-between items-start px-6 py-4 bg-linear-to-r from-slate-800 to-slate-700 text-white rounded-t-2xl">
-                <h2 className="font-bold text-xl md:text-2xl">
-                  {selectedCase.caseNumber}
-                </h2>
-                <button
-                  onClick={closeCase}
-                  className="p-2 rounded hover:bg-slate-600 transition"
-                >
-                  <FiX size={24} />
-                </button>
-              </div>
+      {selectedCase && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-3">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60" onClick={closeCase} />
 
-              {/* Tabs */}
-              <div className="px-6 py-3 bg-white sticky top-0 z-20 shadow-sm">
-                <div className="flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
-                  {["Details", "Documents", "Memorandum"].map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setActiveTab(t)}
-                      className={`pb-2 px-2 text-sm md:text-base font-medium transition ${
-                        activeTab === t
-                          ? "border-b-2 border-slate-800 text-slate-900"
-                          : "text-slate-500 hover:text-slate-800"
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          {/* Modal Content */}
+          <div className="relative bg-white w-full max-w-5xl rounded-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="flex justify-between items-center px-4 py-2 bg-slate-800 text-white">
+              <h2 className="font-semibold text-sm">
+                {selectedCase.caseNumber}
+              </h2>
+              <button
+                onClick={closeCase}
+                className="p-1 rounded hover:bg-slate-700 transition"
+              >
+                <FiX size={16} />
+              </button>
+            </div>
 
-              {/* Tab Content */}
-              <div className="flex-1 overflow-auto p-6 bg-slate-50">
-                {activeTab === "Details" && (
-                  <CaseDetail selectedCase={selectedCase} />
-                )}
-                {activeTab === "Documents" && (
-                  <DocumentsTab
-                    selectedCase={selectedCase}
-                    selectedStage={selectedStage}
-                  />
-                )}
-                {activeTab === "Memorandum" && (
-                  <MemorandumTab
-                    selectedCase={selectedCase}
-                    selectedStage={selectedStage}
-                  />
-                )}
-              </div>
-
-              {/* Footer */}
-              <div className="flex justify-end px-6 py-4 border-t sticky bottom-0 bg-white">
-                <button
-                  onClick={closeCase}
-                  className="px-5 py-2 rounded-md border text-slate-800 hover:bg-slate-50 transition font-medium"
-                >
-                  Close
-                </button>
+            {/* Tabs */}
+            <div className="px-4 py-2 bg-white sticky top-0 z-20 border-b border-slate-200">
+              <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+                {["Details", "Documents", "Memorandum"].map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setActiveTab(t)}
+                    className={`pb-1 px-2 text-[10px] font-medium transition whitespace-nowrap ${
+                      activeTab === t
+                        ? "border-b-2 border-slate-800 text-slate-900"
+                        : "text-slate-500 hover:text-slate-800"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
-        )}
 
-        {deleteModalOpen && (
-          <DeleteModal
-            isOpen={deleteModalOpen}
-            onClose={() => setDeleteModalOpen(false)}
-            onDelete={handleDeleteConfirm}
-            caseName={caseToDelete?.caseNumber}
-          />
-        )}
-      </div>
+            {/* Tab Content */}
+            <div className="flex-1 overflow-auto p-4 bg-slate-50">
+              {activeTab === "Details" && (
+                <CaseDetail selectedCase={selectedCase} />
+              )}
+              {activeTab === "Documents" && (
+                <DocumentsTab
+                  selectedCase={selectedCase}
+                  selectedStage={selectedStage}
+                />
+              )}
+              {activeTab === "Memorandum" && (
+                <MemorandumTab
+                  selectedCase={selectedCase}
+                  selectedStage={selectedStage}
+                />
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end px-4 py-2 border-t sticky bottom-0 bg-white">
+              <button
+                onClick={closeCase}
+                className="px-3 py-1.5 rounded border border-slate-300 text-xs text-slate-700 hover:bg-slate-50 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteModalOpen && (
+        <DeleteModal
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onDelete={handleDeleteConfirm}
+          caseName={caseToDelete?.caseNumber}
+        />
+      )}
     </div>
   );
 }

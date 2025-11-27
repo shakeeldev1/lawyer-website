@@ -443,21 +443,42 @@ export const updateHearingDetails = asyncHandler(async (req, res) => {
   const reminderDate = new Date(hearingDateObj);
   reminderDate.setDate(reminderDate.getDate() - 3);
 
-  const allLawyers = await User.find({ role: "lawyer" });
-  const secretary = await User.findById(caseData.secretary);
-  const director = await User.findOne({ role: "director" });
+  // Build recipients list with null checks
+  const recipients = [];
 
-  const recipients = [
-    ...allLawyers.map((l) => l._id),
-    secretary._id,
-    director._id,
-  ];
+  // Add assigned lawyer if exists
+  if (caseData.assignedLawyer) {
+    recipients.push(caseData.assignedLawyer);
+  }
+
+  // Add all lawyers
+  const allLawyers = await User.find({ role: "lawyer" });
+  recipients.push(...allLawyers.map((l) => l._id));
+
+  // Add secretary if exists
+  if (caseData.secretary) {
+    const secretary = await User.findById(caseData.secretary);
+    if (secretary) {
+      recipients.push(secretary._id);
+    }
+  }
+
+  // Add director if exists
+  const director = await User.findOne({ role: "director" });
+  if (director) {
+    recipients.push(director._id);
+  }
+
+  // Remove duplicates
+  const uniqueRecipients = [
+    ...new Set(recipients.map((id) => id.toString())),
+  ].map((id) => id);
 
   await Reminder.create({
     caseId: caseData._id,
     reminderType: "Hearing",
     reminderDate,
-    recipients,
+    recipients: uniqueRecipients,
     message: `Hearing scheduled for case ${caseData.caseNumber} on ${hearingDate} at ${hearingTime}`,
   });
 

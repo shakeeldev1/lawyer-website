@@ -69,45 +69,48 @@ const SecretaryArchiveCases = () => {
 
   return (
     <div
-      className={`min-h-screen  mt-20
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
-                 transition-all duration-300 ease-in-out
-                 ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-15"}`}
+      className={`min-h-screen pt-16
+                 px-2 sm:px-3
+                 py-3 sm:py-4
+                 transition-all duration-300 ease-in- mt-8
+                 ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
     >
       {/* Header */}
-      <div className="mb-8 text-center md:text-left">
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#1C283C] tracking-tight flex items-center justify-center md:justify-start gap-3">
-          Archiving Section
+      <div className="mb-4">
+        <h2 className="text-base sm:text-lg font-semibold text-slate-800">
+          Archive
         </h2>
-        <p className="text-slate-600 mt-2 text-sm md:text-base">
-          View completed cases with all stages, memorandums, documents, and
-          approvals.
+        <p className="text-[10px] text-slate-500 mt-0.5">
+          View completed cases with all stages and documents
         </p>
       </div>
 
       {/* Search */}
-      <div className="relative mb-8 w-full max-w-md mx-auto md:mx-0  rounded-full">
-        <Search className="absolute left-3 top-3 text-slate-500" size={20} />
+      <div className="relative mb-4 max-w-md">
+        <Search className="absolute left-2 top-2 text-slate-400" size={14} />
         <input
           type="text"
-          placeholder="Search by client name or case number..."
+          placeholder="Search by client or case number..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-12 p-3 w-full border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-[#fe9a00] focus:border-[#fe9a00] outline-none transition-all duration-200 text-slate-800 bg-slate-50 hover:bg-white"
+          className="pl-8 py-1.5 pr-2 w-full border border-slate-200 rounded bg-slate-50 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-xs text-slate-800"
         />
       </div>
 
       {/* Loading & Error States */}
       {isLoading && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#fe9a00]"></div>
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <p className="text-xs text-slate-500 mt-2">
+            Loading archived cases...
+          </p>
         </div>
       )}
       {error && (
-        <div className="text-center py-10 text-red-600">
-          Error loading archived cases:{" "}
-          {error?.data?.message || "Something went wrong"}
+        <div className="bg-red-50 border border-red-200 rounded p-3 text-center">
+          <p className="text-xs text-red-600">
+            Error: {error?.data?.message || "Failed to load archived cases"}
+          </p>
         </div>
       )}
 
