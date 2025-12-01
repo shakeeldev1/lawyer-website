@@ -8,6 +8,7 @@ import CaseDeleteModal from "../components/cases/CaseDeleteModal";
 import ArchiveCaseModal from "../components/cases/ArchiveCaseModal";
 import AddReminderModal from "../components/cases/AddReminderModal";
 import AddHearingDateModal from "../components/cases/AddHearingDateModal";
+import AssignLawyerModal from "../components/cases/AssignLawyerModal";
 import {
   useGetAllCasesQuery,
   useUpdateCaseMutation,
@@ -41,6 +42,7 @@ const CaseManagement = () => {
   const [archiveCase, setarchiveCase] = useState(null);
   const [reminderCase, setReminderCase] = useState(null);
   const [hearingCase, setHearingCase] = useState(null);
+  const [assignLawyerCase, setAssignLawyerCase] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -240,6 +242,7 @@ const CaseManagement = () => {
           onArchive={handleArchiveCase}
           onAddReminder={(caseData) => setReminderCase(caseData)}
           onScheduleHearing={(caseData) => setHearingCase(caseData)}
+          onAssignLawyer={(caseData) => setAssignLawyerCase(caseData)}
         />
       )}
 
@@ -271,6 +274,13 @@ const CaseManagement = () => {
         isOpen={!!hearingCase}
         onClose={() => setHearingCase(null)}
         caseData={hearingCase}
+      />
+
+      {/* ASSIGN LAWYER MODAL */}
+      <AssignLawyerModal
+        isOpen={!!assignLawyerCase}
+        onClose={() => setAssignLawyerCase(null)}
+        caseData={assignLawyerCase}
       />
 
       <AddCase

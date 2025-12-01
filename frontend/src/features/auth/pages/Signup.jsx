@@ -9,12 +9,20 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    phone: "",
     password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    // Format phone number - remove non-digits for WhatsApp compatibility
+    if (name === "phone") {
+      const cleaned = value.replace(/\D/g, "");
+      setFormData({ ...formData, [name]: cleaned });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -24,7 +32,7 @@ const Signup = () => {
       toast.success(res?.message || "Signup successful!", {
         position: "bottom-right",
       });
-      navigate("/verify-account",{state:{email:formData.email}})
+      navigate("/verify-account", { state: { email: formData.email } });
     } catch (error) {
       toast.error(error?.data?.message || "Signup failed!", {
         position: "bottom-right",
@@ -32,106 +40,132 @@ const Signup = () => {
     }
   };
 
- return (
-  <div
-    className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden 
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden 
                bg-gradient-to-br from-slate-200 to-slate-300"
-  >
-    {/* Background Pattern */}
-    <div className="absolute inset-0 opacity-10 select-none pointer-events-none 
+    >
+      {/* Background Pattern */}
+      <div
+        className="absolute inset-0 opacity-10 select-none pointer-events-none 
                     flex items-center justify-center text-[120px] font-extrabold 
-                    text-slate-700 tracking-widest">
-      E!E!E@
+                    text-slate-700 tracking-widest"
+      >
+        E!E!E@
+      </div>
+
+      {/* Form Container */}
+      <div
+        className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
+                    w-full max-w-md border border-slate-200"
+      >
+        <h1 className="text-3xl font-extrabold text-center mb-2 text-slate-700">
+          Create Account
+        </h1>
+
+        <p className="text-center text-slate-600 mb-8 text-sm">
+          Join us to continue
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1">
+            <label
+              className="block text-slate-700 font-medium"
+              htmlFor="fullName"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-slate-700 font-medium" htmlFor="email">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email address"
+              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="block text-slate-700 font-medium" htmlFor="phone">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="923120201709 (without + sign)"
+              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              required
+            />
+            <p className="text-xs text-slate-600 mt-1">
+              📱 Format: Country code + number (e.g., 923120201709 for Pakistan)
+            </p>
+          </div>
+
+          <div className="space-y-1">
+            <label
+              className="block text-slate-700 font-medium"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter password"
+              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
+                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full text-white py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
+              isLoading
+                ? "bg-slate-400 cursor-not-allowed"
+                : "bg-slate-700 hover:bg-slate-800 hover:shadow-lg"
+            }`}
+          >
+            {isLoading ? "Creating..." : "Sign Up"}
+          </button>
+
+          {error && (
+            <p className="text-red-500 text-center mt-2 text-sm">
+              {error?.data?.message || "Something went wrong"}
+            </p>
+          )}
+        </form>
+      </div>
     </div>
-
-    {/* Form Container */}
-    <div className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
-                    w-full max-w-md border border-slate-200">
-      
-      <h1 className="text-3xl font-extrabold text-center mb-2 text-slate-700">
-        Create Account
-      </h1>
-
-      <p className="text-center text-slate-600 mb-8 text-sm">
-        Join us to continue
-      </p>
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-
-        <div className="space-y-1">
-          <label className="block text-slate-700 font-medium" htmlFor="fullName">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="fullName"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
-            required
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label className="block text-slate-700 font-medium" htmlFor="email">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter email address"
-            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
-            required
-          />
-        </div>
-
-        <div className="space-y-1">
-          <label className="block text-slate-700 font-medium" htmlFor="password">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter password"
-            className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`w-full text-white py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
-            isLoading
-              ? "bg-slate-400 cursor-not-allowed"
-              : "bg-slate-700 hover:bg-slate-800 hover:shadow-lg"
-          }`}
-        >
-          {isLoading ? "Creating..." : "Sign Up"}
-        </button>
-
-        {error && (
-          <p className="text-red-500 text-center mt-2 text-sm">
-            {error?.data?.message || "Something went wrong"}
-          </p>
-        )}
-      </form>
-    </div>
-  </div>
-);
-
-
+  );
 };
 
 export default Signup;

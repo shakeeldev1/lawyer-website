@@ -28,6 +28,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
     caseType: "",
     description: "",
     assignedLawyer: "",
+    approvingLawyer: "",
     hearingDate: "",
     filingDate: new Date().toISOString().slice(0, 10),
     status: "Pending",
@@ -99,6 +100,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
             caseType: caseInfo.caseType,
             caseDescription: caseInfo.description,
             assignedLawyer: caseInfo.assignedLawyer || null,
+            approvingLawyer: caseInfo.approvingLawyer || null,
             documents: caseInfo.documents,
           },
         }).unwrap();
@@ -136,15 +138,23 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
           return;
         }
 
-        // Create the case with assigned lawyer
+        if (!caseInfo.approvingLawyer) {
+          toast.error("Please select an approving lawyer");
+          return;
+        }
+
+        // Create the case with assigned and approving lawyer
         await createCase({
           clientId,
           caseType: caseInfo.caseType,
           caseDescription: caseInfo.description,
           assignedLawyer: caseInfo.assignedLawyer,
+          approvingLawyer: caseInfo.approvingLawyer,
           documents: caseInfo.documents || [],
         }).unwrap();
-        toast.success("Case created successfully!");
+        toast.success(
+          "Case created successfully! 📱 WhatsApp notifications sent to assigned lawyer."
+        );
       }
       onAddCase();
       onClose();

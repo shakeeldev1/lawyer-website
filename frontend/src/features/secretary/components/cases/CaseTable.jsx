@@ -1,5 +1,13 @@
 import React from "react";
-import { Archive, Eye, Trash2, Edit, Bell, Calendar } from "lucide-react";
+import {
+  Archive,
+  Eye,
+  Trash2,
+  Edit,
+  Bell,
+  Calendar,
+  UserPlus,
+} from "lucide-react";
 
 const CaseTable = ({
   cases,
@@ -10,6 +18,7 @@ const CaseTable = ({
   onDeleteCase,
   onAddReminder,
   onScheduleHearing,
+  onAssignLawyer,
 }) => {
   // Badge helpers
   const getStageBadge = (stage) => {
@@ -145,6 +154,13 @@ const CaseTable = ({
                     <Calendar size={14} />
                   </button>
                 )}
+                <button
+                  onClick={() => onAssignLawyer?.(c)}
+                  className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                  title="Assign/reassign lawyer"
+                >
+                  <UserPlus size={14} />
+                </button>
                 <button
                   onClick={() => onAddReminder?.(c)}
                   className="p-1.5 bg-amber-50 text-amber-700 rounded hover:bg-amber-100 transition-colors"
@@ -310,6 +326,16 @@ const CaseTable = ({
                           <Calendar size={14} />
                         </button>
                       )}
+                      {c.case.status === "ReadyForSubmission" &&
+                        !c.case.assignedLawyer && (
+                          <button
+                            onClick={() => onAssignLawyer?.(c)}
+                            className="p-1.5 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+                            title="Assign lawyer"
+                          >
+                            <UserPlus size={14} />
+                          </button>
+                        )}
                       <button
                         onClick={() => onAddReminder?.(c)}
                         className="p-1.5 bg-amber-50 text-amber-700 rounded hover:bg-amber-100 transition-colors"

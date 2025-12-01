@@ -89,6 +89,40 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
           )}
         </div>
 
+        {/* Approving Lawyer */}
+        <div className="space-y-1">
+          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+            Approving Lawyer *
+          </label>
+          <select
+            name="approvingLawyer"
+            value={caseInfo.approvingLawyer || ""}
+            onChange={onChange}
+            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            required
+            disabled={loadingLawyers}
+          >
+            <option value="">
+              {loadingLawyers
+                ? "Loading lawyers..."
+                : "Select Approving Lawyer"}
+            </option>
+            {lawyersData?.data?.map((lawyer) => (
+              <option key={lawyer._id} value={lawyer._id}>
+                {lawyer.name} - {lawyer.email}
+              </option>
+            ))}
+            {!lawyersData?.data?.length && !loadingLawyers && (
+              <option value="" disabled>
+                No lawyers available
+              </option>
+            )}
+          </select>
+          <p className="text-[9px] text-slate-500 mt-0.5">
+            📋 Lawyer responsible for final case approval
+          </p>
+        </div>
+
         {/* Hearing Date */}
         <div className="space-y-1">
           <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">

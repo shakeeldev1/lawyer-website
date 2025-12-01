@@ -125,10 +125,10 @@ export const secretaryApi = createApi({
       invalidatesTags: (result, error, { id }) => [{ type: "Cases", id }],
     }),
     assignCaseToLawyer: builder.mutation({
-      query: ({ id, lawyerId }) => ({
+      query: ({ id, lawyerId, approvingLawyerId }) => ({
         url: `/cases/${id}/assign`,
         method: "POST",
-        body: { lawyerId },
+        body: { lawyerId, approvingLawyerId },
       }),
       invalidatesTags: (result, error, { id }) => [
         { type: "Cases", id },

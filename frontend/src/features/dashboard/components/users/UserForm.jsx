@@ -1,16 +1,24 @@
 import React from "react";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaUserTag } from "react-icons/fa";
 
-const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => {
+const UserForm = ({
+  show,
+  onClose,
+  onSubmit,
+  formData,
+  setFormData,
+  roles,
+}) => {
   if (!show) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[9999]">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-200">
-        <h3 className="text-2xl font-bold text-[#162030] mb-6 text-center">Add New User</h3>
+        <h3 className="text-2xl font-bold text-[#162030] mb-6 text-center">
+          Add New User
+        </h3>
 
         <form onSubmit={onSubmit} className="space-y-4">
-
           {/* Full Name */}
           <div className="relative">
             <FaUser className="absolute top-3 left-3 text-gray-400" />
@@ -18,7 +26,9 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
               placeholder="Full Name"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
             />
           </div>
@@ -31,7 +41,9 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
               type="email"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={formData.email}
-              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
           </div>
@@ -40,12 +52,20 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
           <div className="relative">
             <FaPhone className="absolute top-3 left-3 text-gray-400" />
             <input
-              placeholder="Phone"
+              placeholder="Phone (e.g., 923120201709 without +)"
+              type="text"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={formData.phone}
-              onChange={e => setFormData({ ...formData, phone: e.target.value })}
+              onChange={(e) => {
+                // Remove any non-digit characters
+                const cleaned = e.target.value.replace(/\D/g, "");
+                setFormData({ ...formData, phone: cleaned });
+              }}
               required
             />
+            <p className="text-xs text-gray-500 mt-1">
+              📱 Format: 923120201709 (country code + number, no + sign)
+            </p>
           </div>
 
           {/* Role */}
@@ -53,7 +73,9 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
             <FaUserTag className="absolute top-3 left-3 text-gray-400" />
             <select
               value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, role: e.target.value })
+              }
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
               {roles.map((r) => (
@@ -72,7 +94,9 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
               placeholder="Password"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={formData.password}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
             />
           </div>
@@ -85,7 +109,9 @@ const UserForm = ({ show, onClose, onSubmit, formData, setFormData, roles }) => 
               placeholder="Confirm Password"
               className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               value={formData.confirmPassword}
-              onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
               required
             />
           </div>

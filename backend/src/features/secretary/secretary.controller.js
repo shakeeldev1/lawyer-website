@@ -2,6 +2,7 @@ import { Client, Case, Reminder, ActivityLog } from "./secretary.model.js";
 import User from "../auth/User.model.js";
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { customError } from "../../utils/customError.js";
+import WhatsAppHelper from "../../utils/whatsappHelper.js";
 
 export const createClient = asyncHandler(async (req, res) => {
   const { name, contactNumber, email, address, nationalId, additionalInfo } =
@@ -156,8 +157,14 @@ export const getAllCases = asyncHandler(async (req, res) => {
 });
 
 export const createCase = asyncHandler(async (req, res) => {
-  const { clientId, caseType, caseDescription, documents, assignedLawyer } =
-    req.body;
+  const {
+    clientId,
+    caseType,
+    caseDescription,
+    documents,
+    assignedLawyer,
+    approvingLawyer,
+  } = req.body;
 
   const client = await Client.findById(clientId);
   if (!client) {
@@ -172,6 +179,14 @@ export const createCase = asyncHandler(async (req, res) => {
     }
   }
 
+  // Validate approving lawyer if provided
+  if (approvingLawyer) {
+    const approving = await User.findById(approvingLawyer);
+    if (!approving || approving.role !== "lawyer") {
+      throw new customError("Invalid approving lawyer assignment", 400);
+    }
+  }
+
   const caseCount = await Case.countDocuments();
   const caseNumber = `CASE-${Date.now()}-${caseCount + 1}`;
 
@@ -182,6 +197,7 @@ export const createCase = asyncHandler(async (req, res) => {
     caseDescription,
     documents: documents || [],
     assignedLawyer: assignedLawyer || null,
+    approvingLawyer: approvingLawyer || null,
     secretary: req.user._id,
     stages: [
       {
@@ -198,6 +214,52 @@ export const createCase = asyncHandler(async (req, res) => {
     action: "CASE_CREATED",
     description: `Case ${caseNumber} created for client ${client.name}`,
   });
+
+  // 🆕 Send WhatsApp notifications if lawyer is assigned during case creation
+  if (assignedLawyer) {
+    try {
+      // Get lawyer data
+      const lawyer = await User.findById(assignedLawyer);
+      const secretary = await User.findById(req.user._id);
+
+      // Format phone numbers (remove + and ensure proper format)
+      const formatPhone = (phone) => {
+        if (!phone) return null;
+        return phone.replace(/^\+/, "").replace(/\D/g, "");
+      };
+
+      await WhatsAppHelper.notifyNewCaseAssignment({
+        lawyerData: {
+          name: lawyer.name,
+          email: lawyer.email,
+          phone: formatPhone(lawyer.phone),
+        },
+        secretaryData: {
+          name: secretary.name,
+          email: secretary.email,
+          phone: formatPhone(secretary.phone),
+        },
+        caseNumber: caseNumber,
+        clientName: client.name,
+        caseDetails: {
+          courtName: "To be determined",
+          caseType: caseType,
+          priority: "Normal",
+          assignedDate: new Date().toLocaleDateString(),
+        },
+      });
+
+      console.log(
+        "✅ WhatsApp notifications sent for new case creation with lawyer assignment"
+      );
+    } catch (whatsappError) {
+      console.error(
+        "❌ WhatsApp notification failed during case creation:",
+        whatsappError.message
+      );
+      // Don't fail the main operation if WhatsApp fails
+    }
+  }
 
   res.status(201).json({ success: true, data: newCase });
 });
@@ -218,13 +280,27 @@ export const getCaseById = asyncHandler(async (req, res) => {
 });
 
 export const updateCase = asyncHandler(async (req, res) => {
-  const { caseType, caseDescription, documents, assignedLawyer } = req.body;
+  const {
+    caseType,
+    caseDescription,
+    documents,
+    assignedLawyer,
+    approvingLawyer,
+  } = req.body;
 
   // Validate lawyer if provided
   if (assignedLawyer) {
     const lawyer = await User.findById(assignedLawyer);
     if (!lawyer || lawyer.role !== "lawyer") {
       throw new customError("Invalid lawyer assignment", 400);
+    }
+  }
+
+  // Validate approving lawyer if provided
+  if (approvingLawyer) {
+    const approving = await User.findById(approvingLawyer);
+    if (!approving || approving.role !== "lawyer") {
+      throw new customError("Invalid approving lawyer assignment", 400);
     }
   }
 
@@ -237,6 +313,11 @@ export const updateCase = asyncHandler(async (req, res) => {
   // Only update assignedLawyer if it's provided in the request
   if (assignedLawyer !== undefined) {
     updateData.assignedLawyer = assignedLawyer;
+  }
+
+  // Only update approvingLawyer if it's provided in the request
+  if (approvingLawyer !== undefined) {
+    updateData.approvingLawyer = approvingLawyer;
   }
 
   const caseData = await Case.findByIdAndUpdate(req.params.id, updateData, {
@@ -354,6 +435,47 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
     action: "CASE_ASSIGNED",
     description: `Case ${caseData.caseNumber} assigned to lawyer ${lawyer.name}`,
   });
+
+  // 🆕 Send WhatsApp notifications for case assignment
+  try {
+    // Get client and secretary data
+    const populatedCase = await Case.findById(caseData._id).populate(
+      "clientId"
+    );
+    const secretary = await User.findById(req.user._id);
+
+    // Format phone numbers (remove + and ensure proper format)
+    const formatPhone = (phone) => {
+      if (!phone) return null;
+      return phone.replace(/^\+/, "").replace(/\D/g, "");
+    };
+
+    await WhatsAppHelper.notifyNewCaseAssignment({
+      lawyerData: {
+        name: lawyer.name,
+        email: lawyer.email,
+        phone: formatPhone(lawyer.phone),
+      },
+      secretaryData: {
+        name: secretary.name,
+        email: secretary.email,
+        phone: formatPhone(secretary.phone),
+      },
+      caseNumber: caseData.caseNumber,
+      clientName: populatedCase.clientId?.name || "Unknown Client",
+      caseDetails: {
+        courtName: "To be determined",
+        caseType: caseData.caseType,
+        priority: "Normal",
+        assignedDate: new Date().toLocaleDateString(),
+      },
+    });
+
+    console.log("✅ WhatsApp notifications sent for case assignment");
+  } catch (whatsappError) {
+    console.error("❌ WhatsApp notification failed:", whatsappError.message);
+    // Don't fail the main operation if WhatsApp fails
+  }
 
   res.status(200).json({ success: true, data: caseData });
 });
@@ -488,6 +610,76 @@ export const updateHearingDetails = asyncHandler(async (req, res) => {
     action: "HEARING_SCHEDULED",
     description: `Hearing scheduled for case ${caseData.caseNumber}`,
   });
+
+  // 🆕 Send WhatsApp notifications for hearing schedule
+  try {
+    // Get lawyer and secretary data with populated info
+    const populatedCase = await Case.findById(caseData._id)
+      .populate("assignedLawyer", "name email phone")
+      .populate("secretary", "name email phone")
+      .populate("clientId", "name");
+
+    // Format phone numbers (remove + and ensure proper format)
+    const formatPhone = (phone) => {
+      if (!phone) return null;
+      return phone.replace(/^\+/, "").replace(/\D/g, "");
+    };
+
+    const lawyersData = [];
+    const secretariesData = [];
+
+    // Add assigned lawyer
+    if (populatedCase.assignedLawyer?.phone) {
+      lawyersData.push({
+        name: populatedCase.assignedLawyer.name,
+        phone: formatPhone(populatedCase.assignedLawyer.phone),
+        email: populatedCase.assignedLawyer.email,
+      });
+    }
+
+    // Add secretary
+    if (populatedCase.secretary?.phone) {
+      secretariesData.push({
+        name: populatedCase.secretary.name,
+        phone: formatPhone(populatedCase.secretary.phone),
+        email: populatedCase.secretary.email,
+      });
+    }
+
+    // If no secretary from case, use current user (secretary)
+    if (secretariesData.length === 0) {
+      const currentSecretary = await User.findById(req.user._id);
+      if (currentSecretary?.phone) {
+        secretariesData.push({
+          name: currentSecretary.name,
+          phone: formatPhone(currentSecretary.phone),
+          email: currentSecretary.email,
+        });
+      }
+    }
+
+    if (lawyersData.length > 0 || secretariesData.length > 0) {
+      await WhatsAppHelper.scheduleHearingWithReminders({
+        caseNumber: caseData.caseNumber,
+        hearingDate: hearingDate,
+        hearingTime: hearingTime,
+        courtName: "To be determined",
+        judge: "To be assigned",
+        clientName: populatedCase.clientId?.name || "Unknown Client",
+        lawyersData: lawyersData,
+        secretariesData: secretariesData,
+        caseType: caseData.caseType,
+      });
+
+      console.log("✅ WhatsApp hearing reminders scheduled successfully");
+    }
+  } catch (whatsappError) {
+    console.error(
+      "❌ WhatsApp hearing notification failed:",
+      whatsappError.message
+    );
+    // Don't fail the main operation if WhatsApp fails
+  }
 
   res.status(200).json({ success: true, data: caseData });
 });

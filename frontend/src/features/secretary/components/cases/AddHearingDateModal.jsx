@@ -37,7 +37,7 @@ const AddHearingDateModal = ({ isOpen, onClose, caseData }) => {
       }).unwrap();
 
       toast.success(
-        "Hearing date added successfully! Lawyer will be notified."
+        "Hearing date added successfully! 📱 WhatsApp reminders scheduled for lawyer and secretary."
       );
       handleClose();
     } catch (error) {
