@@ -18,6 +18,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://system-alkhaldilawfirm.com",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
