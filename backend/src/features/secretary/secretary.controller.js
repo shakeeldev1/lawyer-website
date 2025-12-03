@@ -1220,6 +1220,47 @@ export const deleteReminder = asyncHandler(async (req, res) => {
   });
 });
 
+export const updateCourtCaseId = asyncHandler(async (req, res) => {
+  const { courtCaseId } = req.body;
+
+  if (!courtCaseId || courtCaseId.trim() === "") {
+    throw new customError("Court Case ID is required", 400);
+  }
+
+  const caseData = await Case.findById(req.params.id);
+
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+
+  // Only allow updating if case is ReadyForSubmission or Submitted
+  if (
+    caseData.status !== "ReadyForSubmission" &&
+    caseData.status !== "Submitted"
+  ) {
+    throw new customError(
+      "Court Case ID can only be added for cases ready for submission or already submitted",
+      400
+    );
+  }
+
+  caseData.courtCaseId = courtCaseId.trim();
+  await caseData.save();
+
+  await ActivityLog.create({
+    caseId: caseData._id,
+    userId: req.user._id,
+    action: "COURT_CASE_ID_ADDED",
+    description: `Court Case ID ${courtCaseId} added to case ${caseData.caseNumber}`,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Court Case ID updated successfully",
+    data: caseData,
+  });
+});
+
 export const getCaseStatsByStatus = asyncHandler(async (req, res) => {
   const statsByStatus = await Case.aggregate([
     { $match: { archived: false } },

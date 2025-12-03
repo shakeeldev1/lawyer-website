@@ -9,6 +9,7 @@ import ArchiveCaseModal from "../components/cases/ArchiveCaseModal";
 import AddReminderModal from "../components/cases/AddReminderModal";
 import AddHearingDateModal from "../components/cases/AddHearingDateModal";
 import AssignLawyerModal from "../components/cases/AssignLawyerModal";
+import UpdateCourtCaseIdModal from "../components/cases/UpdateCourtCaseIdModal";
 import {
   useGetAllCasesQuery,
   useUpdateCaseMutation,
@@ -43,6 +44,7 @@ const CaseManagement = () => {
   const [reminderCase, setReminderCase] = useState(null);
   const [hearingCase, setHearingCase] = useState(null);
   const [assignLawyerCase, setAssignLawyerCase] = useState(null);
+  const [courtCaseIdCase, setCourtCaseIdCase] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
@@ -63,6 +65,7 @@ const CaseManagement = () => {
       },
       case: {
         caseNumber: c.caseNumber,
+        courtCaseId: c.courtCaseId || "",
         caseType: c.caseType,
         description: c.caseDescription,
         assignedLawyer: c.assignedLawyer?.name || "Not Assigned",
@@ -73,6 +76,7 @@ const CaseManagement = () => {
         stage: c.stages?.[0]?.stageType || "Main Case",
         documents: c.documents || [],
       },
+      clientId: c.clientId,
       stages: c.stages || [],
     }));
   }, [casesData]);
@@ -243,6 +247,7 @@ const CaseManagement = () => {
           onAddReminder={(caseData) => setReminderCase(caseData)}
           onScheduleHearing={(caseData) => setHearingCase(caseData)}
           onAssignLawyer={(caseData) => setAssignLawyerCase(caseData)}
+          onUpdateCourtCaseId={(caseData) => setCourtCaseIdCase(caseData)}
         />
       )}
 
@@ -281,6 +286,13 @@ const CaseManagement = () => {
         isOpen={!!assignLawyerCase}
         onClose={() => setAssignLawyerCase(null)}
         caseData={assignLawyerCase}
+      />
+
+      {/* UPDATE COURT CASE ID MODAL */}
+      <UpdateCourtCaseIdModal
+        isOpen={!!courtCaseIdCase}
+        onClose={() => setCourtCaseIdCase(null)}
+        caseData={courtCaseIdCase}
       />
 
       <AddCase

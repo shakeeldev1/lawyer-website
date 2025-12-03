@@ -61,6 +61,7 @@ const clientSchema = new mongoose.Schema(
 const caseSchema = new mongoose.Schema(
   {
     caseNumber: { type: String, unique: true, required: true },
+    courtCaseId: { type: String, default: "" }, // Court-assigned case ID after submission
     clientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Client",
@@ -107,9 +108,8 @@ const caseSchema = new mongoose.Schema(
         requestedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         note: String,
         requestedAt: { type: Date, default: Date.now },
-      }
+      },
     ],
-
   },
   { timestamps: true }
 );

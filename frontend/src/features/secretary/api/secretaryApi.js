@@ -169,6 +169,18 @@ export const secretaryApi = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: "Cases", id }],
     }),
+    updateCourtCaseId: builder.mutation({
+      query: ({ id, courtCaseId }) => ({
+        url: `/cases/${id}/court-case-id`,
+        method: "PUT",
+        body: { courtCaseId },
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "Cases", id },
+        "Cases",
+        "ActivityLogs",
+      ],
+    }),
 
     // ==================== COURT SUBMISSION ENDPOINTS ====================
     submitToCourt: builder.mutation({
@@ -315,6 +327,7 @@ export const {
   useUploadStageDocumentsMutation,
   useUploadStageDocumentsWithFilesMutation,
   useUpdateHearingDetailsMutation,
+  useUpdateCourtCaseIdMutation,
 
   // Court submission hooks
   useSubmitToCourtMutation,

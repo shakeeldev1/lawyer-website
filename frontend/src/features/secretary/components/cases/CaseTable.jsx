@@ -7,6 +7,7 @@ import {
   Bell,
   Calendar,
   UserPlus,
+  FileText,
 } from "lucide-react";
 
 const CaseTable = ({
@@ -19,6 +20,7 @@ const CaseTable = ({
   onAddReminder,
   onScheduleHearing,
   onAssignLawyer,
+  onUpdateCourtCaseId,
 }) => {
   // Badge helpers
   const getStageBadge = (stage) => {
@@ -92,7 +94,15 @@ const CaseTable = ({
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-xs font-semibold text-slate-900">{c.id}</p>
-                  <p className="text-[10px] text-slate-600">{c.client.name}</p>
+                  {c.case.courtCaseId && (
+                    <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200 mt-1">
+                      <FileText size={10} />
+                      Court ID: {c.case.courtCaseId}
+                    </span>
+                  )}
+                  <p className="text-[10px] text-slate-600 mt-0.5">
+                    {c.client.name}
+                  </p>
                 </div>
                 <span
                   className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusBadge(
@@ -154,6 +164,20 @@ const CaseTable = ({
                     <Calendar size={14} />
                   </button>
                 )}
+                {(c.case.status === "ReadyForSubmission" ||
+                  c.case.status === "Submitted") && (
+                  <button
+                    onClick={() => onUpdateCourtCaseId?.(c)}
+                    className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                    title={
+                      c.case.courtCaseId
+                        ? `Update Court Case ID (${c.case.courtCaseId})`
+                        : "Add Court Case ID"
+                    }
+                  >
+                    <FileText size={14} />
+                  </button>
+                )}
                 <button
                   onClick={() => onAssignLawyer?.(c)}
                   className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
@@ -200,6 +224,9 @@ const CaseTable = ({
             <tr>
               <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
                 Case ID
+              </th>
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                Court ID
               </th>
               <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
                 Client
@@ -256,6 +283,18 @@ const CaseTable = ({
                 >
                   <td className="px-3 py-2 font-medium text-slate-900 whitespace-nowrap">
                     {c.id}
+                  </td>
+                  <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                    {c.case.courtCaseId ? (
+                      <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200">
+                        <FileText size={10} />
+                        {c.case.courtCaseId}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 text-[10px]">
+                        Not Set
+                      </span>
+                    )}
                   </td>
                   <td className="px-3 py-2 text-slate-700 whitespace-nowrap">
                     {c.client.name}
@@ -324,6 +363,20 @@ const CaseTable = ({
                           title="Schedule hearing date"
                         >
                           <Calendar size={14} />
+                        </button>
+                      )}
+                      {(c.case.status === "ReadyForSubmission" ||
+                        c.case.status === "Submitted") && (
+                        <button
+                          onClick={() => onUpdateCourtCaseId?.(c)}
+                          className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                          title={
+                            c.case.courtCaseId
+                              ? `Update Court Case ID (${c.case.courtCaseId})`
+                              : "Add Court Case ID"
+                          }
+                        >
+                          <FileText size={14} />
                         </button>
                       )}
                       {c.case.status === "ReadyForSubmission" &&

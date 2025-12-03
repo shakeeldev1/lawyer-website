@@ -29,7 +29,6 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
     description: "",
     assignedLawyer: "",
     approvingLawyer: "",
-    hearingDate: "",
     filingDate: new Date().toISOString().slice(0, 10),
     status: "Pending",
     stage: "Main Case",
@@ -64,7 +63,6 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
           caseType: "",
           description: "",
           assignedLawyer: "",
-          hearingDate: "",
           filingDate: new Date().toISOString().slice(0, 10),
           status: "Pending",
           stage: "Main Case",
@@ -269,7 +267,11 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
           )}
 
           {step === 2 && (
-            <CaseDetailsForm caseInfo={caseInfo} onChange={handleCaseChange} />
+            <CaseDetailsForm
+              caseInfo={caseInfo}
+              onChange={handleCaseChange}
+              isEditMode={!!caseData}
+            />
           )}
 
           {step === 3 && (

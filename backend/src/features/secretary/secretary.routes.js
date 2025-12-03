@@ -31,6 +31,7 @@ import {
   getQuickStats,
   createReminder,
   deleteReminder,
+  updateCourtCaseId,
 } from "./secretary.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import {
@@ -68,6 +69,7 @@ router.post(
   uploadStageDocumentsWithFiles
 );
 router.put("/cases/:id/hearing", updateHearingDetails);
+router.put("/cases/:id/court-case-id", updateCourtCaseId);
 router.post("/cases/:id/submit", submitToCourt);
 router.post(
   "/cases/:id/submit/upload",

@@ -1,7 +1,7 @@
 import React from "react";
 import { useGetLawyersQuery } from "../../api/secretaryApi";
 
-const CaseDetailsForm = ({ caseInfo, onChange }) => {
+const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
   const {
     data: lawyersData,
     isLoading: loadingLawyers,
@@ -123,20 +123,24 @@ const CaseDetailsForm = ({ caseInfo, onChange }) => {
           </p>
         </div>
 
-        {/* Hearing Date */}
-        <div className="space-y-1">
-          <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-            Hearing Date *
-          </label>
-          <input
-            type="date"
-            name="hearingDate"
-            value={caseInfo.hearingDate}
-            onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
-            required
-          />
-        </div>
+        {/* Hearing Date - Only show during edit mode, not required */}
+        {isEditMode && (
+          <div className="space-y-1">
+            <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
+              Hearing Date
+            </label>
+            <input
+              type="date"
+              name="hearingDate"
+              value={caseInfo.hearingDate || ""}
+              onChange={onChange}
+              className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            />
+            <p className="text-[9px] text-slate-500 mt-0.5">
+              📅 Set hearing date after court submission (optional)
+            </p>
+          </div>
+        )}
 
         {/* Filing Date */}
         <div className="space-y-1">

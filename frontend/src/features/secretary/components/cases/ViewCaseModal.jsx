@@ -62,6 +62,12 @@ const ViewCaseModal = ({ caseData, onClose }) => {
             <FileText className="w-3 h-3" />
             {caseInfo.assignedLawyer}
           </span>
+          {caseInfo.courtCaseId && (
+            <span className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-medium">
+              <FileText className="w-3 h-3" />
+              Court ID: {caseInfo.courtCaseId}
+            </span>
+          )}
         </div>
 
         {/* Body Content */}
