@@ -11,7 +11,7 @@ const CasesTable = ({ cases, onView, onDelete,sidebarOpen }) => {
       <div className="block">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
+            <thead className="bg-[#A48C65] text-white  uppercase tracking-wide text-xs font-semibold">
               <tr className="whitespace-nowrap">
                 <th className="px-6 py-4 text-left">Case #</th>
                 <th className="px-6 py-4 text-left">Client</th>
@@ -25,25 +25,25 @@ const CasesTable = ({ cases, onView, onDelete,sidebarOpen }) => {
 
             <tbody>
               {cases.map((c) => (
-                <tr key={c._id} className="border-t whitespace-nowrap border-[#fe9a00]/10 hover:bg-[#E1E1E2] transition-all duration-200">
+                <tr key={c._id} className="border-t whitespace-nowrap border-[#A48C65]/40 hover:bg-[#bcb0835d] transition-all duration-200">
                   <td className="px-6 py-4">{c.caseNumber}</td>
                   <td className="px-6 py-4">{c.clientName}</td>
                   <td className="px-6 py-4">{c.lawyer}</td>
                   <td className="px-6 py-4">{c.stage}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium
-                      ${c.status === "Submitted" ? "bg-green-500/20 text-green-800 border border-green-500/30"
-                      : c.status === "Awaiting Approval" ? "bg-yellow-500/20 text-yellow-800 border border-yellow-500/30"
-                      : "bg-blue-500/20 text-blue-800 border border-blue-500/30"}`}>
+                      ${c.status === "Submitted" ? "bg-green-500/20 text-green-800 border border-[#A48C65]"
+                      : c.status === "Awaiting Approval" ? "bg-yellow-500/20 text-yellow-800 border border-[#A48C65]"
+                      : " text-black border border-[#A48C65]"}`}>
                       {c.status}
                     </span>
                   </td>
                   <td className="px-6 py-4">{c.lastUpdated}</td>
                   <td className="px-6 py-4 text-center flex justify-center gap-2">
-                    <button onClick={() => onView(c)} className="flex items-center gap-2 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1.5 rounded-full font-medium">
+                    <button onClick={() => onView(c)} className="flex items-center gap-2 text-[#A48C65] hover:text-white hover:bg-[#A48C65]/80 px-3 py-1.5 rounded-full font-medium">
                       <Eye className="w-4 h-4" /> View
                     </button>
-                    <button onClick={() => onDelete(c)} className="flex items-center gap-2 text-red-600 hover:text-white hover:bg-red-600/80 px-3 py-1.5 rounded-full font-medium">
+                    <button onClick={() => onDelete(c)} className="flex items-center gap-2 text-[#A48C65] hover:text-white hover:bg-[#A48C65]/80 px-3 py-1.5 rounded-full font-medium">
                       <Trash2 className="w-4 h-4" /> Delete
                     </button>
                   </td>
@@ -56,7 +56,8 @@ const CasesTable = ({ cases, onView, onDelete,sidebarOpen }) => {
 
      
 
-      <div className="h-[3px] w-full bg-gradient-to-r from-[#fe9a00] via-[#ffb733] to-[#fe9a00]" />
+      <div className="h-[3px] w-full bg-gradient-to-r from-[#BCB083] to-[#A48C65]
+]" />
     </div>
   );
 };

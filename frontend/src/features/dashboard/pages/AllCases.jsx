@@ -81,7 +81,7 @@ const AllCases = () => {
     <div
       className={`min-h-screen 
         px-3 sm:px-4 md:px-6 lg:px-2
-        py-3 sm:py-4 md:py-5
+        py-3 sm:py-2 md:py-5
         transition-all duration-300 ease-in-out
        ${sidebarOpen ? "lg:ml-64 md:ml-64 mr-20" : "lg:ml-20 md:ml-14"}`}
     >
@@ -97,8 +97,8 @@ const AllCases = () => {
       </div>
 
       {/* Loading & Error */}
-      {isLoading && <p className="text-center text-gray-400 py-10 text-xl">Loading cases...</p>}
-      {isError && <p className="text-center text-red-500 py-10 text-xl">Failed to load cases</p>}
+      {isLoading && <p className="text-center text-[#A48C65] py-10 text-xl">Loading cases...</p>}
+      {isError && <p className="text-center text-[#A48C65] py-10 text-xl">Failed to load cases</p>}
 
       {/* Cases Table */}
       {!isLoading && !isError && (

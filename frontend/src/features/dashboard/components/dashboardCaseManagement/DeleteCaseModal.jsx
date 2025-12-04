@@ -15,13 +15,13 @@ const DeleteCaseModal = ({ caseData, onCancel, onConfirm }) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4 border-b pb-2">
-          <h3 className="text-lg font-semibold text-[#1e2738] flex items-center gap-2">
-            <Trash2 className="w-5 h-5 text-red-600" />
+          <h3 className="text-lg font-semibold text-[#494C52] flex items-center gap-2">
+            <Trash2 className="w-5 h-5 text-[#494C52]" />
             Delete Case
           </h3>
           <button
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-red-500 hover:text-white transition-all duration-200"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-[#A48C65] hover:text-white transition-all duration-200"
           >
             <X className="w-4 h-4" />
           </button>
@@ -30,8 +30,8 @@ const DeleteCaseModal = ({ caseData, onCancel, onConfirm }) => {
         {/* Body */}
         <p className="text-gray-700 text-sm sm:text-base mb-6">
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-[#fe9a00]">{caseData.caseNumber}</span>{" "}
-          for client <span className="font-semibold">{caseData.clientName}</span>? <br />
+          <span className="font-semibold text-[#BCB083]">{caseData.caseNumber}</span>{" "}
+          for client <span className="font-semibold  text-[#BCB083]">{caseData.clientName}</span>? <br />
           This action cannot be undone.
         </p>
 
@@ -39,13 +39,13 @@ const DeleteCaseModal = ({ caseData, onCancel, onConfirm }) => {
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-all duration-200"
+            className="px-4 py-2 rounded-full bg-white text-gray-700 hover:bg-[#BCB083] border border-[#BCB083] transition-all duration-200"
           >
             Cancel
           </button>
           <button
             onClick={() => onConfirm(caseData.id)}
-            className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200"
+            className="px-4 py-2 rounded-full bg-[#A48C65] text-white hover:bg-[#8b6f4a] transition-all duration-200"
           >
             Delete
           </button>

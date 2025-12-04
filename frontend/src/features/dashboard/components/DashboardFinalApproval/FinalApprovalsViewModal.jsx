@@ -38,7 +38,7 @@ const FinalApprovalsViewModal = ({
         <div className='flex items-center gap-3 mb-6'>
           <ArrowLeft
             onClick={onClose}
-            className='cursor-pointer text-gray-800 hover:text-[#fe9a00] w-5 h-5 transition'
+            className='cursor-pointer text-[#A48C65]  w-5 h-5 transition'
           />
           <h3 className='text-xl font-semibold text-[#162030]'>
             Case Details —{' '}

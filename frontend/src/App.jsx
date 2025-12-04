@@ -19,8 +19,7 @@ function App() {
   return (
     <div className='overflow-hidden'>
       <ToastContainer />
-      <AppRouter />
-      
+      <AppRouter />    
     </div>
   )
 }

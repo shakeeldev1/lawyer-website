@@ -14,15 +14,15 @@ const ReportsStats = () => {
       {stats.map((item, index) => (
         <div
           key={index}
-          className="flex items-center justify-between bg-white p-5 rounded-2xl shadow-lg 
-                     border border-[#fe9a00]/20 hover:border-[#fe9a00]/40 transition-all duration-300 
+          className="flex shadow-[#bcb083ce] items-center justify-between bg-white p-5 rounded-2xl shadow-lg 
+                     border border-[#BCB083] hover:border-[#BCB083]/40 transition-all duration-200 
                      hover:shadow-xl"
         >
           <div>
-            <h3 className="text-sm text-[#162030] font-medium">{item.title}</h3>
-            <p className="text-2xl font-bold text-[#162030] mt-1">{item.value}</p>
+            <h3 className="text-sm text-[#494C52] font-medium">{item.title}</h3>
+            <p className="text-2xl font-bold text-[#494C52] mt-1">{item.value}</p>
           </div>
-          <div className="text-[#fe9a00] bg-[#E1E1E2] p-3 rounded-xl shadow-sm">
+          <div className="text-white bg-[#A48C65] p-3 rounded-xl shadow-sm">
             {item.icon}
           </div>
         </div>

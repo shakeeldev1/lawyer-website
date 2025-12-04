@@ -22,19 +22,19 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h3 className="md:text-xl text-lg font-semibold flex items-center gap-2 text-gray-800">
-            <Clock className="w-5 h-5 text-[#fe9a00]" />
-            Case Details — <span className="text-slate-800 font-medium">{caseData.caseNumber}</span>
+            <Clock className="w-5 h-5 text-[#BCB083]" />
+            <span className="text-[#494C52]">Case Details</span> — <span className="text-[#494C52] font-medium">{caseData.caseNumber}</span>
           </h3>
           <button
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-800 hover:bg-[#fe9a00] hover:text-white transition-all duration-200 shadow-md"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 shadow-md"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Case Summary */}
-        <div className="mb-6 bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-800 shadow-sm space-y-2">
+        <div className="mb-6 bg-white border border-gray-200 rounded-xl p-4 text-sm text-[#494C52] shadow-sm space-y-2">
           <p><strong>Case Number:</strong> {caseData.caseNumber}</p>
           <p><strong>Case Type:</strong> {caseData.caseType}</p>
           <p><strong>Status:</strong> {caseData.status}</p>
@@ -48,7 +48,7 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
           <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-1">
             <h4 className="font-semibold text-gray-800 flex items-center gap-1">
-              <User className="w-4 h-4 text-[#fe9a00]" /> Client Info
+              <User className="w-4 h-4 text-[#A48C65]" /> Client Info
             </h4>
             <p><strong>Name:</strong> {caseData.clientId?.name}</p>
             <p><strong>Email:</strong> {caseData.clientId?.email}</p>
@@ -56,14 +56,14 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
           </div>
           <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-1">
             <h4 className="font-semibold text-gray-800 flex items-center gap-1">
-              <User className="w-4 h-4 text-[#fe9a00]" /> Lawyer Info
+              <User className="w-4 h-4 text-[#A48C65]" /> Lawyer Info
             </h4>
             <p><strong>Name:</strong> {caseData.assignedLawyer?.name}</p>
             <p><strong>Email:</strong> {caseData.assignedLawyer?.email}</p>
           </div>
           <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-1">
             <h4 className="font-semibold text-gray-800 flex items-center gap-1">
-              <User className="w-4 h-4 text-[#fe9a00]" /> Secretary Info
+              <User className="w-4 h-4 text-[#A48C65]" /> Secretary Info
             </h4>
             <p><strong>Name:</strong> {caseData.secretary?.name}</p>
             <p><strong>Email:</strong> {caseData.secretary?.email}</p>
@@ -74,7 +74,7 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-800">
           <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
             <h4 className="font-semibold flex items-center gap-1">
-              <FileText className="w-4 h-4 text-[#fe9a00]" /> Documents ({caseData.documents?.length || 0})
+              <FileText className="w-4 h-4 text-[#A48C65]" /> Documents ({caseData.documents?.length || 0})
             </h4>
             <ul className="list-disc pl-5 mt-2">
               {caseData.documents?.map((doc, i) => (
@@ -84,7 +84,7 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
           </div>
           <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
             <h4 className="font-semibold flex items-center gap-1">
-              <Info className="w-4 h-4 text-[#fe9a00]" /> Notes ({caseData.notes?.length || 0})
+              <Info className="w-4 h-4 text-[#A48C65]" /> Notes ({caseData.notes?.length || 0})
             </h4>
             <ul className="list-disc pl-5 mt-2">
               {caseData.notes?.map((note, i) => (
@@ -116,17 +116,17 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center gap-2 text-gray-600">
-                  <User className="w-4 h-4 text-[#fe9a00]" />
+                  <User className="w-4 h-4 text-[#A48C65]" />
                   Lawyer: <span className="text-gray-800 font-medium">{stage.lawyer || "Unassigned"}</span>
                 </div>
 
                 <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="w-4 h-4 text-[#fe9a00]" />
+                  <Calendar className="w-4 h-4 text-[#A48C65]" />
                   Hearing: <span className="text-gray-800 font-medium">{stage.hearingDate || "Not Set"}</span>
                 </div>
 
                 <div className="flex items-center gap-2 text-gray-600">
-                  <FileText className="w-4 h-4 text-[#fe9a00]" />
+                  <FileText className="w-4 h-4 text-[#A48C65]" />
                   Documents: <span className="text-gray-800 font-medium">{stage.documentsCount || 0}</span>
                 </div>
               </div>
@@ -150,7 +150,7 @@ const CaseTimelineModal = ({ isOpen, onClose, caseData }) => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-500 transition-all duration-200"
+            className="px-5 py-2.5 rounded-full bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200"
           >
             Close
           </button>

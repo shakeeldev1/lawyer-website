@@ -17,10 +17,10 @@ const DeleteConfirmationModal = ({ caseItem, onConfirm, onCancel }) => {
 
         <div className="flex flex-col items-center gap-4">
           <div className="bg-red-100 p-4 rounded-full">
-            <Trash2 className="w-8 h-8 text-red-600" />
+            <Trash2 className="w-8 h-8 text-[#A48C65]" />
           </div>
 
-          <h2 className="text-lg font-semibold text-[#24344f]">
+          <h2 className="text-lg font-semibold text-[#A48C65]">
             Delete Case {caseItem.caseNumber}?
           </h2>
           <p className="text-gray-600 text-sm">
@@ -36,7 +36,7 @@ const DeleteConfirmationModal = ({ caseItem, onConfirm, onCancel }) => {
             </button>
             <button
               onClick={() => onConfirm(caseItem)}
-              className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200"
+              className="px-4 py-2 rounded-full bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200"
             >
               Delete
             </button>

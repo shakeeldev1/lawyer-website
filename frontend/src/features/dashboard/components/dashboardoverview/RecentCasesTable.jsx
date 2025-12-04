@@ -47,14 +47,14 @@ console.log(recentCases)
 
         <div className="relative w-full sm:w-64">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#fe9a00] opacity-80"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#BCB083] opacity-80"
             size={18}
           />
           <input
             type="text"
             placeholder="Search cases..."
-            className="w-full bg-[#E1E1E2] text-black placeholder-gray-500 border border-[#fe9a00]/40 rounded-lg py-2 pl-10 pr-4 text-sm 
-                       focus:outline-none focus:ring-2 focus:ring-[#fe9a00] transition-all duration-300"
+            className="w-full bg-[#fff] text-black placeholder-black border border-[#BCB083] rounded-lg py-2 pl-10 pr-4 text-sm 
+                       focus:outline-none focus:ring-2 focus:ring-[#BCB083] transition-all duration-300"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -64,7 +64,7 @@ console.log(recentCases)
       {/* Desktop Table */}
       <div className="hidden md:block overflow-hidden border border-gray-100 rounded-xl">
         <table className="w-full text-sm">
-          <thead className="bg-[#1c283c] text-white">
+          <thead className="bg-[#A48C65] text-white">
             <tr>
               <th className="text-left py-3 px-5 font-semibold">Case Number</th>
               <th className="text-left py-3 px-5 font-semibold">Client</th>
@@ -142,7 +142,7 @@ console.log(recentCases)
             <p className="text-xs text-gray-500 mb-2">{caseItem.clientId?.email}</p>
             <div className="flex items-center justify-between mt-2 text-sm">
               <span className="text-[#1c283c]/70">{caseItem.caseType}</span>
-              <button className="text-[#fe9a00] hover:text-[#1c283c] text-xs font-medium flex items-center gap-1">
+              <button className="text-[#A48C65] hover:text-[#1c283c] text-xs font-medium flex items-center gap-1">
                 View <ArrowRight size={12} />
               </button>
             </div>
@@ -155,7 +155,7 @@ console.log(recentCases)
         <p className="text-sm text-gray-500">
           Showing <b>{filteredCases.length}</b> of <b>{recentCases.length}</b> cases
         </p>
-        <Link to="all-cases" className="flex items-center gap-2 text-sm font-medium text-[#fe9a00] hover:text-[#1c283c] transition-all">
+        <Link to="all-cases" className="flex items-center gap-2 text-sm font-medium text-[#A48C65] hover:text-[#BCB083] transition-all">
           View All Cases
           <ArrowRight size={16} />
         </Link>

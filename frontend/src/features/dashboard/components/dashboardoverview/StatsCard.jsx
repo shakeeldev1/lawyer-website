@@ -13,7 +13,7 @@ const StatsCard = () => {
       value: userstats?.totalUsers || 0,
       change: "+12%",
       trend: "up",
-      icon: <Users className="text-[#fe9a00]" size={22} />,
+      icon: <Users className="text-[#A48C65]" size={22} />,
       description: "All registered users",
     },
     {
@@ -21,7 +21,7 @@ const StatsCard = () => {
       value: userstats?.lawyers || 0,
       change: "+5%",
       trend: "up",
-      icon: <FileText className="text-[#fe9a00]" size={22} />,
+      icon: <FileText className="text-[#A48C65]" size={22} />,
       description: "Registered lawyers",
     },
     {
@@ -29,7 +29,7 @@ const StatsCard = () => {
       value: userstats?.approvingLawyers || 0,
       change: "-2%",
       trend: "down",
-      icon: <Clock className="text-[#fe9a00]" size={22} />,
+      icon: <Clock className="text-[#A48C65]" size={22} />,
       description: "Awaiting approval",
     },
     {
@@ -37,29 +37,29 @@ const StatsCard = () => {
       value: userstats?.activeUsers || 0,
       change: "+8%",
       trend: "up",
-      icon: <Calendar className="text-[#fe9a00]" size={22} />,
+      icon: <Calendar className="text-[#A48C65]" size={22} />,
       description: "Currently active",
     },
   ];
 
   return (
-    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 px-2 sm:px-4">
+    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-4 px-2">
       {statsData.map((stat, index) => (
         <div
           key={index}
           className="bg-white border border-gray-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between h-[150px]"
-          style={{ borderLeft: `4px solid #fe9a00` }}
+          style={{ borderLeft: `4px solid #BCB083` }}
         >
           <div className="p-4 sm:p-5 flex flex-col justify-between h-full">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#1c283c]/10">{stat.icon}</div>
-                <h3 className="text-sm sm:text-base font-medium text-[#1c283c]">{stat.title}</h3>
+                <div className="p-2 rounded-lg bg-[#BCB083]/50">{stat.icon}</div>
+                <h3 className="text-sm sm:text-base font-medium text-slate-600">{stat.title}</h3>
               </div>
 
               <div
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${
-                  stat.trend === "up" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+                className={`flex items-center gap-1 px-2 py-2 rounded-full text-[10px] sm:text-xs font-semibold ${
+                  stat.trend === "up" ? "bg-[#BCB083] text-white" : "bg-[#A48C65] text-black"
                 }`}
               >
                 {stat.trend === "up" ? <ArrowUp size={12} /> : <ArrowDown size={12} />}

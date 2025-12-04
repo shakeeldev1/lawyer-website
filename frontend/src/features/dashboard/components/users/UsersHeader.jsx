@@ -6,16 +6,15 @@ const UsersHeader = ({ search, setSearch, onAdd }) => {
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
       
       {/* Search Box */}
-      <div className="relative w-full md:w-64 ">
-        <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+      <div className="relative w-full md:w-64  ">
+        <span className="absolute inset-y-0 left-3 flex items-center text-[#BCB083]">
           <FaSearch />
         </span>
         <input
           type="text"
           placeholder="Search by name or email"
-          className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 shadow-md shadow-slate-800
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                     transition-all duration-200 placeholder-gray-400 text-sm"
+          className="w-full bg-[#ffff] text-black placeholder-[#BCB083] border border-[#BCB083] rounded-lg py-3 pl-10 pr-4 text-sm 
+                       focus:outline-none focus:ring-2 focus:ring-[#BCB083] transition-all duration-300"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -24,8 +23,8 @@ const UsersHeader = ({ search, setSearch, onAdd }) => {
       {/* Add User Button */}
       <button
         onClick={onAdd}
-        className="flex items-center gap-2 bg-slate-700 text-white px-4 py-2 rounded-lg
-                   hover:bg-slate-800 transition-colors duration-200 shadow-sm"
+        className="flex items-center gap-2 text-[#494C52] px-4 py-2 rounded-lg
+                   bg-white border border-[#A48C65]  hover:bg-[#A48C65] hover:text-white transition-all duration-200 shadow-sm"
       >
         <FaUserPlus /> Add User
       </button>

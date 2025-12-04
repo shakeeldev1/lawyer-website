@@ -108,19 +108,19 @@ const Archive = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  if (isLoading) return <p className="text-center text-slate-700 mt-20">Loading archived cases...</p>;
-  if (isError) return <p className="text-center text-red-500 mt-20">Failed to load archived cases.</p>;
+  if (isLoading) return <p className="text-center text-[#494C52] mt-20">Loading archived cases...</p>;
+  if (isError) return <p className="text-center text-[#BCB083] mt-20">Failed to load archived cases.</p>;
 
   return (
     <div className={`max-w-6xl min-h-screen transition-all duration-300 ease-in-out mt-16 sm:px-2 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 pl-5">
         <div>
-          <h2 className="text-4xl font-extrabold text-[#1c283c]">Archived Cases</h2>
+          <h2 className="text-4xl font-extrabold text-[#494C52]">Archived Cases</h2>
           <p className="text-slate-600 mt-1">{archives.length} case{archives.length !== 1 ? 's' : ''} found</p>
         </div>
         <div className="flex gap-3 mt-4 lg:mt-0">
-          <button onClick={exportToCSV} className="flex items-center gap-2 px-4 py-2 bg-[#1C2B4A] text-white font-medium rounded-lg border border-transparent hover:border-amber-500 transition-all duration-300">
+          <button onClick={exportToCSV} className="flex items-center gap-2 px-4 py-2  text-[#494C52] font-medium rounded-lg   bg-white border border-[#A48C65] hover:bg-[#A48C65]  hover:text-white transition-all duration-200 ">
             Export CSV
           </button>
           <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 px-4 py-2 bg-[#1C283C] text-[#fe9800e5] rounded-lg hover:bg-[#FE9A00] hover:text-white transition-colors lg:hidden">
@@ -144,7 +144,7 @@ const Archive = () => {
         <button
           disabled={page <= 1}
           onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-white border border-[#a48c654f] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200  rounded disabled:opacity-50"
         >
           Previous
         </button>
@@ -152,7 +152,7 @@ const Archive = () => {
         <button
           disabled={page >= totalPages}
           onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-white border border-[#a48c654f] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200  disabled:opacity-50"
         >
           Next
         </button>

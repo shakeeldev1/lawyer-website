@@ -27,20 +27,19 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
   const renderStatus = (reminder) => (reminder.isCompleted ? "Completed" : "Pending");
   const renderStatusClass = (reminder) =>
     reminder.isCompleted
-      ? "bg-green-500/20 text-green-800 border border-green-500/30"
+      ? "bg-[#A48C65] text-white border border-[#A48C65]/30"
       : "bg-yellow-500/20 text-yellow-800 border border-yellow-500/30";
 
   return (
-     <div
-      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
-        sidebarOpen ? "lg:w-[980px] md:w-[420px]" : "lg:w-full md:w-[640px]"
-      }`}
+    <div
+      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${sidebarOpen ? "lg:w-[980px] md:w-[420px]" : "lg:w-full md:w-[640px]"
+        }`}
     >
       {/* ===== Desktop View ===== */}
       <div className="block">
         <div className="overflow-x-auto">
           <table className="w-full table-auto text-sm min-w-[700px] border-collapse">
-            <thead className="bg-[#24344f] text-[#fe9a00] uppercase tracking-wide text-xs font-semibold">
+            <thead className="bg-[#A48C65] text-white  uppercase tracking-wide text-xs font-semibold">
               <tr className="whitespace-nowrap">
                 {["Case Name", "Stage", "Type", "Lawyer", "Date", "Status", "Actions"].map(
                   (h, i) => (
@@ -55,9 +54,8 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
               {reminders.map((r, idx) => (
                 <tr
                   key={r._id}
-                  className={`${
-                    idx % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"
-                  } hover:bg-[#E1E1E2] transition-all border-t border-[#fe9a00]/10 whitespace-nowrap`}
+                  className={`${idx % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"
+                    } hover:bg-[#E1E1E2] transition-all border-t border-[#fe9a00]/10 whitespace-nowrap`}
                 >
                   <td className="px-4 py-1">{r.caseName}</td>
                   <td className="px-4 py-1">{r.stage}</td>
@@ -77,20 +75,20 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
                     <div className="flex justify-left gap-2 flex-nowrap">
                       <button
                         onClick={() => onAction("View", r)}
-                        className="flex  items-center gap-1 text-[#fe9a00] hover:text-white hover:bg-[#fe9a00]/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                        className="flex  items-center gap-1 bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white duration-200 px-3 py-1 rounded-full text-xs font-medium transition-all"
                       >
                         <Eye className="w-3 h-3" /> View
                       </button>
                       <button
                         onClick={() => onAction("Resend", r)}
-                        className="text-green-600 hover:text-white hover:bg-green-500/80 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                        className="bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 px-3 py-1 rounded-full text-xs font-medium"
                       >
                         Resend
                       </button>
                       {!r.isCompleted && (
                         <button
                           onClick={() => onAction("Mark Complete", r)}
-                          className="text-gray-600 hover:text-[#fe9a00] hover:bg-[#fe9a00]/20 px-3 py-1 rounded-full text-xs font-medium transition-all"
+                          className="text-white bg-[#A48C65] px-3 py-1 rounded-full text-xs font-medium transition-all"
                         >
                           Done
                         </button>
@@ -110,9 +108,8 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
               <button
                 key={p}
                 onClick={() => onPageChange(p)}
-                className={`px-3 py-1 rounded-lg border ${
-                  page === p ? "bg-[#fe9a00] text-white" : "bg-white text-[#24344f]"
-                }`}
+                className={`px-3 py-1 rounded-lg border ${page === p ? "bg-[#fe9a00] text-white" : "bg-white text-[#24344f]"
+                  }`}
               >
                 {p}
               </button>
@@ -120,7 +117,7 @@ const RemindersTable = ({ reminders, onAction, page, totalPages, onPageChange })
           </div>
         )}
       </div>
-     </div>
+    </div>
   );
 };
 

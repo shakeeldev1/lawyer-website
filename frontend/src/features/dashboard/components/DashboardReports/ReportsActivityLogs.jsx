@@ -9,13 +9,13 @@ const ReportsActivityLogs = () => {
   ];
 
   return (
-    <div className="bg-[#E1E1E2] p-6 rounded-2xl shadow-lg shadow-[#1c283c] border border-[#fe9a00]/20 mt-8">
+    <div className="bg-white p-6 rounded-2xl shadow-lg shadow-[#BCB083] border border-[#fe9a00]/20 mt-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-white p-2 rounded-lg">
-          <Activity className="text-[#fe9a00] w-5 h-5" />
+        <div className="bg-[#A48C65] p-2 rounded-lg">
+          <Activity className="text-white w-5 h-5" />
         </div>
-        <h2 className="text-xl font-bold text-[#162030]">
+        <h2 className="text-xl font-bold text-[#494C52]">
           Recent Activity Logs
         </h2>
       </div>
@@ -25,10 +25,10 @@ const ReportsActivityLogs = () => {
         {activityLogs.map((log) => (
           <li
             key={log.id}
-            className="flex justify-between  items-center bg-white/80 hover:bg-white p-4 rounded-xl border border-white/10 transition-all duration-300 hover:text-white"
+            className="flex justify-between  items-center bg-[#A48C65] p-4 rounded-xl border border-white/10 transition-all duration-300 hover:text-white"
           >
-            <span className="text-black font-medium ">{log.action}</span>
-            <span className="text-black text-sm font-semibold bg-white/5 px-3 py-1 rounded-full">
+            <span className="text-white font-medium ">{log.action}</span>
+            <span className="text-white text-sm font-semibold bg-[#BCB083] px-3 py-1 rounded-full">
               {log.time}
             </span>
           </li>
@@ -45,7 +45,7 @@ const ReportsActivityLogs = () => {
             <p className="text-white font-medium mb-2 text-sm">
               {log.action}
             </p>
-            <p className="text-[#fe9a00] text-xs font-semibold bg-white/5 px-3 py-1 rounded-full inline-block">
+            <p className="text-[#BCB083] text-xs font-semibold bg-white/5 px-3 py-1 rounded-full inline-block">
               {log.time}
             </p>
           </div>
