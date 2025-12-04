@@ -10,13 +10,11 @@ const RoleProtectedRoute = ({ allowedRoles, children }) => {
   if (user === null || user === undefined) {
     return (
       <div className="relative flex items-center justify-center min-h-screen h-screen">
-        {/* Background Image */}
         <img
           src="./home.jpeg"
           alt="home"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Content */}
         <div className="relative z-10 text-center px-6">
           <h1 className="text-white text-3xl md:text-4xl font-bold mb-4">
             You are not logged in
