@@ -29,14 +29,14 @@ const Sidebar = () => {
    useEffect(() => {
      const handleResize = () => {
        const desktop = window.innerWidth >= 1024;
-       setSidebarOpen(desktop);
+       setIsDesktop(desktop);
      };
  
      const handleSidebarToggle = () => {
        const sidebar = document.querySelector('aside');
        if (sidebar) {
          const isOpen = sidebar.classList.contains('w-64');
-         setSidebarOpen(isOpen);
+         setIsOpen(isOpen);
        }
      };
  

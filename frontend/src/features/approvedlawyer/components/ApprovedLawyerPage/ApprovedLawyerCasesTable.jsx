@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { FiChevronRight, FiTrash2 } from 'react-icons/fi'
 import StatusPill from './StatusPill'
 
-export default function ApprovedLawyerCasesTable ({
+export default function ApprovedLawyerCasesTable({
   cases,
   openModal,
   openDeleteModal
@@ -38,104 +38,105 @@ export default function ApprovedLawyerCasesTable ({
   }
 
   return (
-   <div
-      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${
-        sidebarOpen ? "lg:w-[980px] md:w-[500px]" : "lg:w-[1200px] md:w-[680px]"
-      }`}
+    <div
+      className={`bg-white w-[320px] text-[#24344f] shadow-2xl rounded-2xl border border-[#fe9a00]/20 overflow-hidden transition-all duration-300 ${sidebarOpen ? "lg:w-[980px] md:w-[500px]" : "lg:w-[1200px] md:w-[680px]"
+        }`}
     >
-      <div className='overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/40 scrollbar-track-transparent w-full text-left border-collapse'>
-        <table className='w-full min-w-[1000px] text-left border-collapse'>
-          <thead className='bg-gradient-to-r from-slate-800 to-slate-700 text-white sticky top-0 z-10'>
-            <tr>
-              {[
-                'Case #',
-                'Client Name',
-                'Phone',
-                'Case Type',
-                'Stage',
-                'Secretary',
-                'Lawyer',
-                'Status',
-                'Actions'
-              ].map(h => (
-                <th
-                  key={h}
-                  className='p-4 text-sm font-semibold uppercase whitespace-nowrap'
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className='divide-y divide-slate-200'>
-            {cases.map((c, idx) => (
-              <tr
-                key={c._id}
-                className={`${
-                  idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
-                } hover:bg-slate-100 transition`}
-              >
-                {/* Case number */}
-                <td className='p-4 font-semibold whitespace-nowrap'>
-                  {c.caseNumber}
-                </td>
-
-                {/* Client Name */}
-                <td className='p-4 whitespace-nowrap'>
-                  {c.clientId?.name}
-                </td>
-
-                {/* Phone */}
-                <td className='p-4 whitespace-nowrap'>
-                  {c.clientId?.contactNumber || '—'}
-                </td>
-
-                {/* Case Type */}
-                <td className='p-4 whitespace-nowrap'>{c.caseType}</td>
-
-                {/* Stage */}
-                <td className='p-4 whitespace-nowrap'>
-                  <StatusPill status={convertStage(c.currentStage)} />
-                </td>
-
-                {/* Secretary */}
-                <td className='p-4 whitespace-nowrap'>
-                  {c.secretary?.name}
-                </td>
-
-                {/* Lawyer */}
-                <td className='p-4 whitespace-nowrap'>
-                  {c.assignedLawyer?.name}
-                </td>
-
-                {/* Status */}
-                <td className='p-4 whitespace-nowrap'>
-                  <StatusPill status={c.status} />
-                </td>
-
-                {/* Actions */}
-                <td className='p-4 whitespace-nowrap flex justify-end gap-2'>
-                  <button
-                    onClick={() => openModal(c)}
-                    className='inline-flex items-center px-3 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 gap-1'
+      <div className='block'>
+        <div className='overflow-x-auto '>
+          <table className='w-full table-auto text-sm min-w-[700px] border-collapse'>
+            <thead className='bg-[#A48C65] text-white sticky top-0 z-10'>
+              <tr>
+                {[
+                  'Case #',
+                  'Client Name',
+                  'Phone',
+                  'Case Type',
+                  'Stage',
+                  'Secretary',
+                  'Lawyer',
+                  'Status',
+                  'Actions'
+                ].map(h => (
+                  <th
+                    key={h}
+                    className='p-4 text-sm font-semibold uppercase whitespace-nowrap'
                   >
-                    <FiChevronRight /> Open
-                  </button>
-
-                  <button
-                    onClick={() => openDeleteModal(c)}
-                    className='inline-flex items-center px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 gap-1'
-                  >
-                    <FiTrash2 />
-                  </button>
-                </td>
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
+            </thead>
 
-        </table>
+            <tbody className='divide-y divide-slate-200'>
+              {cases.map((c, idx) => (
+                <tr
+                  key={c._id}
+                  className={`${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'
+                    } hover:bg-slate-100 transition`}
+                >
+                  {/* Case number */}
+                  <td className='p-4 font-semibold whitespace-nowrap'>
+                    {c.caseNumber}
+                  </td>
+
+                  {/* Client Name */}
+                  <td className='p-4 whitespace-nowrap'>
+                    {c.clientId?.name}
+                  </td>
+
+                  {/* Phone */}
+                  <td className='p-4 whitespace-nowrap'>
+                    {c.clientId?.contactNumber || '—'}
+                  </td>
+
+                  {/* Case Type */}
+                  <td className='p-4 whitespace-nowrap'>{c.caseType}</td>
+
+                  {/* Stage */}
+                  <td className='p-4 whitespace-nowrap'>
+                    <StatusPill status={convertStage(c.currentStage)} />
+                  </td>
+
+                  {/* Secretary */}
+                  <td className='p-4 whitespace-nowrap'>
+                    {c.secretary?.name}
+                  </td>
+
+                  {/* Lawyer */}
+                  <td className='p-4 whitespace-nowrap'>
+                    {c.assignedLawyer?.name}
+                  </td>
+
+                  {/* Status */}
+                  <td className='p-4 whitespace-nowrap'>
+                    <StatusPill status={c.status} />
+                  </td>
+
+                  {/* Actions */}
+                  <td className='p-4 whitespace-nowrap flex justify-end gap-2'>
+                    <button
+                      onClick={() => openModal(c)}
+                      className='inline-flex items-center px-3 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 gap-1'
+                    >
+                      <FiChevronRight /> Open
+                    </button>
+
+                    <button
+                      onClick={() => openDeleteModal(c)}
+                      className='inline-flex items-center px-3 py-2 bg-[#A48C65] text-white rounded hover:bg-[#8B6F3E] gap-1'
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+
+          </table>
+        </div>
       </div>
+
     </div>
   )
 }

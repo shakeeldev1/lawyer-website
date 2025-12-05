@@ -53,7 +53,7 @@ const Sidebar = () => {
       <button
         onClick={toggleSidebar}
         className={`fixed top-4 p-2 rounded-full shadow-md z-[9999]
-          bg-[#11408bee] text-white hover:bg-[#0f3674] transition-all duration-300
+          bg-[#A48C65] text-white hover:bg-[#a48c659c] transition-all duration-300 hover:text-black
           ${isDesktop ? (isOpen ? "left-60" : "left-16") : isOpen ? "left-[200px] top-2" : "left-4 top-4"}
         `}
       >
@@ -74,16 +74,16 @@ const Sidebar = () => {
           className={`flex items-center gap-3 px-5 py-6 border-b border-blue-100 ${isOpen ? "justify-start" : "justify-center"
             }`}
         >
-          <div className="p-2 bg-[#11408bee] rounded-xl shadow-md">
+          <div className="p-2 bg-[#A48C65] rounded-xl shadow-md">
             <Scale size={24} className="text-white" />
           </div>
 
           {isOpen && (
             <div className="transition-all">
-              <h2 className="text-base font-semibold text-slate-800">
+              <h2 className="text-lg font-semibold text-[#494C52]">
                 Justice Law Firm
               </h2>
-              <p className="text-xs text-slate-500">Approved Lawyer</p>
+              <p className="text-xs text-[#494C52]">Approved Lawyer</p>
             </div>
           )}
         </div>
@@ -98,8 +98,8 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-5 py-3 rounded-lg mx-2 my-1 transition-all duration-200
                   ${isActive
-                  ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-medium border border-blue-200 shadow-sm"
-                  : "text-slate-700 hover:bg-white/80 hover:text-blue-600 hover:shadow-sm"
+                  ? "bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white font-medium  shadow-sm"
+                  : "text-slate-700 hover:bg-white/80 hover:text-[#A48C65] hover:shadow-sm"
                 }
                   ${isOpen || !isDesktop ? "justify-start" : "justify-center"}
                 `
@@ -115,8 +115,8 @@ const Sidebar = () => {
         <div className="px-5 mt-auto mb-4">
           <button
             onClick={handleLogout}
-            className={`flex items-center w-full ${isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
-              } text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all duration-200`}
+           className={`flex w-full items-center ${isOpen ? "justify-start gap-3 px-4 py-3" : "justify-center w-full py-3"
+              } text-slate-600 hover:text-[#A48C65] rounded-lg transition-all duration-200`}
           >
             <LogOut size={22} />
             {isOpen && <span className="text-sm font-medium">Logout</span>}

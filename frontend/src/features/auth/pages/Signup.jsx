@@ -145,7 +145,7 @@ const Signup = () => {
             disabled={isLoading}
             className={`w-full text-[#A48C65] py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
               isLoading
-                ? "bg-slate-400 cursor-not-allowed"
+                ? "bg-[#494C52] text-white cursor-not-allowed"
                 : "bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 hover:shadow-lg"
             }`}
           >
