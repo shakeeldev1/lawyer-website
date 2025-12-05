@@ -60,8 +60,7 @@ const Login = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden 
-                 bg-gradient-to-br from-slate-200 to-slate-300"
+      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-r from-[#BCB083] to-[#A48C65]"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10 select-none pointer-events-none 
@@ -73,12 +72,12 @@ const Login = () => {
       {/* Login Card */}
       <div className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
                       w-full max-w-md border border-slate-200">
-        
-        <h1 className="text-3xl font-extrabold text-center mb-2 text-slate-700">
+
+        <h1 className="text-3xl font-extrabold text-center mb-2 text-[#A48C65]">
           Welcome Back
         </h1>
 
-        <p className="text-center text-slate-600 mb-8 text-sm">
+        <p className="text-center text-[#494C52] mb-8 text-sm">
           Please login to your account
         </p>
 
@@ -88,7 +87,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-slate-700 font-medium mb-1"
+              className="block text-[#494C52] font-medium mb-1"
             >
               Email Address
             </label>
@@ -100,8 +99,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                         focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
             />
           </div>
 
@@ -109,7 +107,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-slate-700 font-medium mb-1"
+              className="block text-[#494C52] font-medium mb-1"
             >
               Password
             </label>
@@ -123,8 +121,7 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                           focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+                className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               />
 
               {/* Icon Toggle */}
@@ -146,7 +143,7 @@ const Login = () => {
           <div className="text-right -mt-2">
             <a
               href="/forgot-password"
-              className="text-slate-700 hover:underline text-sm font-medium"
+              className="text-[#494C52] hover:underline text-sm font-medium"
             >
               Forgot Password?
             </a>
@@ -156,22 +153,21 @@ const Login = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white py-3 rounded-xl text-lg font-medium shadow-md transition-all ${
-              isLoading
+            className={`w-full text-[#A48C65] py-3 rounded-xl text-lg font-medium shadow-md transition-all ${isLoading
                 ? "bg-slate-400 cursor-not-allowed"
-                : "bg-slate-700 hover:bg-slate-800 hover:shadow-lg"
-            }`}
+                : "bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 hover:shadow-lg"
+              }`}
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
 
           {/* Extra Links */}
-          <div className="text-center text-sm mt-4 text-slate-600">
+          <div className="text-center text-sm mt-4 text-[#494C52]">
             <p>
               Don’t have an account?{" "}
               <a
                 href="/signup"
-                className="text-slate-700 hover:underline font-semibold"
+                className="text-[#494C52] hover:underline font-semibold"
               >
                 Sign up
               </a>
