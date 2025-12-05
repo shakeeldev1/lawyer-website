@@ -69,7 +69,7 @@ export default function StatusPill({ status }) {
   return (
     <span
       title={st.tooltip}
-      className={`px-1.5 py-0.5 text-[10px] rounded border font-medium ${st.bg} ${st.text} ${st.border}`}
+      className={`px-1.5 py-0.5 text-[14px] rounded border font-medium ${st.bg} ${st.text} ${st.border}`}
     >
       {status}
     </span>
