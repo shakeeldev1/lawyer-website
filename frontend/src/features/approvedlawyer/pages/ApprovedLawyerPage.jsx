@@ -140,7 +140,7 @@ export default function ApprovedLawyerPage() {
       className={`mt-20 min-h-screen px-3 mr-20 sm:px-4 md:px-6 lg:px-2 py-3 sm:py-4 md:py-5 transition-all duration-300 ease-in-out ${sidebarOpen ? "lg:ml-64 md:ml-64" : "lg:ml-20 md:ml-14"
         }`}
     >
-      <h1 className="text-2xl sm:text-3xl font-bold text-[#1C283C]">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#494C52]">
         Memorandums Management
       </h1>
       <p className="text-gray-600 mt-2 text-sm sm:text-base mb-4">
@@ -150,12 +150,12 @@ export default function ApprovedLawyerPage() {
       {/* SEARCH + FILTER */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6 items-center w-full">
         <div className="relative flex-1 w-full md:w-[200px]">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#494C52] text-lg" />
           <input
             type="text"
             placeholder="Search by case #, client name, email, or phone..."
-            className="w-full lg:w-[680px] pl-12 pr-4 py-3 border border-gray-300 rounded-xl shadow-sm shadow-slate-600 text-gray-700 placeholder-gray-400
-              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+            className="w-full lg:w-[680px] pl-12 pr-4 py-3 border border-gray-300 rounded-xl shadow shadow-[#494C52] text-gray-700 placeholder-[#494C52]
+              focus:outline-none focus:ring-2 focus:ring-[#A48C65] focus:border-[#A48C65] transition-all duration-300"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -165,8 +165,8 @@ export default function ApprovedLawyerPage() {
           <select
             value={filterStage}
             onChange={(e) => setFilterStage(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-gray-700
-              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm text-[#494C52]
+              focus:outline-none focus:ring-2 focus:ring-[#A48C65] focus:border-[#A48C65] transition-all duration-300"
           >
             <option value="">All Stages</option>
             {STAGES.map((s) => (

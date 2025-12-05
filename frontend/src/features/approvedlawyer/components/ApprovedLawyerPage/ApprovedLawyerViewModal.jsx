@@ -26,7 +26,7 @@ export default function ApprovedLawyerViewModal({
       >
 
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-t-2xl px-5 py-5 flex justify-between items-center">
+        <div className="sticky top-0 bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white rounded-t-2xl px-5 py-5 flex justify-between items-center">
           <div>
             <h2 className="text-lg sm:text-xl font-bold">{selectedCase.caseType}</h2>
             <p className="text-blue-200 text-sm">{selectedCase.caseNumber}</p>

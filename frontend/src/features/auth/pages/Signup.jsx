@@ -42,14 +42,13 @@ const Signup = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden 
-               bg-gradient-to-br from-slate-200 to-slate-300"
+      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-r from-[#BCB083] to-[#A48C65]"
     >
       {/* Background Pattern */}
       <div
         className="absolute inset-0 opacity-10 select-none pointer-events-none 
                     flex items-center justify-center text-[120px] font-extrabold 
-                    text-slate-700 tracking-widest"
+                    text-[#494C52] tracking-widest"
       >
         E!E!E@
       </div>
@@ -59,18 +58,18 @@ const Signup = () => {
         className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
                     w-full max-w-md border border-slate-200"
       >
-        <h1 className="text-3xl font-extrabold text-center mb-2 text-slate-700">
+        <h1 className="text-3xl font-extrabold text-center mb-2 text-[#b48c65]">
           Create Account
         </h1>
 
-        <p className="text-center text-slate-600 mb-8 text-sm">
+        <p className="text-center text-[#494C52] mb-8 text-sm">
           Join us to continue
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1">
             <label
-              className="block text-slate-700 font-medium"
+              className="block text-[#494C52] font-medium"
               htmlFor="fullName"
             >
               Full Name
@@ -82,14 +81,13 @@ const Signup = () => {
               value={formData.fullName}
               onChange={handleChange}
               placeholder="Enter your full name"
-              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-slate-700 font-medium" htmlFor="email">
+            <label className="block text-[#494C52] font-medium" htmlFor="email">
               Email Address
             </label>
             <input
@@ -99,14 +97,13 @@ const Signup = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter email address"
-              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-slate-700 font-medium" htmlFor="phone">
+            <label className="block text-[#494C52] font-medium" htmlFor="phone">
               Phone Number
             </label>
             <input
@@ -116,18 +113,17 @@ const Signup = () => {
               value={formData.phone}
               onChange={handleChange}
               placeholder="923120201709 (without + sign)"
-              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               required
             />
-            <p className="text-xs text-slate-600 mt-1">
-              📱 Format: Country code + number (e.g., 923120201709 for Pakistan)
+            <p className="text-xs text-[#494C52] mt-1">
+            Format: Country code + number (e.g., 923120201709 for Pakistan)
             </p>
           </div>
 
           <div className="space-y-1">
             <label
-              className="block text-slate-700 font-medium"
+              className="block text-[#494C52] font-medium"
               htmlFor="password"
             >
               Password
@@ -139,8 +135,7 @@ const Signup = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter password"
-              className="w-full px-4 py-3 border rounded-xl bg-slate-50 
-                       focus:outline-none focus:ring-2 focus:ring-slate-700 transition-all"
+              className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               required
             />
           </div>
@@ -148,17 +143,17 @@ const Signup = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full text-white py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
+            className={`w-full text-[#A48C65] py-3 rounded-xl text-lg font-medium transition-all shadow-md ${
               isLoading
-                ? "bg-slate-400 cursor-not-allowed"
-                : "bg-slate-700 hover:bg-slate-800 hover:shadow-lg"
+                ? "bg-[#494C52] text-white cursor-not-allowed"
+                : "bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 hover:shadow-lg"
             }`}
           >
             {isLoading ? "Creating..." : "Sign Up"}
           </button>
 
           {error && (
-            <p className="text-red-500 text-center mt-2 text-sm">
+            <p className="text-[#b48c65] text-center mt-2 text-sm">
               {error?.data?.message || "Something went wrong"}
             </p>
           )}

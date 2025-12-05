@@ -10,7 +10,7 @@ const CasesTable = ({ cases, onView, onDelete,sidebarOpen }) => {
       {/* ===== Desktop Table ===== */}
       <div className="block">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+          <table className="w-full table-auto text-sm min-w-[700px] border-collapse">
             <thead className="bg-[#A48C65] text-white  uppercase tracking-wide text-xs font-semibold">
               <tr className="whitespace-nowrap">
                 <th className="px-6 py-4 text-left">Case #</th>
