@@ -21,6 +21,7 @@ import {
   markNotificationAsRead,
   updateStatusPendingSignature,
   requestModificationBAL,
+  deleteCase,
 } from "./lawyer.controller.js";
 import { loginRequired } from "../../utils/loginRequired.js";
 import {
@@ -35,6 +36,7 @@ router.use(loginRequired);
 router.get("/cases", getAssignedCases);
 router.get("/cases/:id", getCaseById);
 router.post("/cases/:id/accept", acceptCase);
+router.delete("/cases/:id", deleteCase);
 router.post("/cases/:id/memorandum", submitMemorandum);
 router.post(
   "/cases/:id/memorandum/upload",

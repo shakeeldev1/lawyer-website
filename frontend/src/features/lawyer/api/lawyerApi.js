@@ -193,6 +193,15 @@ export const lawyerApi = createApi({
       ],
     }),
 
+    // ==================== DELETE CASE ====================
+    deleteCase: builder.mutation({
+      query: (id) => ({
+        url: `/lawyer/cases/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cases", "DashboardStats"],
+    }),
+
     // ==================== TIMELINE ====================
     getCaseTimeline: builder.query({
       query: (id) => `/lawyer/cases/${id}/timeline`,
@@ -290,6 +299,9 @@ export const {
 
   // Notes
   useAddCaseNoteMutation,
+
+  // Delete Case
+  useDeleteCaseMutation,
 
   // Timeline
   useGetCaseTimelineQuery,

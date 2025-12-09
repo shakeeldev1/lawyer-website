@@ -20,7 +20,8 @@ const CaseFilters = ({ onFilterChange, onClearFilters }) => {
   // Call onFilterChange whenever filters change
   useEffect(() => {
     onFilterChange(filters);
-  }, [filters, onFilterChange]); // Add filters and onFilterChange as dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]); // Only depend on filters to prevent infinite re-renders
 
   const handleChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

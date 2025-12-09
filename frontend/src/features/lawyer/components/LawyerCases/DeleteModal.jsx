@@ -2,7 +2,7 @@
 import React from "react";
 import { X, Trash2 } from "lucide-react";
 
-export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
+export default function DeleteModal({ isOpen, onClose, onDelete, caseName, isDeleting }) {
   if (!isOpen) return null;
 
   return (
@@ -10,7 +10,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={isDeleting ? undefined : onClose}
       ></div>
 
       {/* Modal */}
@@ -21,7 +21,8 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
           </h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-700 rounded transition"
+            disabled={isDeleting}
+            className="p-1 hover:bg-slate-700 rounded transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <X size={14} className="text-white" />
           </button>
@@ -38,15 +39,17 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName }) {
         <div className="flex justify-end gap-2 px-4 py-3 bg-slate-50 rounded-b-lg">
           <button
             onClick={onClose}
-            className="px-3 py-1.5 border border-slate-300 text-slate-700 rounded text-xs hover:bg-slate-100 transition"
+            disabled={isDeleting}
+            className="px-3 py-1.5 border border-slate-300 text-slate-700 rounded text-xs hover:bg-slate-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={onDelete}
-            className="px-3 py-1.5 bg-red-600 text-white rounded text-xs hover:bg-red-700 flex items-center gap-1 transition"
+            disabled={isDeleting}
+            className="px-3 py-1.5 bg-red-600 text-white rounded text-xs hover:bg-red-700 flex items-center gap-1 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Trash2 size={12} /> Delete
+            <Trash2 size={12} /> {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>

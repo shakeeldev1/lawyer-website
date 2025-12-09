@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Calendar, Clock } from "lucide-react";
 import { useUpdateHearingDetailsMutation } from "../../api/secretaryApi";
 import { toast } from "react-toastify";
@@ -10,6 +10,23 @@ const AddHearingDateModal = ({ isOpen, onClose, caseData }) => {
 
   const [updateHearingDetails, { isLoading }] =
     useUpdateHearingDetailsMutation();
+
+  // Sync state when modal opens or caseData changes
+  useEffect(() => {
+    if (isOpen && caseData) {
+      // Get the latest stage's hearing data if available
+      const stages = caseData.stages || [];
+      const latestStage = stages[stages.length - 1];
+
+      if (latestStage?.hearingDate) {
+        setHearingDate(latestStage.hearingDate.split('T')[0]); // Format date
+      }
+      if (latestStage?.hearingTime) {
+        setHearingTime(latestStage.hearingTime);
+      }
+      setSelectedStageIndex(stages.length > 0 ? stages.length - 1 : 0);
+    }
+  }, [isOpen, caseData]);
 
   if (!isOpen || !caseData) return null;
 
@@ -56,7 +73,7 @@ const AddHearingDateModal = ({ isOpen, onClose, caseData }) => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
         {/* Header */}
         <div className="bg-slate-800 text-white px-4 py-3 flex justify-between items-center rounded-t-lg border-b border-slate-700">

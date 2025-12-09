@@ -18,8 +18,20 @@ function App() {
 
   return (
     <div className='overflow-hidden'>
-      <ToastContainer />
-      <AppRouter />    
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 99999 }}
+      />
+      <AppRouter />
     </div>
   )
 }

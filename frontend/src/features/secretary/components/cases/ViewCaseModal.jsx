@@ -19,7 +19,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
   const { client, case: caseInfo } = caseData;
 
   return (
-    <div className="fixed inset-0 !z-[10000] flex items-center justify-center px-4 sm:px-6 py-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4 sm:px-6 py-4">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"

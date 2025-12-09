@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Bell, Calendar } from "lucide-react";
 import { useCreateReminderMutation } from "../../api/secretaryApi";
+import { toast } from "react-toastify";
 
 const AddReminderModal = ({ isOpen, onClose, caseData }) => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
     e.preventDefault();
 
     if (!formData.reminderDate) {
-      alert("Please select a reminder date");
+      toast.error("Please select a reminder date");
       return;
     }
 
@@ -29,7 +30,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
           `${formData.reminderType} reminder for ${caseData.case.caseNumber}`,
       }).unwrap();
 
-      alert("Reminder created successfully");
+      toast.success("Reminder created successfully! 🔔");
       onClose();
       setFormData({
         reminderType: "Hearing",
@@ -38,7 +39,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
       });
     } catch (error) {
       console.error("Failed to create reminder:", error);
-      alert(error?.data?.message || "Failed to create reminder");
+      toast.error(error?.data?.message || "Failed to create reminder");
     }
   };
 
@@ -52,7 +53,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
         {/* Header */}
         <div className="bg-slate-800 text-white p-3 rounded-t-lg flex items-center justify-between">

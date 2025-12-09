@@ -16,7 +16,8 @@ const ClientInfoForm = ({
     if (onClientSelect) {
       onClientSelect(selectedClientId || null);
     }
-  }, [selectedClientId, onClientSelect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedClientId]);
 
   // If parent provides selectedClientId, sync with it
   useEffect(() => {
@@ -24,7 +25,7 @@ const ClientInfoForm = ({
       setSelectedClientId(parentSelectedClientId);
       setUseExistingClient(true);
     }
-  }, [parentSelectedClientId]);
+  }, [parentSelectedClientId, selectedClientId]);
 
   const handleClientSelect = (e) => {
     const clientId = e.target.value;

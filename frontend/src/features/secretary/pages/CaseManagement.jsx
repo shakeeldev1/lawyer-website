@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
 import CaseFilters from "../components/cases/CaseFilters";
 import CaseTable from "../components/cases/CaseTable";
@@ -12,7 +12,6 @@ import AssignLawyerModal from "../components/cases/AssignLawyerModal";
 import UpdateCourtCaseIdModal from "../components/cases/UpdateCourtCaseIdModal";
 import {
   useGetAllCasesQuery,
-  useUpdateCaseMutation,
   useArchiveCaseMutation,
   useDeleteCaseMutation,
 } from "../api/secretaryApi";
@@ -32,7 +31,6 @@ const CaseManagement = () => {
     search: searchQuery,
     limit: 100,
   });
-  const [updateCase] = useUpdateCaseMutation();
   const [archiveCaseMutation] = useArchiveCaseMutation();
   const [deleteCaseMutation] = useDeleteCaseMutation();
 
@@ -55,6 +53,10 @@ const CaseManagement = () => {
     return casesData.data.map((c) => ({
       id: c._id,
       _id: c._id, // Keep original _id for API operations
+      caseNumber: c.caseNumber,
+      caseType: c.caseType,
+      status: c.status,
+      courtCaseId: c.courtCaseId || "",
       client: {
         name: c.clientId?.name || "",
         contact: c.clientId?.contactNumber || "",
@@ -70,6 +72,8 @@ const CaseManagement = () => {
         description: c.caseDescription,
         assignedLawyer: c.assignedLawyer?.name || "Not Assigned",
         assignedLawyerId: c.assignedLawyer?._id || "", // Keep lawyer ID for editing
+        approvingLawyer: c.approvingLawyer?.name || "Not Assigned",
+        approvingLawyerId: c.approvingLawyer?._id || "", // Keep approving lawyer ID for editing
         hearingDate: c.hearingDate || "",
         filingDate: c.createdAt?.slice(0, 10) || "",
         status: c.status || "Pending",
@@ -153,19 +157,19 @@ const CaseManagement = () => {
     setViewCase(caseToView);
   };
 
-  const handleFilterChange = (filters) => {
+  const handleFilterChange = useCallback((filters) => {
     // Update search query for API filtering
     setSearchQuery(filters.search || "");
     // Update status and lawyer for client-side filtering
     setStatusFilter(filters.status || "");
     setLawyerFilter(filters.lawyer || "");
-  };
+  }, []);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearchQuery("");
     setStatusFilter("");
     setLawyerFilter("");
-  };
+  }, []);
 
   // Open Add Modal
   const handleOpenAddModal = () => {
@@ -181,7 +185,7 @@ const CaseManagement = () => {
   };
 
   // Add or update case
-  const handleAddOrUpdateCase = (updatedCase) => {
+  const handleAddOrUpdateCase = () => {
     // Just close the modal - RTK Query will automatically refetch and update
     setShowAddModal(false);
     setEditCaseData(null);
@@ -238,7 +242,6 @@ const CaseManagement = () => {
 
       {!isLoading && (
         <CaseTable
-          sidebarOpen={sidebarOpen}
           cases={filteredCases}
           onEditCase={handleEditCase}
           onViewCase={handleViewCase}

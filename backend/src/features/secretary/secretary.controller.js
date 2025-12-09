@@ -285,7 +285,6 @@ export const updateCase = asyncHandler(async (req, res) => {
     caseDescription,
     documents,
     assignedLawyer,
-    approvingLawyer,
   } = req.body;
 
   // Validate lawyer if provided
@@ -296,13 +295,8 @@ export const updateCase = asyncHandler(async (req, res) => {
     }
   }
 
-  // Validate approving lawyer if provided
-  if (approvingLawyer) {
-    const approving = await User.findById(approvingLawyer);
-    if (!approving || approving.role !== "lawyer") {
-      throw new customError("Invalid approving lawyer assignment", 400);
-    }
-  }
+  // Note: approvingLawyer is NOT editable after case creation
+  // It can only be set during case creation for security and audit purposes
 
   const updateData = {
     caseType,
@@ -315,15 +309,15 @@ export const updateCase = asyncHandler(async (req, res) => {
     updateData.assignedLawyer = assignedLawyer;
   }
 
-  // Only update approvingLawyer if it's provided in the request
-  if (approvingLawyer !== undefined) {
-    updateData.approvingLawyer = approvingLawyer;
-  }
 
   const caseData = await Case.findByIdAndUpdate(req.params.id, updateData, {
     new: true,
     runValidators: true,
-  });
+  })
+    .populate("clientId", "name email contactNumber")
+    .populate("assignedLawyer", "name email phone")
+    .populate("approvingLawyer", "name email phone")
+    .populate("secretary", "name email");
 
   if (!caseData) {
     throw new customError("Case not found", 404);
@@ -1227,31 +1221,28 @@ export const updateCourtCaseId = asyncHandler(async (req, res) => {
     throw new customError("Court Case ID is required", 400);
   }
 
-  const caseData = await Case.findById(req.params.id);
+  const caseData = await Case.findById(req.params.id)
+    .populate("clientId", "name")
+    .populate("assignedLawyer", "name")
+    .populate("approvingLawyer", "name");
 
   if (!caseData) {
     throw new customError("Case not found", 404);
   }
 
-  // Only allow updating if case is ReadyForSubmission or Submitted
-  if (
-    caseData.status !== "ReadyForSubmission" &&
-    caseData.status !== "Submitted"
-  ) {
-    throw new customError(
-      "Court Case ID can only be added for cases ready for submission or already submitted",
-      400
-    );
-  }
-
+  // Allow secretary to add court case ID at any time
+  // (they may receive it from court at different stages)
+  const oldCourtCaseId = caseData.courtCaseId;
   caseData.courtCaseId = courtCaseId.trim();
   await caseData.save();
 
   await ActivityLog.create({
     caseId: caseData._id,
     userId: req.user._id,
-    action: "COURT_CASE_ID_ADDED",
-    description: `Court Case ID ${courtCaseId} added to case ${caseData.caseNumber}`,
+    action: oldCourtCaseId ? "COURT_CASE_ID_UPDATED" : "COURT_CASE_ID_ADDED",
+    description: oldCourtCaseId
+      ? `Court Case ID updated from ${oldCourtCaseId} to ${courtCaseId} for case ${caseData.caseNumber}`
+      : `Court Case ID ${courtCaseId} added to case ${caseData.caseNumber}`,
   });
 
   res.status(200).json({

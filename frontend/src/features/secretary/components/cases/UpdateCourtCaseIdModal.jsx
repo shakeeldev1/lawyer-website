@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, FileText } from "lucide-react";
 import { useUpdateCourtCaseIdMutation } from "../../api/secretaryApi";
 import { toast } from "react-toastify";
 
 const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
-  const [courtCaseId, setCourtCaseId] = useState(caseData?.courtCaseId || "");
+  const [courtCaseId, setCourtCaseId] = useState("");
   const [updateCourtCaseId, { isLoading }] = useUpdateCourtCaseIdMutation();
+
+  // Update state when modal opens or caseData changes
+  useEffect(() => {
+    if (isOpen && caseData) {
+      setCourtCaseId(caseData.courtCaseId || caseData.case?.courtCaseId || "");
+    }
+  }, [isOpen, caseData]);
 
   if (!isOpen) return null;
 
@@ -31,7 +38,7 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">

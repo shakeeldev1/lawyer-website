@@ -48,6 +48,10 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
             caseData.case.assignedLawyerId ||
             caseData.case.assignedLawyer ||
             "",
+          approvingLawyer:
+            caseData.case.approvingLawyerId ||
+            caseData.case.approvingLawyer ||
+            "",
         });
       } else {
         // Reset for new case
@@ -63,6 +67,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
           caseType: "",
           description: "",
           assignedLawyer: "",
+          approvingLawyer: "",
           filingDate: new Date().toISOString().slice(0, 10),
           status: "Pending",
           stage: "Main Case",
@@ -92,16 +97,18 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
     try {
       if (caseData) {
         // Update existing case - use _id from MongoDB
-        await updateCase({
+        // Note: approvingLawyer is NOT updated - it's set only during creation
+        const updatePayload = {
           id: caseData._id || caseData.id,
           data: {
             caseType: caseInfo.caseType,
             caseDescription: caseInfo.description,
             assignedLawyer: caseInfo.assignedLawyer || null,
-            approvingLawyer: caseInfo.approvingLawyer || null,
             documents: caseInfo.documents,
           },
-        }).unwrap();
+        };
+        console.log("📤 Update Payload:", updatePayload);
+        await updateCase(updatePayload).unwrap();
         toast.success("Case updated successfully!");
       } else {
         // Create new case - requires clientId
@@ -165,7 +172,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 !z-[10000] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Fixed Header */}
         <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700">

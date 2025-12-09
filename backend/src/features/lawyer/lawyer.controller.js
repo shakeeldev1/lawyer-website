@@ -726,6 +726,44 @@ export const addCaseNote = asyncHandler(async (req, res) => {
   });
 });
 
+export const deleteCase = asyncHandler(async (req, res) => {
+  const caseData = await Case.findById(req.params.id);
+
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+
+  // Check if the lawyer is assigned to this case
+  if (
+    caseData.assignedLawyer?.toString() !== req.user._id.toString() &&
+    caseData.approvingLawyer?.toString() !== req.user._id.toString()
+  ) {
+    throw new customError("Not authorized to delete this case", 403);
+  }
+
+  // Optional: Prevent deletion of archived cases
+  if (caseData.archived) {
+    throw new customError(
+      "Cannot delete archived case. Unarchive it first.",
+      400
+    );
+  }
+
+  await Case.findByIdAndDelete(req.params.id);
+
+  await ActivityLog.create({
+    caseId: req.params.id,
+    userId: req.user._id,
+    action: "CASE_DELETED",
+    description: `Case ${caseData.caseNumber} deleted by lawyer`,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Case deleted successfully",
+  });
+});
+
 export const getMyReminders = asyncHandler(async (req, res) => {
   const { upcoming } = req.query;
 

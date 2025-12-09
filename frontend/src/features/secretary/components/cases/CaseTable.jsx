@@ -13,7 +13,6 @@ import {
 const CaseTable = ({
   cases,
   onArchive,
-  sidebarOpen,
   onEditCase,
   onViewCase,
   onDeleteCase,
@@ -73,10 +72,6 @@ const CaseTable = ({
       {/* Mobile Card View */}
       <div className="block md:hidden">
         {cases.map((c) => {
-          const lastStage =
-            c.stages && c.stages.length > 0
-              ? c.stages[c.stages.length - 1].stage
-              : "Main";
           const isArchived = c.case.status === "Archived";
           const canArchive = c.case.status === "Closed" && !isArchived;
           const hearingDate =
@@ -164,20 +159,17 @@ const CaseTable = ({
                     <Calendar size={14} />
                   </button>
                 )}
-                {(c.case.status === "ReadyForSubmission" ||
-                  c.case.status === "Submitted") && (
-                  <button
-                    onClick={() => onUpdateCourtCaseId?.(c)}
-                    className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
-                    title={
-                      c.case.courtCaseId
-                        ? `Update Court Case ID (${c.case.courtCaseId})`
-                        : "Add Court Case ID"
-                    }
-                  >
-                    <FileText size={14} />
-                  </button>
-                )}
+                <button
+                  onClick={() => onUpdateCourtCaseId?.(c)}
+                  className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                  title={
+                    c.case.courtCaseId
+                      ? `Update Court Case ID (${c.case.courtCaseId})`
+                      : "Add Court Case ID"
+                  }
+                >
+                  <FileText size={14} />
+                </button>
                 <button
                   onClick={() => onAssignLawyer?.(c)}
                   className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
@@ -365,20 +357,17 @@ const CaseTable = ({
                           <Calendar size={14} />
                         </button>
                       )}
-                      {(c.case.status === "ReadyForSubmission" ||
-                        c.case.status === "Submitted") && (
-                        <button
-                          onClick={() => onUpdateCourtCaseId?.(c)}
-                          className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
-                          title={
-                            c.case.courtCaseId
-                              ? `Update Court Case ID (${c.case.courtCaseId})`
-                              : "Add Court Case ID"
-                          }
-                        >
-                          <FileText size={14} />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => onUpdateCourtCaseId?.(c)}
+                        className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                        title={
+                          c.case.courtCaseId
+                            ? `Update Court Case ID (${c.case.courtCaseId})`
+                            : "Add Court Case ID"
+                        }
+                      >
+                        <FileText size={14} />
+                      </button>
                       {c.case.status === "ReadyForSubmission" &&
                         !c.case.assignedLawyer && (
                           <button

@@ -5,7 +5,8 @@ import DeleteModal from "../components/LawyerCases/DeleteModal";
 import CaseDetail from "../components/LawyerCases/CaseDetail";
 import DocumentsTab from "../components/LawyerCases/DocumentsTab";
 import MemorandumTab from "../components/LawyerCases/MemorandumTab";
-import { useGetAssignedCasesQuery } from "../api/lawyerApi";
+import { useGetAssignedCasesQuery, useDeleteCaseMutation } from "../api/lawyerApi";
+import { toast } from "react-toastify";
 
 export default function MyCases() {
    const [cases, setCases] = useState([]);
@@ -21,6 +22,8 @@ export default function MyCases() {
       search: search || undefined,
       limit: 50, // Get more cases for better UX
    });
+
+   const [deleteCase, { isLoading: isDeleting }] = useDeleteCaseMutation();
 
    useEffect(() => {
       if (data?.data) {
@@ -96,11 +99,20 @@ export default function MyCases() {
       setCaseToDelete(c);
       setDeleteModalOpen(true);
    };
-   const handleDeleteConfirm = () => {
-      setCases((prev) => prev.filter((c) => c.id !== caseToDelete.id));
-      setDeleteModalOpen(false);
-      setCaseToDelete(null);
-      if (selectedCase?.id === caseToDelete.id) closeCase();
+
+   const handleDeleteConfirm = async () => {
+      if (!caseToDelete) return;
+
+      try {
+         await deleteCase(caseToDelete.id || caseToDelete._id).unwrap();
+         toast.success("Case deleted successfully");
+         setDeleteModalOpen(false);
+         setCaseToDelete(null);
+         if (selectedCase?.id === caseToDelete.id) closeCase();
+      } catch (error) {
+         console.error("Failed to delete case:", error);
+         toast.error(error?.data?.message || "Failed to delete case");
+      }
    };
 
    if (isLoading)
@@ -236,6 +248,7 @@ export default function MyCases() {
                onClose={() => setDeleteModalOpen(false)}
                onDelete={handleDeleteConfirm}
                caseName={caseToDelete?.caseNumber}
+               isDeleting={isDeleting}
             />
          )}
       </div>
