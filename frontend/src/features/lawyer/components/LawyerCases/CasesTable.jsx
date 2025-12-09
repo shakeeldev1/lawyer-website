@@ -101,7 +101,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
     );
 
   return (
-    <div className="bg-white rounded border border-slate-200 overflow-hidden transition-all duration-500 hover:-translate-y-1.5 mt-8">
+    <div className="bg-white rounded border border-slate-200 overflow-hidden transition-all duration-500 mt-8">
       {/* Filter */}
       <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-slate-200 bg-slate-50">
         <span className="text-[22px] text-[#A48D66] font-medium">
@@ -121,8 +121,8 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="hidden md:block overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg overflow-hidden">
           <thead className="bg-[#A48D66] text-white hidden md:table-header-group">
             <tr>
               {[
@@ -150,17 +150,17 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
             {filteredCases.map((c, idx) => (
               <React.Fragment key={c.id}>
                 {/* Desktop Row */}
-                <tr className="hidden md:table-row hover:bg-[#A48D66] group transition-all duration-300">
-                  <td className="px-4 py-3 text-[16px] font-semibold text-slate-800 transition-all duration-300 group-hover:text-white">
+                <tr className="hidden md:table-row transition-all duration-300">
+                  <td className="px-4 py-3 text-[16px] font-semibold text-slate-800 transition-all duration-300  ">
                     {c.caseNumber}
                   </td>
-                  <td className="px-4 py-3 text-[16px] text-slate-800 transition-all duration-300 group-hover:text-white">
+                  <td className="px-4 py-3 text-[16px] text-slate-800 transition-all duration-300 ">
                     {c.clientName}
                   </td>
-                  <td className="px-4 py-3 text-[16px] text-slate-700 transition-all duration-300 hidden lg:table-cell truncate max-w-[150px] group-hover:text-white">
+                  <td className="px-4 py-3 text-[16px] text-slate-700 transition-all duration-300 hidden lg:table-cell truncate max-w-[150px] ">
                     {c.clientEmail}
                   </td>
-                  <td className="px-4 py-3 text-[16px] text-slate-700 transition-all duration-300 hidden xl:table-cell group-hover:text-white">
+                  <td className="px-4 py-3 text-[16px] text-slate-700 transition-all duration-300 hidden xl:table-cell ">
                     {c.clientPhone}
                   </td>
                   <td className="px-4 py-3">
@@ -184,7 +184,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
                         )}
                       </div>
                     ) : (
-                      <span className="text-slate-500 group-hover:text-white transition-all duration-300">—</span>
+                      <span className="text-slate-500  transition-all duration-300">—</span>
                     )}
                   </td>
                   <td className="px-3 py-2 ">
@@ -271,5 +271,6 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
         </table>
       </div>
     </div>
+     
   );
 }

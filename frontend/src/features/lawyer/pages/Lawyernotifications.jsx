@@ -20,7 +20,7 @@ export default function LawyerNotifications() {
 
    const [markAsRead] = useMarkNotificationAsReadMutation();
 
-   // ✅ Sync with sidebar state
+     // ✅ Sync with sidebar state
    useEffect(() => {
       const handleResize = () => {
          const desktop = window.innerWidth >= 1024;
@@ -28,18 +28,19 @@ export default function LawyerNotifications() {
       };
 
       const handleSidebarToggle = () => {
-         const sidebar = document.querySelector("aside");
+         // Listen for sidebar state changes from the sidebar component
+         const sidebar = document.querySelector('aside');
          if (sidebar) {
-            const isOpen = sidebar.classList.contains("w-64");
+            const isOpen = sidebar.classList.contains('w-64');
             setSidebarOpen(isOpen);
          }
       };
 
-      window.addEventListener("resize", handleResize);
+      window.addEventListener('resize', handleResize);
       const interval = setInterval(handleSidebarToggle, 100);
 
       return () => {
-         window.removeEventListener("resize", handleResize);
+         window.removeEventListener('resize', handleResize);
          clearInterval(interval);
       };
    }, []);
@@ -69,9 +70,8 @@ export default function LawyerNotifications() {
    if (isLoading) {
       return (
          <div
-            className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 ${
-               sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
-            }`}
+            className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 ${sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
+               }`}
          >
             <div className="flex items-center justify-center h-64">
                <div className="flex flex-col items-center gap-2">
@@ -88,9 +88,8 @@ export default function LawyerNotifications() {
    if (isError) {
       return (
          <div
-            className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${
-               sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
-            }`}
+            className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 ${sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
+               }`}
          >
             <div className="bg-red-50 p-3 rounded border border-red-200">
                <div className="flex items-center gap-2 text-red-600">
@@ -113,9 +112,11 @@ export default function LawyerNotifications() {
 
    return (
       <div
-         className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 md:mt-15 ${
-            sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
-         }`}
+         className={`min-h-screen
+                 px-3 sm:px-4 mt-12 md:px-6 lg:px-2
+                 py-3 sm:py-4 md:py-5 
+                 transition-all duration-300 ease-in-out
+              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
       >
          {/* Header - Compact */}
          <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
@@ -184,11 +185,10 @@ export default function LawyerNotifications() {
                {filteredNotifications.map((n) => (
                   <div
                      key={n.id}
-                     className={`p-3 rounded border flex flex-col md:flex-row justify-between items-start md:items-center gap-2 hover:bg-slate-50 transition ${
-                        n.status === "unread"
+                     className={`p-3 rounded border flex flex-col md:flex-row justify-between items-start md:items-center gap-2 hover:bg-slate-50 transition ${n.status === "unread"
                            ? "bg-blue-50 border-blue-200"
                            : "bg-white border-slate-200"
-                     }`}
+                        }`}
                   >
                      <div className="flex flex-col md:flex-row md:items-center gap-2 flex-1">
                         <span className="text-xs font-semibold text-[#A48D66]">

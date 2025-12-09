@@ -43,18 +43,30 @@ export default function MyCases() {
       }
    }, [data]);
 
-   useEffect(() => {
-      const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-      const interval = setInterval(() => {
-         const sidebar = document.querySelector("aside");
-         if (sidebar) setSidebarOpen(sidebar.classList.contains("w-64"));
-      }, 100);
-      window.addEventListener("resize", handleResize);
-      return () => {
-         window.removeEventListener("resize", handleResize);
-         clearInterval(interval);
-      };
-   }, []);
+     // ✅ Sync with sidebar state
+     useEffect(() => {
+        const handleResize = () => {
+           const desktop = window.innerWidth >= 1024;
+           setSidebarOpen(desktop);
+        };
+  
+        const handleSidebarToggle = () => {
+           // Listen for sidebar state changes from the sidebar component
+           const sidebar = document.querySelector('aside');
+           if (sidebar) {
+              const isOpen = sidebar.classList.contains('w-64');
+              setSidebarOpen(isOpen);
+           }
+        };
+  
+        window.addEventListener('resize', handleResize);
+        const interval = setInterval(handleSidebarToggle, 100);
+  
+        return () => {
+           window.removeEventListener('resize', handleResize);
+           clearInterval(interval);
+        };
+     }, []);
 
    const openCase = (c) => {
       // Ensure we have valid data
@@ -106,9 +118,11 @@ export default function MyCases() {
 
    return (
       <div
-         className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8 md:mt-15 ${
-            sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
-         }`}
+              className={`min-h-screen
+                 px-3 sm:px-4 md:px-6 mt-12 lg:px-2
+                 py-3 sm:py-4 md:py-5 
+                 transition-all duration-300 ease-in-out
+              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
       >
          {/* Header - Compact and minimalist */}
          <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
