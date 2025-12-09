@@ -79,12 +79,7 @@ export default function MyCases() {
    };
 
    const closeCase = () => setSelectedCase(null);
-
-   // This function is no longer needed since we're using RTK Query cache invalidation
-   // const updateCaseMemorandum = (stage, updatedMemo) => {
-   //   // API will automatically refresh after mutation
-   // };
-
+   
    const handleDeleteClick = (c) => {
       setCaseToDelete(c);
       setDeleteModalOpen(true);
