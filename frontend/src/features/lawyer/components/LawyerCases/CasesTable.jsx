@@ -121,7 +121,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
       </div>
 
       {/* Table */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="border border-[#A48D66] rounded-lg md:block overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg overflow-hidden">
           <thead className="bg-[#A48D66] text-white hidden md:table-header-group">
             <tr>
@@ -164,7 +164,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
                     {c.clientPhone}
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-4 py-1.5 bg-blue-50 text-blue-700 transition-all duration-300 border border-blue-200 rounded-full text-[14px] font-medium ">
+                    <span className="px-4 py-1.5 bg-blue-50 text-[#A48C65] transition-all duration-300 border border-blue-200 rounded-full text-[14px] font-medium ">
                       {c.caseType}
                     </span>
                   </td>
@@ -194,14 +194,14 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
                     <div className="flex justify-end gap-1">
                       <button
                         onClick={() => onOpen(c)}
-                        className="p-1 text-slate-600 group-hover:text-white transition duration-300 hover:text-blue-600 hover:bg-blue-50 rounded"
+                        className="p-1 text-slate-600 group-hover:text-white transition duration-300 hover:text-[#A48C65] hover:bg-blue-50 rounded"
                         title="Open"
                       >
                         <FiChevronRight size={20} />
                       </button>
                       <button
                         onClick={() => onDelete(c)}
-                        className="p-1 text-slate-600 group-hover:text-white transition duration-300 hover:text-red-600 hover:bg-red-50 rounded"
+                        className="p-1 text-slate-600 group-hover:text-white transition duration-300 hover:text-[#A48C65] hover:bg-red-50 rounded"
                         title="Delete"
                       >
                         <FiTrash2 size={20} />
@@ -232,7 +232,7 @@ export default function CasesTable({ cases, onOpen, onDelete }) {
                           </button>
                           <button
                             onClick={() => onDelete(c)}
-                            className="p-1 text-slate-600 group-hover:text-white hover:text-red-600 hover:bg-red-50 rounded transition"
+                            className="p-1 text-slate-600 group-hover:text-[#A48C65]  hover:bg-[#A48C65] rounded transition"
                           >
                             <FiTrash2 size={18} />
                           </button>

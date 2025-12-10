@@ -112,7 +112,7 @@ export default function MemorandumTab({
               <button
                 onClick={handleUploadClick}
                 disabled={isUploading}
-                className="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 rounded text-[10px] hover:bg-slate-50 disabled:opacity-50"
+                className="inline-flex items-center gap-1 px-2 py-1 border border-slate-300 rounded text-[10px] hover:bg-[#A48C65] hover:text-white disabled:opacity-50"
               >
                 <FiUpload size={12} /> Choose
               </button>
@@ -120,7 +120,7 @@ export default function MemorandumTab({
                 <button
                   onClick={handleSubmitMemorandum}
                   disabled={isUploading}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-slate-700 text-white rounded text-[10px] hover:bg-slate-800 transition disabled:opacity-50"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-[#A48C65] text-white rounded text-[10px] hover:bg-[#8B7A4B] transition disabled:opacity-50"
                 >
                   {isUploading ? (
                     <>
@@ -169,8 +169,8 @@ export default function MemorandumTab({
 
           {/* File Selection Display */}
           {localFile && (
-            <div className="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded text-[10px]">
-              <FiFileText size={12} className="text-blue-600" />
+            <div className="flex items-center gap-2 p-2 bg-white border border-[#A48C65] rounded text-[10px]">
+              <FiFileText size={12} className="text-[#A48C65]" />
               <span className="flex-1 text-slate-700 truncate">
                 {localFile.name}
               </span>
@@ -190,7 +190,7 @@ export default function MemorandumTab({
         <div className="space-y-2">
           {/* Content */}
           {memo.content && (
-            <div className="p-3 bg-slate-50 border rounded">
+            <div className="p-3 bg-slate-50 border border-[#A48C65] rounded">
               <h4 className="font-semibold text-[10px] mb-1 text-slate-800">
                 Content:
               </h4>
@@ -202,8 +202,8 @@ export default function MemorandumTab({
 
           {/* File */}
           {memo.fileUrl && (
-            <div className="flex items-center gap-2 p-2 border rounded bg-white">
-              <FiFileText size={14} className="text-slate-600 shrink-0" />
+            <div className="flex items-center gap-2 p-2 border border-[#A48C65] rounded bg-white">
+              <FiFileText size={14} className="text-[#A48C65] shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="text-[10px] font-medium text-slate-800">
                   Memorandum Document
@@ -220,14 +220,14 @@ export default function MemorandumTab({
                   href={memo.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-2 py-1 rounded border text-[10px] hover:bg-slate-50"
+                  className="px-2 py-1 rounded border text-[10px] hover:bg-[#A48C65] hover:text-white"
                 >
                   View
                 </a>
                 <a
                   href={memo.fileUrl}
                   download
-                  className="px-2 py-1 rounded border text-[10px] hover:bg-slate-50"
+                  className="px-2 py-1 rounded border text-[10px] hover:bg-[#A48C65] hover:text-white"
                 >
                   Download
                 </a>

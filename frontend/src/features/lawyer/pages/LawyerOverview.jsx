@@ -34,8 +34,8 @@ const LawyerOverview = () => {
    return (
       <div
          className={`min-h-screen
-                 px-3 sm:px-4 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
+                 px-3 sm:px-4  md:px-6 lg:px-2
+                 py-10 sm:py-4 md:py-5 
                  transition-all duration-300 ease-in-out
               ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
       >

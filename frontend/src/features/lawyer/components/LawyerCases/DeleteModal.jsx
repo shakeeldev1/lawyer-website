@@ -15,7 +15,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName, isDel
 
       {/* Modal */}
       <div className="relative bg-white w-full max-w-sm rounded-lg shadow-lg">
-        <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700 flex justify-between items-center">
+        <div className="bg-[#A48C65] px-4 py-3 rounded-t-lg border-b border-slate-700 flex justify-between items-center">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2">
             <Trash2 size={16} /> Delete Case?
           </h2>
@@ -47,7 +47,7 @@ export default function DeleteModal({ isOpen, onClose, onDelete, caseName, isDel
           <button
             onClick={onDelete}
             disabled={isDeleting}
-            className="px-3 py-1.5 bg-red-600 text-white rounded text-xs hover:bg-red-700 flex items-center gap-1 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 bg-[#A48C65] text-white rounded text-xs hover:bg-[#8B704D] flex items-center gap-1 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Trash2 size={12} /> {isDeleting ? "Deleting..." : "Delete"}
           </button>

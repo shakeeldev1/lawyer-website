@@ -46,30 +46,30 @@ export default function MyCases() {
       }
    }, [data]);
 
-     // ✅ Sync with sidebar state
-     useEffect(() => {
-        const handleResize = () => {
-           const desktop = window.innerWidth >= 1024;
-           setSidebarOpen(desktop);
-        };
-  
-        const handleSidebarToggle = () => {
-           // Listen for sidebar state changes from the sidebar component
-           const sidebar = document.querySelector('aside');
-           if (sidebar) {
-              const isOpen = sidebar.classList.contains('w-64');
-              setSidebarOpen(isOpen);
-           }
-        };
-  
-        window.addEventListener('resize', handleResize);
-        const interval = setInterval(handleSidebarToggle, 100);
-  
-        return () => {
-           window.removeEventListener('resize', handleResize);
-           clearInterval(interval);
-        };
-     }, []);
+   // ✅ Sync with sidebar state
+   useEffect(() => {
+      const handleResize = () => {
+         const desktop = window.innerWidth >= 1024;
+         setSidebarOpen(desktop);
+      };
+
+      const handleSidebarToggle = () => {
+         // Listen for sidebar state changes from the sidebar component
+         const sidebar = document.querySelector('aside');
+         if (sidebar) {
+            const isOpen = sidebar.classList.contains('w-64');
+            setSidebarOpen(isOpen);
+         }
+      };
+
+      window.addEventListener('resize', handleResize);
+      const interval = setInterval(handleSidebarToggle, 100);
+
+      return () => {
+         window.removeEventListener('resize', handleResize);
+         clearInterval(interval);
+      };
+   }, []);
 
    const openCase = (c) => {
       // Ensure we have valid data
@@ -83,8 +83,8 @@ export default function MyCases() {
             typeof c.currentStage === "number"
                ? c.currentStage
                : typeof c.assignedStage === "number"
-               ? c.assignedStage
-               : 0,
+                  ? c.assignedStage
+                  : 0,
       };
 
       console.log("✅ Validated case:", validCase);
@@ -94,7 +94,7 @@ export default function MyCases() {
    };
 
    const closeCase = () => setSelectedCase(null);
-   
+
    const handleDeleteClick = (c) => {
       setCaseToDelete(c);
       setDeleteModalOpen(true);
@@ -130,11 +130,11 @@ export default function MyCases() {
 
    return (
       <div
-              className={`min-h-screen
-                 px-3 sm:px-4 md:px-6 mt-12 lg:px-2
-                 py-3 sm:py-4 md:py-5 
+          className={`min-h-screen
+                 px-3 sm:px-4   md:px-6 lg:px-2
+                 py-14 sm:py-4 md:py-20 
                  transition-all duration-300 ease-in-out
-              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
+              ${sidebarOpen ? 'lg:ml-64   lg:w-[73%]' : 'lg:ml-20'}`}
       >
          {/* Header - Compact and minimalist */}
          <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
@@ -179,7 +179,7 @@ export default function MyCases() {
                {/* Modal Content */}
                <div className="relative bg-white w-full max-w-5xl rounded-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
                   {/* Header */}
-                  <div className="flex justify-between items-center px-4 py-2 bg-slate-800 text-white">
+                  <div className="flex justify-between items-center px-4 py-2 bg-[#A48C65] text-white">
                      <h2 className="font-semibold text-sm">
                         {selectedCase.caseNumber}
                      </h2>
@@ -198,11 +198,10 @@ export default function MyCases() {
                            <button
                               key={t}
                               onClick={() => setActiveTab(t)}
-                              className={`pb-1 px-2 text-[10px] font-medium transition whitespace-nowrap ${
-                                 activeTab === t
+                              className={`pb-1 px-2 text-[10px] font-medium transition whitespace-nowrap ${activeTab === t
                                     ? "border-b-2 border-slate-800 text-slate-900"
                                     : "text-slate-500 hover:text-slate-800"
-                              }`}
+                                 }`}
                            >
                               {t}
                            </button>
@@ -230,10 +229,10 @@ export default function MyCases() {
                   </div>
 
                   {/* Footer */}
-                  <div className="flex justify-end px-4 py-2 border-t sticky bottom-0 bg-white">
+                  <div className="flex justify-end px-4 py-2 border-t border-[#A48C65] sticky bottom-0 bg-white">
                      <button
                         onClick={closeCase}
-                        className="px-3 py-1.5 rounded border border-slate-300 text-xs text-slate-700 hover:bg-slate-50 transition"
+                        className="px-3 py-1.5  rounded border border-slate-300 text-xs text-slate-700 hover:bg-[#A48C65] hover:text-white transition"
                      >
                         Close
                      </button>

@@ -115,7 +115,7 @@ export default function DocumentsTab({
             <button
               onClick={handleUploadClick}
               disabled={isUploading}
-              className="inline-flex items-center gap-1 bg-white border border-slate-300 px-2 py-1 rounded text-[10px] hover:bg-slate-50 disabled:opacity-50"
+              className="inline-flex items-center gap-1 bg-white border border-slate-300 px-2 py-1 rounded text-[10px] hover:bg-[#A48C65] hover:text-white disabled:opacity-50"
             >
               <FiUpload size={12} /> Choose
             </button>
@@ -123,7 +123,7 @@ export default function DocumentsTab({
               <button
                 onClick={handleSubmitDocuments}
                 disabled={isUploading}
-                className="inline-flex items-center gap-1 bg-slate-700 text-white px-2 py-1 rounded text-[10px] hover:bg-slate-800 disabled:opacity-50"
+                className="inline-flex items-center gap-1 bg-[#A48C65] text-white px-2 py-1 rounded text-[10px] hover:bg-[#A48C65] hover:text-white disabled:opacity-50"
               >
                 {isUploading ? (
                   <>
@@ -177,7 +177,7 @@ export default function DocumentsTab({
           docs.map((doc, idx) => (
             <div
               key={doc._id || idx}
-              className="flex items-center justify-between p-2 border rounded hover:bg-slate-50 transition"
+              className="flex items-center justify-between p-2  border border-[#A48C65]  rounded hover:bg-slate-50 transition"
             >
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <FiFileText size={14} className="text-slate-600 shrink-0" />
