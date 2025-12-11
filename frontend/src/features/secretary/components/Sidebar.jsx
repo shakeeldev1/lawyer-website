@@ -52,37 +52,29 @@ const Sidebar = () => {
   return (
     <>
       {/* Overlay for Mobile */}
-      {!isDesktop && isOpen && (
+       {!isDesktop && isOpen && (
         <div
           onClick={() => setIsOpen(false)}
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-        ></div>
+        />
       )}
 
       {/* Sidebar Toggle Button */}
-      <button
+    <button
         onClick={toggleSidebar}
-        className={`fixed z-[55] p-1.5 rounded-full shadow-md text-white transition-all duration-300
-          bg-[#11408bee] hover:bg-[#0f3674]
-          ${
-            isDesktop
-              ? isOpen
-                ? "left-48 top-3"
-                : "left-12 top-3"
-              : isOpen
-              ? "left-[180px] top-2"
-              : "left-4 top-4"
-          }
+        className={`fixed top-2 p-2 rounded-full shadow-md z-[9999]
+          bg-[#A48C65] text-white hover:bg-[#a48c659c] transition-all duration-300
+          ${isDesktop ? (isOpen ? "left-46" : "left-9") : isOpen ? "left-[210px]" : "left-4"}
         `}
       >
-        {isOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
+        {isOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full border-r border-slate-200
-          bg-white
-          text-slate-700 shadow-sm transition-all duration-300 ease-in-out z-50
+        className={`fixed top-0 left-0 h-full border-r border-blue-100
+        bg-gradient-to-b from-blue-50 to-indigo-50/80 backdrop-blur-xl
+        text-slate-700 shadow-lg transition-all duration-300 ease-in-out z-50
           ${
             isDesktop
               ? isOpen
@@ -107,7 +99,7 @@ const Sidebar = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto py-2">
+        <nav className="flex-1 overflow-y-auto py-5">
           {links.map((link, i) => (
             <NavLink
               key={i}
@@ -116,14 +108,14 @@ const Sidebar = () => {
               end={link.path === undefined}
               className={({ isActive }) =>
                 `flex items-center rounded-md mx-2 my-0.5 transition-colors duration-200
-                  ${
-                    isActive
-                      ? "bg-[#11408bee] text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }
+                 ${
+                  isActive
+                    ? "bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white font-medium shadow-sm"
+                    : "text-slate-700 hover:bg-white/80 hover:text-[#A48C65] hover:shadow-sm"
+                }
                   ${
                     isOpen || !isDesktop
-                      ? "justify-start gap-2 px-2.5 py-2"
+                      ? "justify-start gap-2 px-2.5 py-3"
                       : "justify-center py-2"
                   }
                 `
@@ -141,11 +133,11 @@ const Sidebar = () => {
         <div className="px-2 mt-auto mb-2">
           <button
             onClick={handleLogout}
-            className={`flex items-center rounded-md transition-colors duration-200 text-red-600 hover:bg-red-50 hover:text-red-700 ${
+             className={`flex w-full items-center ${
               isOpen
-                ? "justify-start gap-2 px-2.5 py-2 w-full"
-                : "justify-center w-full py-2"
-            }`}
+                ? "justify-start gap-3 px-4 py-3"
+                : "justify-center py-3"
+             } text-slate-600 hover:text-[#A48C65] rounded-lg transition-all duration-200`}
           >
             <LogOut size={16} />
             {isOpen && <span className="text-xs font-medium">Logout</span>}

@@ -56,19 +56,19 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
         {/* Header */}
-        <div className="bg-slate-800 text-white p-3 rounded-t-lg flex items-center justify-between">
+        <div className="bg-[#A48C65] text-white p-3 rounded-t-lg flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bell size={16} />
             <div>
               <h2 className="text-sm font-semibold">Add Reminder</h2>
-              <p className="text-[10px] text-slate-300">
+              <p className="text-[10px] text-white">
                 {caseData?.case?.caseNumber} - {caseData?.client?.name}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-300 hover:text-white p-1 rounded transition"
+            className="text-white hover:text-white hover:bg-[#bfac8c] p-1 rounded transition"
           >
             <X size={16} />
           </button>
@@ -86,7 +86,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
               value={formData.reminderType}
               onChange={handleChange}
               required
-              className="w-full px-2 py-1.5 border border-slate-200 rounded bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+              className="w-full px-2 py-1.5 border border-[#A48C65] rounded bg-slate-50 focus:ring-1 focus:ring-[#A48C65] text-xs"
             >
               <option value="Hearing">Hearing</option>
               <option value="Submission">Submission</option>
@@ -110,7 +110,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
                 onChange={handleChange}
                 required
                 min={new Date().toISOString().split("T")[0]}
-                className="w-full pl-8 pr-2 py-1.5 border border-slate-200 rounded bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+                className="w-full pl-8 pr-2 py-1.5 border border-[#A48C65] rounded bg-slate-50 focus:ring-1 focus:ring-[#A48C65] text-xs"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
               onChange={handleChange}
               rows="2"
               placeholder="Enter a custom reminder message..."
-              className="w-full px-2 py-1.5 border border-slate-200 rounded bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs resize-none"
+              className="w-full px-2 py-1.5 border border-[#A48C65] rounded bg-slate-50 focus:ring-1 focus:ring-[#A48C65] text-xs resize-none"
             />
           </div>
 
@@ -142,7 +142,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 px-3 py-1.5 bg-slate-700 text-white rounded text-xs hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-3 py-1.5 bg-[#A48C65] text-white rounded text-xs hover:bg-[#8B754E] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Creating..." : "Create"}
             </button>

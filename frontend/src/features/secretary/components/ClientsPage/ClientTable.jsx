@@ -18,29 +18,29 @@ export default function ClientTable({
   const [deleteClient, { isLoading: isDeleting }] = useDeleteClientMutation();
 
   // ✅ Sync sidebar width responsiveness (same logic as ArchiveTable)
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setSidebarOpen(desktop);
-    };
+   useEffect(() => {
+      const handleResize = () => {
+         const desktop = window.innerWidth >= 1024;
+         setSidebarOpen(desktop);
+      };
 
-    const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
-        setSidebarOpen(isOpen);
-      }
-    };
+      const handleSidebarToggle = () => {
+         // Listen for sidebar state changes from the sidebar component
+         const sidebar = document.querySelector('aside');
+         if (sidebar) {
+            const isOpen = sidebar.classList.contains('w-64');
+            setSidebarOpen(isOpen);
+         }
+      };
 
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
+      window.addEventListener('resize', handleResize);
+      const interval = setInterval(handleSidebarToggle, 100);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
-
+      return () => {
+         window.removeEventListener('resize', handleResize);
+         clearInterval(interval);
+      };
+   }, []);
   const handleEditClick = (client) => {
     setSelectedClient(client);
     setShowForm(true);
@@ -103,14 +103,14 @@ export default function ClientTable({
         <td className="px-3 py-2">
           <div className="flex justify-end gap-1">
             <button
-              className="p-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+              className="p-1 text-[#A48C65] hover:text-[#A48C65]  rounded transition-colors"
               onClick={() => handleEditClick(c)}
               title="Edit"
             >
               <Edit size={16} />
             </button>
             <button
-              className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+              className="p-1 text-[#A48C65] hover:text-[#A48C65]  rounded transition-colors"
               onClick={() => handleDeleteClick(c)}
               title="Delete"
             >
@@ -186,9 +186,9 @@ export default function ClientTable({
 
   return (
     <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden mt-4">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-slate-800 text-white hidden md:table-header-group">
+      <div className="hidden md:block overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+          <thead className="bg-[#A48C65]  text-white hidden md:table-header-group">
             <tr>
               {[
                 { label: "ID", class: "" },

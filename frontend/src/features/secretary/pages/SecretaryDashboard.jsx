@@ -112,7 +112,7 @@ const SecretaryDashboard = () => {
     >
       {/* Header */}
       <div className="mb-3">
-        <h1 className="text-lg sm:text-xl font-bold text-slate-800">
+        <h1 className="text-lg sm:text-2xl font-bold text-slate-800">
           Overview
         </h1>
         <p className="text-[11px] sm:text-xs text-slate-600 mt-0.5">

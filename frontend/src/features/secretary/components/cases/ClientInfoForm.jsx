@@ -53,7 +53,7 @@ const ClientInfoForm = ({
   return (
     <div className="space-y-3">
       {/* Client Selection Toggle */}
-      <div className="bg-blue-50 border border-blue-200 rounded p-3">
+      <div className="bg-blue-50 border border-[#A48C65] rounded p-3">
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -65,7 +65,7 @@ const ClientInfoForm = ({
                 setSelectedClientId("");
               }
             }}
-            className="w-3 h-3 text-blue-600"
+            className="w-3 h-3 text-[#A48C65] border border-[#A48C65]"
           />
           <label
             htmlFor="useExisting"
@@ -80,7 +80,7 @@ const ClientInfoForm = ({
             <select
               value={selectedClientId}
               onChange={handleClientSelect}
-              className="w-full rounded px-2 py-1.5 border border-blue-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+              className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-white focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
             >
               <option value="">-- Select a client --</option>
               {clientsData?.clients?.map((client) => (
@@ -106,7 +106,7 @@ const ClientInfoForm = ({
             placeholder="Enter name"
             value={clientInfo.name}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
             required
           />
         </div>
@@ -122,7 +122,7 @@ const ClientInfoForm = ({
             placeholder="Enter contact number"
             value={clientInfo.contact}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
             required
           />
         </div>
@@ -138,7 +138,7 @@ const ClientInfoForm = ({
             placeholder="Enter email address"
             value={clientInfo.email}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
             required
           />
         </div>
@@ -154,7 +154,7 @@ const ClientInfoForm = ({
             placeholder="Enter ID or passport number"
             value={clientInfo.nationalId}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
             required
           />
         </div>
@@ -173,7 +173,7 @@ const ClientInfoForm = ({
             value={clientInfo.address}
             onChange={onChange}
             rows="2"
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs resize-y"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs resize-y"
             required
           />
         </div>
@@ -189,7 +189,7 @@ const ClientInfoForm = ({
             value={clientInfo.additionalInformation}
             onChange={onChange}
             rows="2"
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs resize-y"
+            className="w-full rounded px-2 py-1.5 border border-[#A48C65] bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs resize-y"
           />
         </div>
       </div>

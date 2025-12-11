@@ -86,8 +86,9 @@ const Topbar = () => {
 
   return (
     <header
-      className={`fixed top-0 right-0 h-12
-      bg-white
+      className={`fixed top-0 right-0 h-15
+      bg-gradient-to-r from-[#BCB083] to-[#A48C65]
+      shadow-md border-b border-b border-[#ffff] 
       shadow-sm border-b border-slate-200
       flex items-center justify-end
       px-2 sm:px-3 z-40
@@ -162,7 +163,7 @@ const Topbar = () => {
               <div className="py-1">
                 <Link
                   to="/my-profile"
-                  className="flex items-center gap-2 w-full px-3 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200 text-xs font-medium"
+                  className="flex items-center gap-2 w-full px-3 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-[#A48C65] transition-colors duration-200 text-xs font-medium"
                   onClick={() => setDropdownOpen(false)}
                 >
                   <User size={14} /> My Profile
@@ -173,7 +174,7 @@ const Topbar = () => {
                 <button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex items-center gap-2 w-full px-3 py-1.5 text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 w-full px-3 py-1.5 text-slate-600 hover:bg-red-50 hover:text-[#A48C65] transition-colors duration-200 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <LogOut size={14} />
                   {isLoggingOut ? "Signing Out..." : "Sign Out"}

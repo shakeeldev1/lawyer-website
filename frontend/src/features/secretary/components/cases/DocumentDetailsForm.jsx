@@ -158,7 +158,7 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
       <div
         className={`border-2 border-dashed rounded p-4 text-center transition-all cursor-pointer ${
           isDragging
-            ? "border-blue-400 bg-blue-50"
+            ? "border-blue-400 bg-[#BCB083]"
             : "border-slate-300 bg-slate-50 hover:bg-slate-100"
         }`}
         onDragOver={handleDragOver}
@@ -244,11 +244,11 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
 
       {/* Instructions */}
       <div className="bg-blue-50 border border-blue-200 rounded p-2">
-        <h4 className="font-semibold text-blue-800 mb-1 flex items-center gap-1.5 text-xs">
+        <h4 className="font-semibold text-[#A48C65] mb-1 flex items-center gap-1.5 text-xs">
           <AlertCircle size={12} />
           Required
         </h4>
-        <ul className="text-[10px] text-blue-700 space-y-0.5">
+        <ul className="text-[10px] text-[#A48C65] space-y-0.5">
           <li>• At least 3 documents mandatory</li>
           <li>• PDF, Word, Images supported</li>
           <li>• Max 10MB per file</li>

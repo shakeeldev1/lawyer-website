@@ -29,12 +29,12 @@ const ViewCaseModal = ({ caseData, onClose }) => {
       {/* Modal Content */}
       <div className="relative bg-white w-full max-w-3xl max-h-[80vh] overflow-y-auto rounded-lg shadow-lg z-10 flex flex-col">
         {/* Header */}
-        <div className="sticky top-0 bg-slate-800 text-white rounded-t-lg px-4 py-3 flex justify-between items-center border-b border-slate-700">
+        <div className="sticky top-0 bg-[#A48C65] text-white rounded-t-lg px-4 py-3 flex justify-between items-center ">
           <div className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
             <div>
               <h2 className="text-sm font-semibold">{client.name}</h2>
-              <p className="text-slate-300 text-[10px]">
+              <p className="text-white text-[10px]">
                 {client.contact} | {client.email} | {caseInfo.caseType}
               </p>
             </div>
@@ -42,14 +42,14 @@ const ViewCaseModal = ({ caseData, onClose }) => {
 
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-700 rounded transition"
+            className="p-1 hover:bg-[#decfb8] hover:text-black rounded transition"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Case Info */}
-        <div className="bg-slate-50 border-b border-slate-200 px-4 py-2 text-[10px] text-slate-600 flex flex-wrap gap-3">
+        <div className="bg-slate-50 border-b  border-[#BCB083] px-4 py-2 text-[10px] text-slate-600 flex flex-wrap gap-3">
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {caseInfo.filingDate}
@@ -76,7 +76,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
           {caseInfo.stages?.map((stage, idx) => (
             <div
               key={idx}
-              className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm"
+              className="bg-white border  border-[#BCB083] rounded-lg p-3 shadow-sm"
             >
               {/* Stage Header */}
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2 mb-2">
@@ -97,7 +97,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
 
                 {/* Stage Badges */}
                 <div className="flex flex-wrap gap-1">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 bg-amber-50 text-amber-700 border border-amber-200">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 bg-amber-50 text-amber-700 border  border-[#BCB083]">
                     <Clock size={10} /> Pending
                   </span>
                   <span className="px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200">
@@ -163,7 +163,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
 
           {/* Case Documents */}
           {caseInfo.documents?.length > 0 && (
-            <div className="bg-white border border-slate-200 rounded-lg p-3">
+            <div className="bg-white border border-[#BCB083] rounded-lg p-3">
               <h4 className="font-semibold text-slate-800 text-xs mb-2 flex items-center gap-1">
                 <FileText size={12} /> Case Documents
               </h4>
@@ -178,7 +178,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
                     </span>
                     <a
                       href={doc.url}
-                      className="p-1 text-slate-600 hover:text-blue-600 rounded transition-colors"
+                      className="p-1 text-slate-600 hover:text-[#BCB083] rounded transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
                       title="Download"
@@ -193,7 +193,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
 
           {/* Case Description */}
           {caseInfo.description && (
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
+            <div className="bg-slate-50 border  border-[#BCB083] rounded-lg p-3">
               <h4 className="font-semibold text-slate-800 text-xs mb-1 flex items-center gap-1">
                 <FileText size={12} /> Description
               </h4>
@@ -219,7 +219,7 @@ const ViewCaseModal = ({ caseData, onClose }) => {
             >
               Close
             </button>
-            <button className="flex items-center gap-1 px-3 py-1 bg-slate-700 text-white rounded text-xs hover:bg-slate-800 transition">
+            <button className="flex items-center gap-1 px-3 py-1 bg-[#A48C65] text-white rounded text-xs hover:bg-[#8c7a4e] transition">
               <Download size={12} /> Download
             </button>
           </div>

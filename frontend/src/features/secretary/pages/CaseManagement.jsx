@@ -193,17 +193,15 @@ const CaseManagement = () => {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 mt-8 sm:py-4 ${
-        sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"
-      }`}
+      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 mt-8 sm:py-4 ${sidebarOpen ? 'lg:ml-48  lg:w-[59%]' : 'lg:ml-10 w-[74%]'}`}
     >
       {/* Header - Compact and minimalist */}
       <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-slate-800">
+          <h2 className="text-md sm:text-2xl font-bold text-slate-800">
             Case Management
           </h2>
-          <p className="text-[10px] sm:text-[11px] text-slate-600 mt-0.5">
+          <p className="text-[10px] sm:text-lg mb-2 text-slate-600 mt-0.5">
             {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""}{" "}
             found
           </p>
@@ -211,7 +209,7 @@ const CaseManagement = () => {
         <div className="flex gap-2">
           <button
             onClick={handleOpenAddModal}
-            className="flex items-center gap-1.5 bg-[#11408bee] hover:bg-[#0f3674] text-white px-3 py-1.5 rounded-lg transition-all text-xs"
+            className="flex items-center gap-1.5 bg-[#A48C65] hover:bg-[#ffff] hover:text-[#A48C65] hover:border-[#A48C65] border text-white px-3 py-1.5 rounded-lg transition-all text-xs"
           >
             <Plus size={14} /> Add Case
           </button>

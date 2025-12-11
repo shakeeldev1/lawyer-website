@@ -175,14 +175,14 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Fixed Header */}
-        <div className="bg-slate-800 px-4 py-3 rounded-t-lg border-b border-slate-700">
+        <div className="bg-[#A48C65] px-4 py-3 rounded-t-lg">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-white">
               {caseData ? "Edit Case" : "Add New Case"}
             </h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-slate-700 rounded transition"
+              className="p-1 hover:bg-[#7A6B3A] rounded transition"
             >
               <X className="w-4 h-4 text-white" />
             </button>
@@ -196,14 +196,14 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 1
                     ? "bg-white text-slate-800"
-                    : "bg-slate-600 text-slate-400"
+                    : "bg-[#BCB083] text-black"
                 }`}
               >
                 1
               </div>
               <span
                 className={`ml-1.5 text-[10px] ${
-                  step >= 1 ? "text-white" : "text-slate-400"
+                  step >= 1 ? "text-white" : "text-white"
                 }`}
               >
                 Client
@@ -212,7 +212,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
 
             {/* Connector */}
             <div
-              className={`w-6 h-0.5 ${step >= 2 ? "bg-white" : "bg-slate-600"}`}
+              className={`w-6 h-0.5 ${step >= 2 ? "bg-white" : "bg-white"}`}
             ></div>
 
             {/* Step 2 */}
@@ -221,14 +221,14 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 2
                     ? "bg-white text-slate-800"
-                    : "bg-slate-600 text-slate-400"
+                    : "bg-slate-600 text-white"
                 }`}
               >
                 2
               </div>
               <span
                 className={`ml-1.5 text-[10px] ${
-                  step >= 2 ? "text-white" : "text-slate-400"
+                  step >= 2 ? "text-white" : "text-white"
                 }`}
               >
                 Case
@@ -237,7 +237,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
 
             {/* Connector */}
             <div
-              className={`w-6 h-0.5 ${step >= 3 ? "bg-white" : "bg-slate-600"}`}
+              className={`w-6 h-0.5 ${step >= 3 ? "bg-white" : "bg-white"}`}
             ></div>
 
             {/* Step 3 */}
@@ -246,14 +246,14 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-medium ${
                   step >= 3
                     ? "bg-white text-slate-800"
-                    : "bg-slate-600 text-slate-400"
+                    : "bg-slate-600 text-white"
                 }`}
               >
                 3
               </div>
               <span
                 className={`ml-1.5 text-[10px] ${
-                  step >= 3 ? "text-white" : "text-slate-400"
+                  step >= 3 ? "text-white" : "text-white"
                 }`}
               >
                 Documents
@@ -301,7 +301,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
             {step > 1 && (
               <button
                 onClick={handleBack}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-6 py-2 bg-[#BCB083] text-gray-700 rounded-lg hover:bg-[#A48C65] transition-colors hover:text-white"
               >
                 Back
               </button>
@@ -310,7 +310,7 @@ const AddCase = ({ isOpen, onClose, onAddCase, caseData }) => {
             <button
               onClick={step === 3 ? handleSubmit : handleNext}
               disabled={isCreating || isUpdating}
-              className={`px-6 py-2 bg-[#11408bee]/90 text-white rounded-lg hover:bg-[#11408bee] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`px-6 py-2 bg-[#A48C65] text-white rounded-lg hover:bg-[#A48C65] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 step === 1 ? "ml-auto" : ""
               }`}
             >

@@ -90,7 +90,7 @@ const CaseTable = ({
                 <div>
                   <p className="text-xs font-semibold text-slate-900">{c.id}</p>
                   {c.case.courtCaseId && (
-                    <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200 mt-1">
+                    <span className="inline-flex items-center gap-1 bg-[#BCB083] text-[#A48C65] px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200 mt-1">
                       <FileText size={10} />
                       Court ID: {c.case.courtCaseId}
                     </span>
@@ -138,14 +138,14 @@ const CaseTable = ({
               <div className="flex flex-wrap gap-1 pt-2">
                 <button
                   onClick={() => onViewCase?.(c.id)}
-                  className="p-1.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors"
+                  className="p-1.5 bg-slate-100 text-[#A48C65] rounded transition-colors"
                   title="View case"
                 >
                   <Eye size={14} />
                 </button>
                 <button
                   onClick={() => onEditCase?.(c.id)}
-                  className="p-1.5 bg-emerald-50 text-emerald-700 rounded hover:bg-emerald-100 transition-colors"
+                  className="p-1.5 bg-emerald-50 text-[#A48C65] rounded  transition-colors"
                   title="Edit case"
                 >
                   <Edit size={14} />
@@ -153,7 +153,7 @@ const CaseTable = ({
                 {c.case.status === "ReadyForSubmission" && (
                   <button
                     onClick={() => onScheduleHearing?.(c)}
-                    className="p-1.5 bg-cyan-50 text-cyan-700 rounded hover:bg-cyan-100 transition-colors"
+                    className="p-1.5 bg-cyan-50 text-[#A48C65] rounded transition-colors"
                     title="Schedule hearing date"
                   >
                     <Calendar size={14} />
@@ -161,7 +161,7 @@ const CaseTable = ({
                 )}
                 <button
                   onClick={() => onUpdateCourtCaseId?.(c)}
-                  className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                  className="p-1.5 bg-indigo-50 text-[#A48C65] rounded  transition-colors"
                   title={
                     c.case.courtCaseId
                       ? `Update Court Case ID (${c.case.courtCaseId})`
@@ -172,14 +172,14 @@ const CaseTable = ({
                 </button>
                 <button
                   onClick={() => onAssignLawyer?.(c)}
-                  className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                  className="p-1.5 bg-indigo-50 text-[#A48C65] rounded  transition-colors"
                   title="Assign/reassign lawyer"
                 >
                   <UserPlus size={14} />
                 </button>
                 <button
                   onClick={() => onAddReminder?.(c)}
-                  className="p-1.5 bg-amber-50 text-amber-700 rounded hover:bg-amber-100 transition-colors"
+                  className="p-1.5 bg-amber-50 text-[#A48C65] rounded  transition-colors"
                   title="Add reminder"
                 >
                   <Bell size={14} />
@@ -188,7 +188,7 @@ const CaseTable = ({
                   onClick={() => onArchive?.(c.id)}
                   className={`p-1.5 rounded transition-colors ${
                     canArchive
-                      ? "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                      ? "bg-purple-50 text-[#A48C65] hover:bg-purple-100"
                       : "bg-slate-100 text-slate-400 cursor-not-allowed"
                   }`}
                   disabled={!canArchive}
@@ -198,7 +198,7 @@ const CaseTable = ({
                 </button>
                 <button
                   onClick={() => onDeleteCase?.(c.id)}
-                  className="p-1.5 bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
+                  className="p-1.5 bg-red-50 text-[#A48C65] rounded hover:bg-red-100 transition-colors"
                   title="Delete case"
                 >
                   <Trash2 size={14} />
@@ -211,40 +211,40 @@ const CaseTable = ({
 
       {/* Desktop/Tablet Table */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="bg-slate-100 border-b border-slate-200">
+        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+          <thead className="bg-[#A48C65] text-white border-b border-slate-200">
             <tr>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Case ID
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden lg:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
                 Court ID
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Client
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden lg:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
                 Contact
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden xl:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden xl:table-cell">
                 Email
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Type
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden lg:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
                 Stage
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Status
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden lg:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
                 Lawyer
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap hidden xl:table-cell">
+              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden xl:table-cell">
                 Hearing
               </th>
-              <th className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-600 whitespace-nowrap">
+              <th className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Actions
               </th>
             </tr>
@@ -278,7 +278,7 @@ const CaseTable = ({
                   </td>
                   <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden lg:table-cell">
                     {c.case.courtCaseId ? (
-                      <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200">
+                      <span className="inline-flex items-center gap-1 bg-indigo-50 text-[#A48C65] px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200">
                         <FileText size={10} />
                         {c.case.courtCaseId}
                       </span>
@@ -336,14 +336,14 @@ const CaseTable = ({
                     <div className="flex justify-center gap-1 flex-nowrap">
                       <button
                         onClick={() => onViewCase?.(c.id)}
-                        className="p-1.5 bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition-colors"
+                        className="p-1.5 bg-slate-100 text-[#A48C65] rounded hover:bg-slate-200 transition-colors"
                         title="View case"
                       >
                         <Eye size={14} />
                       </button>
                       <button
                         onClick={() => onEditCase?.(c.id)}
-                        className="p-1.5 bg-emerald-50 text-emerald-700 rounded hover:bg-emerald-100 transition-colors"
+                        className="p-1.5 bg-emerald-50 text-[#A48C65] rounded hover:bg-emerald-100 transition-colors"
                         title="Edit case"
                       >
                         <Edit size={14} />
@@ -351,7 +351,7 @@ const CaseTable = ({
                       {c.case.status === "ReadyForSubmission" && (
                         <button
                           onClick={() => onScheduleHearing?.(c)}
-                          className="p-1.5 bg-cyan-50 text-cyan-700 rounded hover:bg-cyan-100 transition-colors"
+                          className="p-1.5 bg-cyan-50 text-[#A48C65] rounded hover:bg-cyan-100 transition-colors"
                           title="Schedule hearing date"
                         >
                           <Calendar size={14} />
@@ -359,7 +359,7 @@ const CaseTable = ({
                       )}
                       <button
                         onClick={() => onUpdateCourtCaseId?.(c)}
-                        className="p-1.5 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition-colors"
+                        className="p-1.5 bg-indigo-50 text-[#A48C65] rounded hover:bg-indigo-100 transition-colors"
                         title={
                           c.case.courtCaseId
                             ? `Update Court Case ID (${c.case.courtCaseId})`
@@ -372,7 +372,7 @@ const CaseTable = ({
                         !c.case.assignedLawyer && (
                           <button
                             onClick={() => onAssignLawyer?.(c)}
-                            className="p-1.5 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+                            className="p-1.5 bg-blue-50 text-[#A48C65] rounded hover:bg-blue-100 transition-colors"
                             title="Assign lawyer"
                           >
                             <UserPlus size={14} />
@@ -380,7 +380,7 @@ const CaseTable = ({
                         )}
                       <button
                         onClick={() => onAddReminder?.(c)}
-                        className="p-1.5 bg-amber-50 text-amber-700 rounded hover:bg-amber-100 transition-colors"
+                        className="p-1.5 bg-amber-50 text-[#A48C65] rounded hover:bg-amber-100 transition-colors"
                         title="Add reminder"
                       >
                         <Bell size={14} />
@@ -389,7 +389,7 @@ const CaseTable = ({
                         onClick={() => onArchive?.(c.id)}
                         className={`p-1.5 rounded transition-colors ${
                           canArchive
-                            ? "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                            ? "bg-purple-50 text-[#A48C65] hover:bg-purple-100"
                             : "bg-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                         disabled={!canArchive}
@@ -401,7 +401,7 @@ const CaseTable = ({
                       </button>
                       <button
                         onClick={() => onDeleteCase?.(c.id)}
-                        className="p-1.5 bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
+                        className="p-1.5 bg-red-50 text-[#A48C65] rounded hover:bg-red-100 transition-colors"
                         title="Delete case"
                       >
                         <Trash2 size={14} />

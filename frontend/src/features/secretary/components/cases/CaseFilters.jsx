@@ -46,19 +46,19 @@ const CaseFilters = ({ onFilterChange, onClearFilters }) => {
           placeholder="Client name or Case ID"
           value={filters.search}
           onChange={(e) => handleChange("search", e.target.value)}
-          className="border border-slate-200 px-2 py-1.5 rounded bg-slate-50 w-full focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+          className=" border-[#BCB083] border px-2 py-1.5 rounded bg-slate-50 w-full focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
         />
       </div>
 
       {/* Status */}
       <div className="flex flex-col min-w-[130px]">
-        <label className="text-slate-600 mb-1 text-[10px] font-semibold uppercase tracking-wide">
+        <label className="text-slate-600  mb-1 text-[10px] font-semibold uppercase tracking-wide">
           Status
         </label>
         <select
           value={filters.status}
           onChange={(e) => handleChange("status", e.target.value)}
-          className="border border-slate-200 px-2 py-1.5 rounded bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+          className="border border-slate-200 px-2 py-1.5 rounded bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
         >
           <option value="">All Status</option>
           <option value="Approved">Approved</option>
@@ -78,7 +78,7 @@ const CaseFilters = ({ onFilterChange, onClearFilters }) => {
         <select
           value={filters.lawyer}
           onChange={(e) => handleChange("lawyer", e.target.value)}
-          className="border border-slate-200 px-2 py-1.5 rounded bg-slate-50 focus:outline-none focus:ring-1 focus:ring-blue-500 text-xs"
+          className="border border-slate-200  px-2 py-1.5 rounded bg-slate-50 focus:outline-none focus:ring-1 focus:ring-[#A48C65] text-xs"
           disabled={loadingLawyers}
         >
           <option value="">
@@ -100,7 +100,7 @@ const CaseFilters = ({ onFilterChange, onClearFilters }) => {
       {/* Clear button */}
       <button
         onClick={handleClear}
-        className="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 rounded transition-colors text-xs font-medium"
+        className="bg-red-50 border border-[#BCB083] hover:bg-red-100 text-[#A48C65] px-3 py-1.5 rounded transition-colors text-xs font-medium"
       >
         Clear Filters
       </button>

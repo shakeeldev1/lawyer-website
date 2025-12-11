@@ -31,45 +31,41 @@ const ClientsPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
   // ✅ Sync sidebar with screen size
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setSidebarOpen(desktop);
-    };
-
-    const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
-        setSidebarOpen(isOpen);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
+ useEffect(() => {
+     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
+     const handleSidebarToggle = () => {
+       const sidebar = document.querySelector("aside");
+       if (sidebar) {
+         const width = sidebar.offsetWidth;
+         setSidebarOpen(width > 100);
+       }
+     };
+ 
+     window.addEventListener("resize", handleResize);
+     const interval = setInterval(handleSidebarToggle, 100);
+ 
+     return () => {
+       window.removeEventListener("resize", handleResize);
+       clearInterval(interval);
+     };
+   }, []);
 
   return (
     <div
       className={`min-h-screen pt-16
         px-2 sm:px-3
-        py-3 sm:py-4
+        py-3 sm:py-8
         transition-all duration-300 ease-in-out mt-8
-        ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
+      ${sidebarOpen ? 'lg:ml-48  lg:w-[86%]' : 'lg:ml-10 w-[98%]'}`}
     >
       <div className="space-y-3">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-base sm:text-lg font-semibold text-slate-800">
+            <h2 className="text-md sm:text-2xl font-semibold text-slate-800">
               Client Management
             </h2>
-            <p className="text-[10px] text-slate-500 mt-0.5">
+            <p className="text-md text-slate-600 mt-0.5">
               Manage client information and records
             </p>
           </div>
@@ -86,7 +82,7 @@ const ClientsPage = () => {
               setIsCreatingNew(true);
               setShowForm(true);
             }}
-            className="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded text-xs transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#A48C65] hover:bg-[#ffff] hover:text-[#A48C65] text-white text-xs hover:border-[#A48C65]  border transition"
           >
             <Plus size={14} /> Add Client
           </button>

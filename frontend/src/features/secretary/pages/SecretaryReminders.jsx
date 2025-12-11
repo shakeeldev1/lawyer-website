@@ -56,24 +56,17 @@ const SecretaryReminders = () => {
   };
 
   // ✅ Sync with sidebar state
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setSidebarOpen(desktop);
-    };
-
+ useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
     const handleSidebarToggle = () => {
-      // Listen for sidebar state changes from the sidebar component
       const sidebar = document.querySelector("aside");
       if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
-        setSidebarOpen(isOpen);
+        const width = sidebar.offsetWidth;
+        setSidebarOpen(width > 100);
       }
     };
 
     window.addEventListener("resize", handleResize);
-
-    // Check sidebar state periodically (you can use a better state management approach)
     const interval = setInterval(handleSidebarToggle, 100);
 
     return () => {
@@ -91,11 +84,11 @@ const SecretaryReminders = () => {
                  px-2 sm:px-3
                  py-3 sm:py-4
                  transition-all duration-300 ease-in-out mt-8
-                 ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
+                 ${sidebarOpen ? 'lg:ml-50  lg:w-[85%]' : 'lg:ml-10 w-[98%]'}`}
     >
       {/* Title & Subtitle */}
       <div className="mb-4">
-        <h2 className="text-base sm:text-lg font-semibold text-slate-800 flex items-center gap-1.5">
+        <h2 className="text-base sm:text-2xl mt-3 font-semibold text-slate-800 flex items-center gap-1.5">
           Reminders
         </h2>
         <p className="text-[10px] text-slate-500 mt-0.5">
@@ -106,7 +99,7 @@ const SecretaryReminders = () => {
       {/* Loading & Error States */}
       {isLoading && (
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#A48C65]"></div>
           <p className="text-xs text-slate-500 mt-2">Loading reminders...</p>
         </div>
       )}
@@ -152,12 +145,12 @@ const SecretaryReminders = () => {
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               className={`p-2.5 rounded bg-white shadow-sm border-l-2 ${
-                reminder.isOverdue ? "border-red-500" : "border-blue-500"
+                reminder.isOverdue ? "border-red-500" : "border-[#A48C65]"
               } flex items-start gap-2 hover:shadow-md transition`}
             >
               <div
                 className={`mt-0.5 ${
-                  reminder.isOverdue ? "text-red-600" : "text-blue-600"
+                  reminder.isOverdue ? "text-red-600" : "text-[#A48C65]"
                 }`}
               >
                 {getIcon(reminder.reminderType, reminder.isOverdue)}
@@ -185,7 +178,7 @@ const SecretaryReminders = () => {
                   <button
                     onClick={() => handleDeleteReminder(reminder._id)}
                     disabled={isDeleting}
-                    className="p-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded transition shrink-0 ml-2"
+                    className="p-1 text-slate-600 hover:text-[#A48C65] hover:bg-red-50 rounded transition shrink-0 ml-2"
                     title="Delete"
                   >
                     <Trash2 size={14} />

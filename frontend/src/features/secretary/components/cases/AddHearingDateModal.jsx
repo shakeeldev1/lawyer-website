@@ -76,11 +76,11 @@ const AddHearingDateModal = ({ isOpen, onClose, caseData }) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
         {/* Header */}
-        <div className="bg-slate-800 text-white px-4 py-3 flex justify-between items-center rounded-t-lg border-b border-slate-700">
+        <div className="bg-[#A48C65] text-white px-4 py-3 flex justify-between items-center rounded-t-lg border-b border-[#8B754E]">
           <h2 className="text-sm font-semibold">Schedule Hearing Date</h2>
           <button
             onClick={handleClose}
-            className="hover:bg-slate-700 rounded p-1 transition-colors"
+            className="hover:bg-[#8B754E] rounded p-1 transition-colors"
           >
             <X size={16} />
           </button>
@@ -148,7 +148,7 @@ const AddHearingDateModal = ({ isOpen, onClose, caseData }) => {
           <div>
             <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600 mb-1">
               <Clock className="inline-block mr-1 w-3 h-3" />
-              Time <span className="text-red-500">*</span>
+              Time <span className="text-[#A48C65]">*</span>
             </label>
             <input
               type="time"

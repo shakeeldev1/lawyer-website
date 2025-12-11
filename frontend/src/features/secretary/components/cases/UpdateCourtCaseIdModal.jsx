@@ -41,7 +41,7 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#BCB083] to-[#A48C65] px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <FileText className="text-white" size={20} />
@@ -67,7 +67,7 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-4">
             {/* Case Information */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2 text-sm">
+            <div className="bg-[#F3F1E7] border border-[#BCB083] rounded-lg p-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600 font-medium">Case Type:</span>
                 <span className="text-slate-800">{caseData?.caseType}</span>
@@ -87,17 +87,17 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
             {/* Court Case ID Input */}
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-slate-700">
-                Court Case ID <span className="text-red-500">*</span>
+                Court Case ID <span className="text-[#A48C65]">*</span>
               </label>
               <input
                 type="text"
                 value={courtCaseId}
                 onChange={(e) => setCourtCaseId(e.target.value)}
                 placeholder="Enter court-assigned case ID (e.g., CC-2025-1234)"
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
+                className="w-full px-4 py-2.5 border border-[#BCB083] rounded-lg focus:ring-2 focus:ring-[#A48C65] focus:border-[#A48C65] outline-none transition-all text-sm"
                 required
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-[#A48C65]">
                 💡 Enter the case ID assigned by the court after submission
               </p>
             </div>
@@ -121,7 +121,7 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium text-sm"
+              className="flex-1 px-4 py-2.5 bg-[#F3F1E7] text-[#A48C65] rounded-lg hover:bg-[#E6E2D9] transition-colors font-medium text-sm"
               disabled={isLoading}
             >
               Cancel
@@ -129,7 +129,7 @@ const UpdateCourtCaseIdModal = ({ isOpen, onClose, caseData }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2.5 bg-[#A48C65] text-white rounded-lg hover:bg-[#8B754E] transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

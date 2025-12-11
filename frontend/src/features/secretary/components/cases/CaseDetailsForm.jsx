@@ -31,7 +31,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             name="caseType"
             value={caseInfo.caseType}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
             required
           >
             <option value="">Select Case Type</option>
@@ -53,7 +53,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             name="assignedLawyer"
             value={caseInfo.assignedLawyer}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
             required
             disabled={loadingLawyers}
           >
@@ -99,7 +99,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
               name="approvingLawyer"
               value={caseInfo.approvingLawyer || ""}
               onChange={onChange}
-              className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+              className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
               required
               disabled={loadingLawyers}
             >
@@ -135,7 +135,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             name="filingDate"
             value={caseInfo.filingDate}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-100 focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-100 focus:ring-1 focus:ring-[#BCB083] text-xs"
             required
             readOnly
           />
@@ -156,7 +156,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             name="status"
             value={caseInfo.status}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
             required
           >
             <option value="Pending">Pending</option>
@@ -177,7 +177,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             name="stage"
             value={caseInfo.stage}
             onChange={onChange}
-            className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs"
+            className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
             required
           >
             <option value="Main Case">Main Case</option>
@@ -200,7 +200,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
           value={caseInfo.description}
           onChange={onChange}
           rows="3"
-          className="w-full rounded px-2 py-1.5 border border-slate-200 bg-slate-50 focus:ring-1 focus:ring-blue-500 text-xs resize-y"
+          className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs resize-y"
           required
         />
       </div>

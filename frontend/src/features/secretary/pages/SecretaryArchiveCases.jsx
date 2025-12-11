@@ -22,24 +22,17 @@ const SecretaryArchiveCases = () => {
     }
   }, [archiveData]);
   // ✅ Sync with sidebar state
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setSidebarOpen(desktop);
-    };
-
+ useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
     const handleSidebarToggle = () => {
-      // Listen for sidebar state changes from the sidebar component
       const sidebar = document.querySelector("aside");
       if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
-        setSidebarOpen(isOpen);
+        const width = sidebar.offsetWidth;
+        setSidebarOpen(width > 100);
       }
     };
 
     window.addEventListener("resize", handleResize);
-
-    // Check sidebar state periodically (you can use a better state management approach)
     const interval = setInterval(handleSidebarToggle, 100);
 
     return () => {
@@ -73,11 +66,11 @@ const SecretaryArchiveCases = () => {
                  px-2 sm:px-3
                  py-3 sm:py-4
                  transition-all duration-300 ease-in- mt-8
-                 ${sidebarOpen ? "md:ml-52" : "md:ml-14"}`}
+                ${sidebarOpen ? 'lg:ml-48 lg:w-[%]' : 'lg:ml-10  w-[98%]'}`}
     >
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-base sm:text-lg font-semibold text-slate-800">
+        <h2 className="text-lg sm:text-2xl mt-3 font-semibold text-slate-800">
           Archive
         </h2>
         <p className="text-[10px] text-slate-500 mt-0.5">
@@ -87,13 +80,13 @@ const SecretaryArchiveCases = () => {
 
       {/* Search */}
       <div className="relative mb-4 max-w-md">
-        <Search className="absolute left-2 top-2 text-slate-400" size={14} />
+        <Search className="absolute left-2 top-2 text-[#A48C65]" size={14} />
         <input
           type="text"
           placeholder="Search by client or case number..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-8 py-1.5 pr-2 w-full border border-slate-200 rounded bg-slate-50 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-xs text-slate-800"
+          className="pl-8 py-1.5 pr-2 w-full border border-[#A48C65] rounded bg-slate-50 focus:ring-1 focus:ring-[#A48C65] focus:border-[#A48C65] outline-none text-xs text-slate-800"
         />
       </div>
 
