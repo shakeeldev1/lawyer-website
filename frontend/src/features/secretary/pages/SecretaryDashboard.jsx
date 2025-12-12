@@ -107,7 +107,7 @@ const SecretaryDashboard = () => {
     <div
       className={`min-h-screen text-gray-900 
       transition-all duration-300 ease-in-out
-      pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-8
+      pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-12
       ${sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"}`}
     >
       {/* Header */}

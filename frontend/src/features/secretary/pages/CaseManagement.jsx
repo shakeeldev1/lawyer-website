@@ -193,8 +193,9 @@ const CaseManagement = () => {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-300 ease-in-out pt-16 px-2 py-3 sm:px-3 mt-8 sm:py-4 ${sidebarOpen ? 'lg:ml-48  lg:w-[59%]' : 'lg:ml-10 w-[74%]'}`}
+      className={`min-h-screen pt-16 px-2 sm:px-3 py-3 sm:py-4 mt-12 transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-50 lg:w-[86%]' : 'lg:ml-14 w-[96%]'}`}
     >
+      <div className="max-w-full overflow-x-hidden">
       {/* Header - Compact and minimalist */}
       <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
         <div>
@@ -305,6 +306,7 @@ const CaseManagement = () => {
         onAddCase={handleAddOrUpdateCase}
         caseData={editCaseData}
       />
+      </div>
     </div>
   );
 };

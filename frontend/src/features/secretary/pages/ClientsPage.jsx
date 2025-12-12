@@ -56,7 +56,7 @@ const ClientsPage = () => {
         px-2 sm:px-3
         py-3 sm:py-8
         transition-all duration-300 ease-in-out mt-8
-      ${sidebarOpen ? 'lg:ml-48  lg:w-[86%]' : 'lg:ml-10 w-[98%]'}`}
+      ${sidebarOpen ? 'lg:ml-50  lg:w-[85.5%]' : 'lg:ml-13 w-[96%]'}`}
     >
       <div className="space-y-3">
         {/* Header */}

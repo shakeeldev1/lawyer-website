@@ -68,7 +68,7 @@ const CaseTable = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden w-full">
       {/* Mobile Card View */}
       <div className="block md:hidden">
         {cases.map((c) => {
@@ -87,15 +87,19 @@ const CaseTable = ({
               className="border-b border-slate-200 p-3 space-y-2"
             >
               <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs font-semibold text-slate-900">{c.id}</p>
-                  {c.case.courtCaseId && (
-                    <span className="inline-flex items-center gap-1 bg-[#BCB083] text-[#A48C65] px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200 mt-1">
+                <div className="flex-1">
+                  {c.case.courtCaseId ? (
+                    <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-2.5 py-1 rounded text-xs font-bold border-2 border-[#A48C65]">
+                      <FileText size={12} />
+                      {c.case.courtCaseId}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-medium border border-slate-300">
                       <FileText size={10} />
-                      Court ID: {c.case.courtCaseId}
+                      Not Assigned
                     </span>
                   )}
-                  <p className="text-[10px] text-slate-600 mt-0.5">
+                  <p className="text-xs font-semibold text-slate-900 mt-1.5">
                     {c.client.name}
                   </p>
                 </div>
@@ -210,15 +214,12 @@ const CaseTable = ({
       </div>
 
       {/* Desktop/Tablet Table */}
-      <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+      <div className="hidden md:block overflow-x-auto max-w-full">
+        <table className="w-full bg-white rounded-lg overflow-hidden">
           <thead className="bg-[#A48C65] text-white border-b border-slate-200">
             <tr>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
-                Case ID
-              </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
-                Court ID
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                Court Case ID
               </th>
               <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
                 Client
@@ -273,18 +274,16 @@ const CaseTable = ({
                   key={c._id || c.id}
                   className="border-t border-slate-100 hover:bg-slate-50 transition-colors duration-150"
                 >
-                  <td className="px-3 py-2 font-medium text-slate-900 whitespace-nowrap">
-                    {c.id}
-                  </td>
-                  <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     {c.case.courtCaseId ? (
-                      <span className="inline-flex items-center gap-1 bg-indigo-50 text-[#A48C65] px-2 py-0.5 rounded text-[10px] font-medium border border-indigo-200">
-                        <FileText size={10} />
+                      <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-3 py-1.5 rounded text-sm font-bold border-2 border-[#A48C65]">
+                        <FileText size={14} />
                         {c.case.courtCaseId}
                       </span>
                     ) : (
-                      <span className="text-slate-400 text-[10px]">
-                        Not Set
+                      <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2.5 py-1 rounded text-xs font-medium border border-slate-300">
+                        <FileText size={12} />
+                        Not Assigned
                       </span>
                     )}
                   </td>
