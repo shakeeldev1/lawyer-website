@@ -55,7 +55,7 @@ const Signup = () => {
 
       {/* Form Container */}
       <div
-        className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
+        className="relative bg-white backdrop-blur-md p-10 rounded-2xl shadow-xl 
                     w-full max-w-md border border-slate-200"
       >
         <h1 className="text-3xl font-extrabold text-center mb-2 text-[#b48c65]">

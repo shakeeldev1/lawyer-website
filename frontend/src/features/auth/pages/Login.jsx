@@ -70,7 +70,7 @@ const Login = () => {
       </div>
 
       {/* Login Card */}
-      <div className="relative bg-white/90 backdrop-blur-md p-10 rounded-2xl shadow-xl 
+      <div className="relative bg-white backdrop-blur-md p-10 rounded-2xl shadow-xl 
                       w-full max-w-md border border-slate-200">
 
         <h1 className="text-3xl font-extrabold text-center mb-2 text-[#A48C65]">
@@ -87,7 +87,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-[#494C52] font-medium mb-1"
+              className="block text-slate-600 font-medium mb-1"
             >
               Email Address
             </label>
@@ -107,7 +107,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="password"
-              className="block text-[#494C52] font-medium mb-1"
+              className="block text-slate-600 font-medium mb-1"
             >
               Password
             </label>
@@ -128,12 +128,13 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-slate-500 hover:text-slate-700 focus:outline-none"
+                className="absolute right-3 top-3 text-slate-500 hover:text-[#A48C65] focus:outline-none"
               >
                 {showPassword ? (
-                  <FiEyeOff className="w-5 h-5" />
-                ) : (
                   <FiEye className="w-5 h-5" />
+
+                ) : (
+                  <FiEyeOff className="w-5 h-5" />
                 )}
               </button>
             </div>
@@ -143,7 +144,7 @@ const Login = () => {
           <div className="text-right -mt-2">
             <a
               href="/forgot-password"
-              className="text-[#494C52] hover:underline text-sm font-medium"
+              className="text-[#A48C65] hover:underline text-sm font-medium"
             >
               Forgot Password?
             </a>
@@ -154,20 +155,20 @@ const Login = () => {
             type="submit"
             disabled={isLoading}
             className={`w-full text-[#A48C65] py-3 rounded-xl text-lg font-medium shadow-md transition-all ${isLoading
-                ? "bg-[#494C52] text-white cursor-not-allowed"
-                : "bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 hover:shadow-lg"
+              ? "bg-[#494C52] text-white cursor-not-allowed"
+              : "bg-white border border-[#A48C65] text-gray-800 hover:bg-[#A48C65] hover:text-white transition-all duration-200 hover:shadow-lg"
               }`}
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
 
           {/* Extra Links */}
-          <div className="text-center text-sm mt-4 text-[#494C52]">
+          <div className="text-center text-sm mt-4 text-slate-600">
             <p>
               Don’t have an account?{" "}
               <a
                 href="/signup"
-                className="text-[#494C52] hover:underline font-semibold"
+                className="text-[#A48C65] hover:underline font-semibold"
               >
                 Sign up
               </a>
