@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { FiX, FiSearch } from "react-icons/fi";
-import CasesTable from "../components/LawyerCases/CasesTable";
-import DeleteModal from "../components/LawyerCases/DeleteModal";
+import React, { useEffect, useState, useMemo } from "react";
+import { FiX, FiSearch, FiEye, FiFileText } from "react-icons/fi";
 import CaseDetail from "../components/LawyerCases/CaseDetail";
 import DocumentsTab from "../components/LawyerCases/DocumentsTab";
 import MemorandumTab from "../components/LawyerCases/MemorandumTab";
-import { useGetAssignedCasesQuery, useDeleteCaseMutation } from "../api/lawyerApi";
-import { toast } from "react-toastify";
+import { useGetAssignedCasesQuery } from "../api/lawyerApi";
 
 export default function MyCases() {
    const [cases, setCases] = useState([]);
    const [search, setSearch] = useState("");
+   const [statusFilter, setStatusFilter] = useState("");
    const [selectedCase, setSelectedCase] = useState(null);
    const [activeTab, setActiveTab] = useState("Details");
    const [selectedStage, setSelectedStage] = useState(0);
    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-   const [caseToDelete, setCaseToDelete] = useState(null);
 
    const { data, isLoading, isError } = useGetAssignedCasesQuery({
       search: search || undefined,
-      limit: 50, // Get more cases for better UX
+      limit: 100,
    });
-
-   const [deleteCase, { isLoading: isDeleting }] = useDeleteCaseMutation();
 
    useEffect(() => {
       if (data?.data) {
@@ -41,24 +35,21 @@ export default function MyCases() {
             caseNumber: c.caseNumber,
             caseType: c.caseType,
             status: c.status,
+            courtCaseId: c.courtCaseId || "—",
+            hearingDate: c.stages?.[c.currentStage]?.hearingDate || null,
          }));
          setCases(mapped);
       }
    }, [data]);
 
-   // ✅ Sync with sidebar state
+   // Sidebar state management
    useEffect(() => {
-      const handleResize = () => {
-         const desktop = window.innerWidth >= 1024;
-         setSidebarOpen(desktop);
-      };
-
+      const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
       const handleSidebarToggle = () => {
-         // Listen for sidebar state changes from the sidebar component
          const sidebar = document.querySelector('aside');
          if (sidebar) {
-            const isOpen = sidebar.classList.contains('w-64');
-            setSidebarOpen(isOpen);
+            const width = sidebar.offsetWidth;
+            setSidebarOpen(width > 100);
          }
       };
 
@@ -71,23 +62,28 @@ export default function MyCases() {
       };
    }, []);
 
+   // Filter cases
+   const filteredCases = useMemo(() => {
+      return cases.filter((c) => {
+         const matchesStatus = !statusFilter || c.status === statusFilter;
+         return matchesStatus;
+      });
+   }, [cases, statusFilter]);
+
+   // Get unique statuses for filter
+   const uniqueStatuses = useMemo(() => {
+      return Array.from(new Set(cases.map((c) => c.status))).filter(Boolean);
+   }, [cases]);
+
    const openCase = (c) => {
-      // Ensure we have valid data
       const validCase = {
          ...c,
          _id: c._id || c.id,
          id: c.id || c._id,
          stages: Array.isArray(c.stages) ? c.stages : [],
          notes: Array.isArray(c.notes) ? c.notes : [],
-         currentStage:
-            typeof c.currentStage === "number"
-               ? c.currentStage
-               : typeof c.assignedStage === "number"
-                  ? c.assignedStage
-                  : 0,
+         currentStage: typeof c.currentStage === "number" ? c.currentStage : 0,
       };
-
-      console.log("✅ Validated case:", validCase);
       setSelectedCase(validCase);
       setActiveTab("Details");
       setSelectedStage(validCase.currentStage);
@@ -95,81 +91,258 @@ export default function MyCases() {
 
    const closeCase = () => setSelectedCase(null);
 
-   const handleDeleteClick = (c) => {
-      setCaseToDelete(c);
-      setDeleteModalOpen(true);
+   const formatDate = (dateString) => {
+      if (!dateString) return "—";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
    };
 
-   const handleDeleteConfirm = async () => {
-      if (!caseToDelete) return;
-
-      try {
-         await deleteCase(caseToDelete.id || caseToDelete._id).unwrap();
-         toast.success("Case deleted successfully");
-         setDeleteModalOpen(false);
-         setCaseToDelete(null);
-         if (selectedCase?.id === caseToDelete.id) closeCase();
-      } catch (error) {
-         console.error("Failed to delete case:", error);
-         toast.error(error?.data?.message || "Failed to delete case");
-      }
+   const getStatusColor = (status) => {
+      const colors = {
+         Draft: "bg-gray-100 text-gray-700",
+         Assigned: "bg-blue-100 text-blue-700",
+         UnderReview: "bg-yellow-100 text-yellow-700",
+         PendingApproval: "bg-orange-100 text-orange-700",
+         Approved: "bg-green-100 text-green-700",
+         PendingSignature: "bg-purple-100 text-purple-700",
+         ReadyForSubmission: "bg-indigo-100 text-indigo-700",
+         Submitted: "bg-teal-100 text-teal-700",
+         Archived: "bg-slate-100 text-slate-700",
+      };
+      return colors[status] || "bg-gray-100 text-gray-700";
    };
 
-   if (isLoading)
+   if (isLoading) {
       return (
-         <p className="text-center mt-20 text-xs text-slate-700">
-            Loading cases...
-         </p>
+         <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A48C65] mx-auto"></div>
+               <p className="mt-4 text-sm text-slate-600">Loading your cases...</p>
+            </div>
+         </div>
       );
-   if (isError)
+   }
+
+   if (isError) {
       return (
-         <p className="text-center mt-20 text-xs text-red-500">
-            Error fetching cases. Please try again.
-         </p>
+         <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+               <p className="text-red-500 text-sm">Error fetching cases. Please try again.</p>
+            </div>
+         </div>
       );
+   }
 
    return (
       <div
-          className={`min-h-screen
-                 px-3 sm:px-4   md:px-6 lg:px-2
-                 py-14 sm:py-4 md:py-20 
-                 transition-all duration-300 ease-in-out
-              ${sidebarOpen ? 'lg:ml-64   lg:w-[73%]' : 'lg:ml-20'}`}
+         className={`min-h-screen pt-16 px-2 sm:px-3 py-3 sm:py-4 mt-12 transition-all duration-300 ease-in-out ${
+            sidebarOpen ? 'lg:ml-50 lg:w-[86%]' : 'lg:ml-14 w-[96%]'
+         }`}
       >
+         <div className="max-w-full overflow-x-hidden">
          {/* Header - Compact and minimalist */}
          <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
             <div>
-               <h2 className="text-2xl md:text-3xl font-bold text-[#A48D66]">
+               <h2 className="text-md sm:text-2xl font-bold text-slate-800">
                   My Assigned Cases
                </h2>
-               <p className="text-[18px] text-slate-600 mt-0.5">
-                  {cases.length} case{cases.length !== 1 ? "s" : ""} assigned
+               <p className="text-[10px] sm:text-lg mb-2 text-slate-600 mt-0.5">
+                  {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""} assigned
                </p>
             </div>
+         </div>
 
-            <div className="relative w-full xs:w-56">
-               <FiSearch
-                  size={18}
-                  className="absolute top-4 left-3 text-slate-400"
-               />
+         {/* Search and Filters */}
+         <div className="mb-3 space-y-2">
+            <div className="relative w-full sm:w-64">
+               <FiSearch size={14} className="absolute top-2.5 left-3 text-slate-400" />
                <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search cases..."
-                  className="w-full pl-9 pr-2 py-3 rounded border shadow-md focus:shadow-lg border-slate-300 focus:ring-1 focus:ring-[#A48D66] focus:outline-none text-[16px]"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300
+                     focus:ring-2 focus:ring-[#A48C65] focus:border-transparent focus:outline-none
+                     transition-all duration-200"
                />
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+               <button
+                  onClick={() => setStatusFilter("")}
+                  className={`px-2.5 py-1 text-[10px] rounded transition-all ${
+                     !statusFilter
+                        ? "bg-[#A48C65] text-white"
+                        : "bg-white border border-slate-300 text-slate-600 hover:bg-slate-50"
+                  }`}
+               >
+                  All
+               </button>
+               {uniqueStatuses.map((status) => (
+                  <button
+                     key={status}
+                     onClick={() => setStatusFilter(status)}
+                     className={`px-2.5 py-1 text-[10px] rounded transition-all ${
+                        statusFilter === status
+                           ? "bg-[#A48C65] text-white"
+                           : "bg-white border border-slate-300 text-slate-600 hover:bg-slate-50"
+                     }`}
+                  >
+                     {status}
+                  </button>
+               ))}
             </div>
          </div>
 
-         <CasesTable
-            cases={cases}
-            onOpen={openCase}
-            onDelete={handleDeleteClick}
-         />
+         {/* Cases Table */}
+         {filteredCases.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 text-center text-slate-500">
+               <p className="text-sm font-medium text-slate-600">No cases found</p>
+               <p className="text-xs text-slate-500 mt-1">
+                  {search || statusFilter ? "Try adjusting your filters" : "Your assigned cases will appear here"}
+               </p>
+            </div>
+         ) : (
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden w-full">
+               {/* Mobile Card View */}
+               <div className="block md:hidden">
+                  {filteredCases.map((c) => (
+                     <div key={c.id} className="border-b border-slate-200 p-3 space-y-2">
+                        <div className="flex justify-between items-start">
+                           <div className="flex-1">
+                              {c.courtCaseId && c.courtCaseId !== "—" ? (
+                                 <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-2.5 py-1 rounded text-xs font-bold border-2 border-[#A48C65]">
+                                    <FiFileText size={12} />
+                                    {c.courtCaseId}
+                                 </span>
+                              ) : (
+                                 <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-medium border border-slate-300">
+                                    <FiFileText size={10} />
+                                    Not Assigned
+                                 </span>
+                              )}
+                              <p className="text-xs font-semibold text-slate-900 mt-1.5">{c.clientName}</p>
+                           </div>
+                           <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusColor(c.status)}`}>
+                              {c.status}
+                           </span>
+                        </div>
 
+                        <div className="grid grid-cols-2 gap-2 text-[10px]">
+                           <div>
+                              <span className="text-slate-500">Case #:</span>
+                              <p className="text-slate-700">{c.caseNumber}</p>
+                           </div>
+                           <div>
+                              <span className="text-slate-500">Type:</span>
+                              <p className="text-slate-700">{c.caseType}</p>
+                           </div>
+                           <div>
+                              <span className="text-slate-500">Email:</span>
+                              <p className="text-slate-700 truncate">{c.clientEmail}</p>
+                           </div>
+                           <div>
+                              <span className="text-slate-500">Hearing:</span>
+                              <p className="text-slate-700">
+                                 {c.hearingDate ? formatDate(c.hearingDate) : <span className="text-slate-400 italic">Not Set</span>}
+                              </p>
+                           </div>
+                        </div>
+
+                        <button
+                           onClick={() => openCase(c)}
+                           className="w-full p-1.5 bg-slate-100 text-[#A48C65] rounded transition-colors text-xs font-medium"
+                        >
+                           View Details
+                        </button>
+                     </div>
+                  ))}
+               </div>
+
+               {/* Desktop/Tablet Table */}
+               <div className="hidden md:block overflow-x-auto max-w-full">
+                  <table className="w-full bg-white rounded-lg overflow-hidden">
+                     <thead className="bg-[#A48C65] text-white border-b border-slate-200">
+                        <tr>
+                           <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-white whitespace-nowrap">
+                              Court Case ID
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+                              Case Number
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+                              Client
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
+                              Email
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+                              Type
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+                              Status
+                           </th>
+                           <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden xl:table-cell">
+                              Hearing
+                           </th>
+                           <th className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+                              Actions
+                           </th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {filteredCases.map((c) => (
+                           <tr key={c.id} className="border-t border-slate-100 hover:bg-slate-50 transition-colors duration-150">
+                              <td className="px-4 py-3 whitespace-nowrap">
+                                 {c.courtCaseId && c.courtCaseId !== "—" ? (
+                                    <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-3 py-1.5 rounded text-sm font-bold border-2 border-[#A48C65]">
+                                       <FiFileText size={14} />
+                                       {c.courtCaseId}
+                                    </span>
+                                 ) : (
+                                    <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2.5 py-1 rounded text-xs font-medium border border-slate-300">
+                                       <FiFileText size={12} />
+                                       Not Assigned
+                                    </span>
+                                 )}
+                              </td>
+                              <td className="px-3 py-2 text-slate-700 whitespace-nowrap text-xs">{c.caseNumber}</td>
+                              <td className="px-3 py-2 text-slate-700 whitespace-nowrap text-xs">{c.clientName}</td>
+                              <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden lg:table-cell text-xs">{c.clientEmail}</td>
+                              <td className="px-3 py-2 text-slate-700 whitespace-nowrap text-xs">{c.caseType}</td>
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                 <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusColor(c.status)}`}>
+                                    {c.status}
+                                 </span>
+                              </td>
+                              <td className="px-3 py-2 whitespace-nowrap hidden xl:table-cell">
+                                 {c.hearingDate ? (
+                                    <span className="text-slate-700 text-xs">{formatDate(c.hearingDate)}</span>
+                                 ) : (
+                                    <span className="text-slate-400 text-[10px] italic">Not Set</span>
+                                 )}
+                              </td>
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                 <div className="flex justify-center">
+                                    <button
+                                       onClick={() => openCase(c)}
+                                       className="p-1.5 bg-slate-100 text-[#A48C65] rounded hover:bg-slate-200 transition-colors"
+                                       title="View Details"
+                                    >
+                                       <FiEye size={14} />
+                                    </button>
+                                 </div>
+                              </td>
+                           </tr>
+                        ))}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         )}
+
+         {/* Case Detail Modal */}
          {selectedCase && (
-            <div className="fixed inset-0 z-10000 flex items-center justify-center p-3">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3">
                {/* Backdrop */}
                <div
                   className="absolute inset-0 bg-black/60"
@@ -177,31 +350,33 @@ export default function MyCases() {
                />
 
                {/* Modal Content */}
-               <div className="relative bg-white w-full max-w-5xl rounded-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+               <div className="relative bg-white w-full max-w-5xl rounded-xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
                   {/* Header */}
-                  <div className="flex justify-between items-center px-4 py-2 bg-[#A48C65] text-white">
-                     <h2 className="font-semibold text-sm">
-                        {selectedCase.caseNumber}
-                     </h2>
+                  <div className="flex justify-between items-center px-6 py-4 bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white">
+                     <div>
+                        <h2 className="font-semibold text-lg">{selectedCase.caseNumber}</h2>
+                        <p className="text-xs text-white/80 mt-0.5">{selectedCase.caseType}</p>
+                     </div>
                      <button
                         onClick={closeCase}
-                        className="p-1 rounded hover:bg-slate-700 transition"
+                        className="p-2 rounded-lg hover:bg-white/20 transition-colors"
                      >
-                        <FiX size={16} />
+                        <FiX size={20} />
                      </button>
                   </div>
 
                   {/* Tabs */}
-                  <div className="px-4 py-2 bg-white sticky top-0 z-20 border-b border-slate-200">
-                     <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+                  <div className="px-6 py-3 bg-white sticky top-0 z-20 border-b border-slate-200">
+                     <div className="flex gap-6 overflow-x-auto">
                         {["Details", "Documents", "Memorandum"].map((t) => (
                            <button
                               key={t}
                               onClick={() => setActiveTab(t)}
-                              className={`pb-1 px-2 text-[10px] font-medium transition whitespace-nowrap ${activeTab === t
-                                    ? "border-b-2 border-slate-800 text-slate-900"
-                                    : "text-slate-500 hover:text-slate-800"
-                                 }`}
+                              className={`pb-2 px-1 text-sm font-medium transition-all whitespace-nowrap ${
+                                 activeTab === t
+                                    ? "border-b-2 border-[#A48C65] text-[#A48C65]"
+                                    : "text-slate-500 hover:text-slate-700"
+                              }`}
                            >
                               {t}
                            </button>
@@ -210,7 +385,7 @@ export default function MyCases() {
                   </div>
 
                   {/* Tab Content */}
-                  <div className="flex-1 overflow-auto p-4 bg-slate-50">
+                  <div className="flex-1 overflow-auto p-6 bg-slate-50">
                      {activeTab === "Details" && (
                         <CaseDetail selectedCase={selectedCase} />
                      )}
@@ -229,10 +404,11 @@ export default function MyCases() {
                   </div>
 
                   {/* Footer */}
-                  <div className="flex justify-end px-4 py-2 border-t border-[#A48C65] sticky bottom-0 bg-white">
+                  <div className="flex justify-end gap-2 px-6 py-4 border-t border-slate-200 sticky bottom-0 bg-white">
                      <button
                         onClick={closeCase}
-                        className="px-3 py-1.5  rounded border border-slate-300 text-xs text-slate-700 hover:bg-[#A48C65] hover:text-white transition"
+                        className="px-4 py-2 rounded-lg border border-slate-300 text-sm text-slate-700
+                           hover:bg-slate-50 transition-colors"
                      >
                         Close
                      </button>
@@ -240,16 +416,7 @@ export default function MyCases() {
                </div>
             </div>
          )}
-
-         {deleteModalOpen && (
-            <DeleteModal
-               isOpen={deleteModalOpen}
-               onClose={() => setDeleteModalOpen(false)}
-               onDelete={handleDeleteConfirm}
-               caseName={caseToDelete?.caseNumber}
-               isDeleting={isDeleting}
-            />
-         )}
+         </div>
       </div>
    );
 }

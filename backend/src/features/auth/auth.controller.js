@@ -25,8 +25,8 @@ export const loginUser = asyncHandler(async (req, res, next) => {
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -37,7 +37,10 @@ export const loginUser = asyncHandler(async (req, res, next) => {
             id: user._id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            profilePic: user.profilePic,
+            phone: user.phone,
+            status: user.status
         }
     });
 })
@@ -103,21 +106,27 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
     res.cookie('token', token, {
         httpOnly: true,
-        sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    res.status(200).json({ message: "Account Verified Successfully" });
+    res.status(200).json({
+        success: true,
+        message: "Account Verified Successfully"
+    });
 })
 
 export const logout = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax"
     })
-    res.status(200).json({ message: "Logout successfull" })
+    res.status(200).json({
+        success: true,
+        message: "Logout successfull"
+    })
 })
 
 export const myProfile = asyncHandler(async (req, res) => {

@@ -64,10 +64,17 @@ const Sidebar = () => {
   const handleLinkClick = () => {
     if (!isDesktop) setIsOpen(false);
   };
-  const handleLogout = async() => {
-    await logout().unwrap();
-    dispatch(clearProfile());
-    navigate("/login")
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      dispatch(clearProfile());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Clear profile and navigate even if API fails
+      dispatch(clearProfile());
+      navigate("/login");
+    }
   };
 
   return (

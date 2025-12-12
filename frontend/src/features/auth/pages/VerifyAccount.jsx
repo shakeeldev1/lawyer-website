@@ -26,9 +26,7 @@ const VerifyAccount = () => {
         e.preventDefault();
         const enteredOtp = otp.join("");
         if (enteredOtp.length !== 6) {
-            toast.error("Please enter the complete 6-digit OTP", {
-                position: "bottom-right",
-            });
+            toast.error("Please enter the complete 6-digit OTP");
             return;
         }
 
@@ -36,14 +34,10 @@ const VerifyAccount = () => {
             console.log("Verifying OTP:", enteredOtp);
             const res = await verifyAccount({ otp: enteredOtp, email }).unwrap();
             console.log(res);
-            toast.success(res.data?.message || "Account verified successfully!", {
-                position: "bottom-right",
-            });
+            toast.success(res.data?.message || "Account verified successfully!");
             navigate("/login")
         } catch (error) {
-            toast.error(error.data?.message || "Invalid OTP. Please try again.", {
-                position: "bottom-right",
-            });
+            toast.error(error.data?.message || "Invalid OTP. Please try again");
         }
     };
 
@@ -90,7 +84,7 @@ const VerifyAccount = () => {
                         Didn’t receive the code?{" "}
                         <button
                             type="button"
-                            onClick={() => toast.info("OTP resent successfully!", { position: "bottom-right" })}
+                            onClick={() => toast.info("OTP resent successfully!")}
                             className="text-blue-500 hover:underline font-medium"
                         >
                             Resend OTP

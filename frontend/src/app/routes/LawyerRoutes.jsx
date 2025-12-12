@@ -3,19 +3,19 @@ import LawyerNotifications from "../../features/lawyer/pages/Lawyernotifications
 import LawyerOverview from "../../features/lawyer/pages/LawyerOverview";
 import MyCases from "../../features/lawyer/pages/MyCases";
 import LawyerLayout from "../layouts/LawyerLayout";
-// import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
+import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 
 export const LawyerRoutes = {
   path: "lawyer",
   element: (
-    // <RoleProtectedRoute allowedRoles={["secretary"]}>
+    <RoleProtectedRoute allowedRoles={["lawyer"]}>
       <LawyerLayout />
-    // </RoleProtectedRoute>
+    </RoleProtectedRoute>
   ),
   children: [
     { index: true, element: <LawyerOverview /> },
     { path: "my-cases", element: <MyCases /> },
-    { path: "archieve", element: <LawyerArchieve /> },
+    { path: "archive", element: <LawyerArchieve /> },
     { path: "notifications", element: <LawyerNotifications /> },
   ],
 };

@@ -34,9 +34,16 @@ const Sidebar = () => {
   };
 
   const handleLogout = async () => {
-    await logout().unwrap();
-    dispatch(clearProfile());
-    navigate("/login")
+    try {
+      await logout().unwrap();
+      dispatch(clearProfile());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Clear profile and navigate even if API fails
+      dispatch(clearProfile());
+      navigate("/login");
+    }
   };
 
   return (

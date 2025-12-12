@@ -1,19 +1,23 @@
 
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearProfile, selectUserProfile } from "../../auth/authSlice";
-import { NavLink, useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../../auth/api/authApi";
 
 const Topbar = () => {
-  const dispatch = useDispatch();
-  const user = useSelector(selectUserProfile);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const navigate = useNavigate();
-  const [logout, { isLoading }] = useLogoutMutation();
+  const dispatch = useDispatch();
 
+  const userProfile = useSelector(selectUserProfile);
+
+  // Logout mutation
+  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+  // Close dropdown when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!e.target.closest(".dropdown-container")) setDropdownOpen(false);
@@ -39,7 +43,7 @@ const Topbar = () => {
     const handleSidebarToggle = () => {
       const sidebar = document.querySelector("aside");
       if (sidebar) {
-        const isOpen = sidebar.classList.contains("w-64");
+        const isOpen = sidebar.classList.contains("w-52");
         setSidebarOpen(isOpen);
       }
     };
@@ -52,93 +56,132 @@ const Topbar = () => {
     };
   }, []);
 
+  // Handle logout
   const handleLogout = async () => {
-    await logout().unwrap();
-    dispatch(clearProfile())
-    navigate("/login")
-  }
+    try {
+      await logout().unwrap();
+      dispatch(clearProfile());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      dispatch(clearProfile());
+      navigate("/login");
+    }
+  };
+
+  // Get user initials for avatar
+  const getUserInitials = (name) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
+  const userName = userProfile?.name || "User";
+  const userEmail = userProfile?.email || "user@example.com";
+  const userRole = userProfile?.role || "Lawyer";
 
   return (
     <header
-      className={`fixed top-0 z-30 left-0 right-0 h-16 sm:h-20
+      className={`fixed top-0 right-0 h-15
       bg-gradient-to-r from-[#BCB083] to-[#A48C65]
-      shadow-md border-b border-b border-[#ffff] bor
-      flex items-center justify-between
-      px-4 sm:px-6 md:px-10 md:z-[40]
+      shadow-md border-b border-b border-[#ffff] 
+      shadow-sm border-b border-slate-200
+      flex items-center justify-end
+      px-2 sm:px-3 z-40
       transition-all duration-300 ease-in-out
-      lg:left-${sidebarOpen ? "64" : "20"} lg:right-0
+      ${sidebarOpen ? "left-52" : "left-14"}
       `}
     >
-      {/* Left Quick Stats */}
-      <div className={`flex items-center gap-6 sm:gap-8  ${sidebarOpen ? "ml-10 md:ml-[300px]" : "ml-15 md:ml-[130px]"}`}>
-        <div className=" text-center">
-          <p className="text-sm  text-wrap sm:text-lg text-white">Active Cases</p>
-          <p className="text-lg font-semibold text-slate-200">24</p>
-        </div>
-        <div className=" text-center whitespace-nowrap">
-          <p className="text-sm text-wrap sm:text-lg text-white">Today's Hearings</p>
-          <p className="text-lg  font-semibold text-slate-200">3</p>
-        </div>
-      </div>
-
-
-      {/* Profile Dropdown */}
-      <div className="relative dropdown-container">
-        <button
-          onClick={() => setDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-3 p-1 sm:p-1.5 rounded-2xl 
-               bg-white/80 hover:bg-white 
-               border border-blue-100
-               shadow-sm hover:shadow-md
-               transition-all duration-200"
-        >
-          <img
-            src="https://ui-avatars.com/api/?name=John+Doe&background=3b82f6&color=fff&bold=true&size=128"
-            alt="Director Avatar"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#A48C65] shadow-sm object-cover"
-          />
-          <div className="hidden sm:block text-left">
-            <p className="text-sm font-semibold text-slate-800">{user?.name?user.name:""}</p>
-            <p className="text-xs text-slate-500">{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}</p>
+      {/* Right side: Stats and Profile */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Quick Stats */}
+        <div className="hidden xs:flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-slate-500">Active:</span>
+            <span className="text-xs font-semibold text-slate-800">
+              {0}
+            </span>
           </div>
-          <ChevronDown
-            size={14}
-            className={`text-slate-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""
-              }`}
-          />
-        </button>
+          <div className="h-3 w-px bg-slate-300"></div>
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-slate-500">Hearings:</span>
+            <span className="text-xs font-semibold text-slate-800">
+              {0}
+            </span>
+          </div>
+        </div>
 
-        {/* Dropdown Menu */}
-        {isDropdownOpen && (
-          <div
-            className="absolute right-0 mt-3 w-52 bg-white/95 border border-blue-100 
-                 rounded-2xl shadow-xl py-3 z-50 backdrop-blur-xl"
+        <div className="hidden xs:block h-3 w-px bg-slate-300"></div>
+
+        {/* Profile Dropdown */}
+        <div className="relative dropdown-container">
+          <button
+            onClick={() => setDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-1.5 p-1 rounded-lg
+               bg-slate-50 hover:bg-slate-100
+               border border-slate-200
+               transition-all duration-200"
           >
-            <div className="px-4 py-2 border-b border-blue-100">
-              <p className="text-xs text-slate-500">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-800 truncate">
-                {user?.email}
+            <img
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                userName
+              )}&background=11408b&color=fff&bold=true&size=128`}
+              alt={`${userName} Avatar`}
+              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover"
+            />
+            <div className="hidden md:block text-left">
+              <p className="text-xs font-semibold text-slate-800">{userName}</p>
+              <p className="text-[10px] text-slate-500 capitalize">
+                {userRole}
               </p>
             </div>
+            <ChevronDown
+              size={12}
+              className={`text-slate-500 transition-transform duration-200 ${
+                isDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
-            <div className="py-2">
-              <NavLink to ="/my-profile" className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-[#A48C65] transition-colors duration-200 text-sm font-medium">
-                <User size={16} /> My Profile
-              </NavLink>
-            </div>
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div
+              className="absolute right-0 mt-2 w-44 bg-white border border-slate-200
+                 rounded-lg shadow-lg py-2 z-50"
+            >
+              <div className="px-3 py-1.5 border-b border-slate-200">
+                <p className="text-[10px] text-slate-500">Signed in as</p>
+                <p className="text-xs font-semibold text-slate-800 truncate">
+                  {userEmail}
+                </p>
+              </div>
 
-            <div className="border-t border-blue-100 pt-2">
-              <button
-                onClick={handleLogout}
-                disabled={isLoading}
-                className="flex items-center gap-3 w-full px-4 py-2 text-slate-600 hover:bg-blue-50 hover:text-[#A48C65] transition-colors duration-200 text-sm font-medium"
-              >
-                <LogOut size={16} />
-                {isLoading ? "Logging out..." : "Sign Out"}
-              </button>
+              <div className="py-1">
+                <Link
+                  to="/my-profile"
+                  className="flex items-center gap-2 w-full px-3 py-1.5 text-slate-600 hover:bg-slate-50 hover:text-[#A48C65] transition-colors duration-200 text-xs font-medium"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <User size={14} /> My Profile
+                </Link>
+              </div>
+
+              <div className="border-t border-slate-200 pt-1">
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="flex items-center gap-2 w-full px-3 py-1.5 text-slate-600 hover:bg-red-50 hover:text-[#A48C65] transition-colors duration-200 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <LogOut size={14} />
+                  {isLoggingOut ? "Signing Out..." : "Sign Out"}
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
     </header>

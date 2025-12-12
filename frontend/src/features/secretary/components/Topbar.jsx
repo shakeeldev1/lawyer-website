@@ -1,8 +1,8 @@
 import { ChevronDown, LogOut, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUserProfile } from "../../auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearProfile, selectUserProfile } from "../../auth/authSlice";
 import { useGetQuickStatsQuery } from "../api/secretaryApi";
 import { useLogoutMutation } from "../../auth/api/authApi";
 
@@ -10,6 +10,7 @@ const Topbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userProfile = useSelector(selectUserProfile);
 
@@ -64,9 +65,12 @@ const Topbar = () => {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
+      dispatch(clearProfile());
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
+      dispatch(clearProfile());
+      navigate("/login");
     }
   };
 

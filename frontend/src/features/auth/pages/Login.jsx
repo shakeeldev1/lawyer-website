@@ -27,15 +27,18 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await login(formData).unwrap();
-      console.log(res)
+      console.log('Login response:', res);
+
+      // Set profile in Redux and localStorage
       dispatch(setProfile(res?.user));
-      toast.success(res?.data?.message || "Login successful!", {
-        position: "bottom-right",
-      });
+
+      toast.success(res?.message || "Welcome back! Login successful");
+
       const role = res?.user?.role;
+
+      // Navigate based on role
       switch (role) {
         case "director":
-        case "admin":
           navigate("/director", { replace: true });
           break;
         case "secretary":
@@ -48,12 +51,13 @@ const Login = () => {
           navigate("/lawyer", { replace: true });
           break;
         default:
+          toast.warning("Unknown role. Please contact administrator");
           navigate("/login", { replace: true });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast.error(
-        error?.data?.message || "Invalid email or password!",
-        { position: "bottom-right" }
+        error?.data?.message || "Invalid credentials. Please try again"
       );
     }
   };

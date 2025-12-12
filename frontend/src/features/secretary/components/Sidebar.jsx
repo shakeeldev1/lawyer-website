@@ -12,11 +12,17 @@ import {
   ChevronRight,
   Home,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearProfile } from "../../auth/authSlice";
+import { useLogoutMutation } from "../../auth/api/authApi";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 768 ? true : false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,8 +51,17 @@ const Sidebar = () => {
   const handleLinkClick = () => {
     if (!isDesktop) setIsOpen(false);
   };
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      dispatch(clearProfile());
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Clear profile and navigate even if API fails
+      dispatch(clearProfile());
+      navigate("/login");
+    }
   };
 
   return (

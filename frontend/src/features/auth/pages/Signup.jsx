@@ -29,14 +29,10 @@ const Signup = () => {
     e.preventDefault();
     try {
       const res = await signup(formData).unwrap();
-      toast.success(res?.message || "Signup successful!", {
-        position: "bottom-right",
-      });
+      toast.success(res?.message || "Account created successfully! Please verify your email");
       navigate("/verify-account", { state: { email: formData.email } });
     } catch (error) {
-      toast.error(error?.data?.message || "Signup failed!", {
-        position: "bottom-right",
-      });
+      toast.error(error?.data?.message || "Signup failed. Please try again");
     }
   };
 

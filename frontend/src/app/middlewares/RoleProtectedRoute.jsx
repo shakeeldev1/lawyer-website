@@ -1,17 +1,30 @@
 import { useSelector } from "react-redux";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { selectUserProfile } from "../../features/auth/authSlice";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { selectUserProfile, selectIsLoading } from "../../features/auth/authSlice";
 
 const RoleProtectedRoute = ({ allowedRoles, children }) => {
   const user = useSelector(selectUserProfile);
+  const isLoading = useSelector(selectIsLoading);
   const location = useLocation();
-  const navigate = useNavigate();
 
-  if (user === null || user === undefined) {
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#BCB083] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no user, redirect to login
+  if (!user) {
     return (
       <div className="relative flex items-center justify-center min-h-screen h-screen">
         <img
-          src="./home.jpeg"
+          src="/home.jpeg"
           alt="home"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -41,19 +54,18 @@ const RoleProtectedRoute = ({ allowedRoles, children }) => {
     );
   }
 
+  // Check if user has the required role
   if (!allowedRoles.includes(user.role)) {
-    switch (user.role) {
-      case "director":
-        return navigate("/director");
-      case "secretary":
-        return navigate("/secretary");
-      case "lawyer":
-        return navigate("/lawyer");
-      case "approvedlawyer":
-        return navigate("/approvedlawyer");
-      default:
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+    // Redirect to user's appropriate dashboard
+    const roleRoutes = {
+      director: "/director",
+      secretary: "/",
+      lawyer: "/lawyer",
+      approvingLawyer: "/approvingLawyer"
+    };
+
+    const userRoute = roleRoutes[user.role] || "/login";
+    return <Navigate to={userRoute} state={{ from: location }} replace />;
   }
 
   return children;

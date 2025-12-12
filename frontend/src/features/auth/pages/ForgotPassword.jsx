@@ -10,9 +10,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     // You can call your API here
-    toast.success("Password reset link sent to your email!", {
-      position: "bottom-right",
-    });
+    toast.success("Password reset link sent to your email!");
 
     setTimeout(() => {
       navigate("/login");
