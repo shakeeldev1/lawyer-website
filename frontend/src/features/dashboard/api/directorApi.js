@@ -87,6 +87,23 @@ export const directorApi = createApi({
             invalidatesTags: ["director"],
         }),
 
+        getPendingSignatureCases: builder.query({
+            query: ({ page = 1, limit = 10 } = {}) => ({
+                url: `/pending-signature-cases?page=${page}&limit=${limit}`,
+                method: "GET"
+            }),
+            providesTags: ["director"],
+        }),
+
+        approveWithSignedDocument: builder.mutation({
+            query: ({ id, formData }) => ({
+                url: `/approve-signed/${id}`,
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["director"],
+        }),
+
         updateStatusReadyForSubmission: builder.mutation({
             query: ({ id, data }) => ({
                 url: `/updateStatusReadyForSubmission/${id}`,
@@ -112,6 +129,8 @@ export const {
     useUpdateRoleMutation,
     useAddUserMutation,
     useDeleteUserMutation,
+    useGetPendingSignatureCasesQuery,
+    useApproveWithSignedDocumentMutation,
     useGetAllCasesQuery,
     useGetAllArchieveQuery,
     useGetAllRemindersQuery,

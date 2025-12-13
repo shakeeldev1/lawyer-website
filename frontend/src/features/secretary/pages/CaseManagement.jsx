@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Plus } from "lucide-react";
 import CaseFilters from "../components/cases/CaseFilters";
 import CaseTable from "../components/cases/CaseTable";
@@ -44,7 +44,6 @@ const CaseManagement = () => {
   const [assignLawyerCase, setAssignLawyerCase] = useState(null);
   const [courtCaseIdCase, setCourtCaseIdCase] = useState(null);
 
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
   // Transform API data to component format
   const cases = React.useMemo(() => {
@@ -95,25 +94,7 @@ const CaseManagement = () => {
     });
   }, [cases, statusFilter, lawyerFilter]);
 
-  // Improved sidebar resize handling (same as Archive component)
-  useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        const width = sidebar.offsetWidth;
-        setSidebarOpen(width > 100);
-      }
-    };
 
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
 
   // Add delete handler function
   const handleDeleteCase = (caseId) => {
@@ -192,29 +173,24 @@ const CaseManagement = () => {
   };
 
   return (
-    <div
-      className={`min-h-screen pt-16 px-2 sm:px-3 py-3 sm:py-4 mt-12 transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-50 lg:w-[86%]' : 'lg:ml-14 w-[96%]'}`}
-    >
-      <div className="max-w-full overflow-x-hidden">
-      {/* Header - Compact and minimalist */}
-      <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-md sm:text-2xl font-bold text-slate-800">
+          <h2 className="text-2xl font-bold text-gray-800">
             Case Management
           </h2>
-          <p className="text-[10px] sm:text-lg mb-2 text-slate-600 mt-0.5">
-            {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""}{" "}
-            found
+          <p className="text-sm text-gray-600 mt-1">
+            {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""} found
           </p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleOpenAddModal}
-            className="flex items-center gap-1.5 bg-[#A48C65] hover:bg-[#ffff] hover:text-[#A48C65] hover:border-[#A48C65] border text-white px-3 py-1.5 rounded-lg transition-all text-xs"
-          >
-            <Plus size={14} /> Add Case
-          </button>
-        </div>
+        <button
+          onClick={handleOpenAddModal}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#BCB083] to-[#A48C65] hover:from-[#A48C65] hover:to-[#8B7355] text-white rounded-lg font-medium transition-all duration-200 shadow-md"
+        >
+          <Plus size={20} />
+          Add Case
+        </button>
       </div>
 
       <CaseFilters
@@ -306,7 +282,6 @@ const CaseManagement = () => {
         onAddCase={handleAddOrUpdateCase}
         caseData={editCaseData}
       />
-      </div>
     </div>
   );
 };

@@ -1,17 +1,17 @@
 import { Outlet } from "react-router-dom";
-import SideBar from "../../features/lawyer/components/SideBar";
-import TopBar from "../../features/lawyer/components/TopBar";
+import Sidebar from "../../features/accounting/components/Sidebar";
+import Topbar from "../../features/accounting/components/Topbar";
 
-const LawyerLayout = () => {
+const AccountantLayout = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar */}
-      <SideBar />
+      <Sidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Topbar */}
-        <TopBar />
+        <Topbar />
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 mt-16">
@@ -22,4 +22,5 @@ const LawyerLayout = () => {
   );
 };
 
-export default LawyerLayout;
+export default AccountantLayout;
+

@@ -70,7 +70,7 @@ const Topbar = () => {
 
   const userName = userProfile?.name || "User";
   const userEmail = userProfile?.email || "user@example.com";
-  const userRole = userProfile?.role || "Secretary";
+  const userRole = userProfile?.role || "Accountant";
 
   return (
     <header
@@ -86,78 +86,77 @@ const Topbar = () => {
       {/* Title */}
       <div className="flex items-center">
         <h2 className="text-lg font-semibold text-white">
-          Secretary Dashboard
+          Accounting Management
         </h2>
       </div>
 
       {/* Profile Dropdown */}
-      <div className="flex items-center">{/* Profile Dropdown */}
-        <div className="relative dropdown-container">
-          <button
-            onClick={() => setDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 p-2 rounded-lg
-               bg-white hover:bg-gray-50
-               border border-gray-200
-               transition-all duration-200"
-          >
-            <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                userName
-              )}&background=11408b&color=fff&bold=true&size=128`}
-              alt={`${userName} Avatar`}
-              className="w-8 h-8 rounded-full object-cover"
-            />
-            <div className="hidden md:block text-left">
-              <p className="text-sm font-semibold text-gray-800">{userName}</p>
-              <p className="text-xs text-gray-500 capitalize">{userRole}</p>
-            </div>
-            <ChevronDown
-              size={16}
-              className={`text-gray-500 transition-transform duration-200 ${
-                isDropdownOpen ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+      <div className="relative dropdown-container">
+        <button
+          onClick={() => setDropdownOpen(!isDropdownOpen)}
+          className="flex items-center gap-2 p-2 rounded-lg
+             bg-white hover:bg-gray-50
+             border border-gray-200
+             transition-all duration-200"
+        >
+          <img
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+              userName
+            )}&background=11408b&color=fff&bold=true&size=128`}
+            alt={`${userName} Avatar`}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <div className="hidden md:block text-left">
+            <p className="text-sm font-semibold text-gray-800">{userName}</p>
+            <p className="text-xs text-gray-500 capitalize">{userRole}</p>
+          </div>
+          <ChevronDown
+            size={16}
+            className={`text-gray-500 transition-transform duration-200 ${
+              isDropdownOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
 
-          {/* Dropdown Menu */}
-          {isDropdownOpen && (
-            <div
-              className="absolute right-0 mt-2 w-48 bg-white border border-gray-200
+        {/* Dropdown Menu */}
+        {isDropdownOpen && (
+          <div
+            className="absolute right-0 mt-2 w-48 bg-white border border-gray-200
                rounded-lg shadow-lg py-2 z-50"
-            >
-              <div className="px-4 py-2 border-b border-gray-200">
-                <p className="text-xs text-gray-500">Signed in as</p>
-                <p className="text-sm font-semibold text-gray-800 truncate">
-                  {userEmail}
-                </p>
-              </div>
-
-              <div className="py-1">
-                <Link
-                  to="/my-profile"
-                  className="flex items-center gap-2 w-full px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-[#A48C65] transition-colors duration-200 text-sm font-medium"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  <User size={16} /> My Profile
-                </Link>
-              </div>
-
-              <div className="border-t border-gray-200 pt-1">
-                <button
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="flex items-center gap-2 w-full px-4 py-2 text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <LogOut size={16} />
-                  {isLoggingOut ? "Signing Out..." : "Sign Out"}
-                </button>
-              </div>
+          >
+            <div className="px-4 py-2 border-b border-gray-200">
+              <p className="text-xs text-gray-500">Signed in as</p>
+              <p className="text-sm font-semibold text-gray-800 truncate">
+                {userEmail}
+              </p>
             </div>
-          )}
-        </div>
+
+            <div className="py-1">
+              <Link
+                to="/my-profile"
+                className="flex items-center gap-2 w-full px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-[#A48C65] transition-colors duration-200 text-sm font-medium"
+                onClick={() => setDropdownOpen(false)}
+              >
+                <User size={16} /> My Profile
+              </Link>
+            </div>
+
+            <div className="border-t border-gray-200 pt-1">
+              <button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="flex items-center gap-2 w-full px-4 py-2 text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <LogOut size={16} />
+                {isLoggingOut ? "Signing Out..." : "Sign Out"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
 };
 
 export default Topbar;
+

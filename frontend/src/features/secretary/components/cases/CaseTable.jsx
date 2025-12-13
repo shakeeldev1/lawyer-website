@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Archive,
   Eye,
@@ -8,6 +8,7 @@ import {
   Calendar,
   UserPlus,
   FileText,
+  MoreVertical,
 } from "lucide-react";
 
 const CaseTable = ({
@@ -21,6 +22,15 @@ const CaseTable = ({
   onAssignLawyer,
   onUpdateCourtCaseId,
 }) => {
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   // Badge helpers
   const getStageBadge = (stage) => {
     switch (stage) {
@@ -56,11 +66,134 @@ const CaseTable = ({
     }
   };
 
+  // Action Dropdown Component
+  const ActionDropdown = ({ caseItem, isOpen, onToggle }) => {
+    const [buttonRef, setButtonRef] = React.useState(null);
+    const isArchived = caseItem.case.status === "Archived";
+    const canArchive = !isArchived;
+
+    const actions = [
+      {
+        icon: Eye,
+        label: "View Details",
+        onClick: () => onViewCase?.(caseItem.id),
+        color: "text-blue-600 hover:bg-blue-50",
+      },
+      {
+        icon: Edit,
+        label: "Edit Case",
+        onClick: () => onEditCase?.(caseItem.id),
+        color: "text-green-600 hover:bg-green-50",
+      },
+      {
+        icon: FileText,
+        label: caseItem.case.courtCaseId ? "Update Court ID" : "Add Court ID",
+        onClick: () => onUpdateCourtCaseId?.(caseItem),
+        color: "text-indigo-600 hover:bg-indigo-50",
+      },
+      {
+        icon: Calendar,
+        label: "Update Hearing Date",
+        onClick: () => onScheduleHearing?.(caseItem),
+        color: "text-cyan-600 hover:bg-cyan-50",
+      },
+      {
+        icon: UserPlus,
+        label: "Assign Lawyer",
+        onClick: () => onAssignLawyer?.(caseItem),
+        color: "text-purple-600 hover:bg-purple-50",
+      },
+      {
+        icon: Bell,
+        label: "Add Reminder",
+        onClick: () => onAddReminder?.(caseItem),
+        color: "text-orange-600 hover:bg-orange-50",
+      },
+      {
+        icon: Archive,
+        label: "Archive Case",
+        onClick: () => onArchive?.(caseItem.id),
+        color: canArchive ? "text-violet-600 hover:bg-violet-50" : "text-gray-400",
+        disabled: !canArchive,
+      },
+      {
+        icon: Trash2,
+        label: "Delete Case",
+        onClick: () => onDeleteCase?.(caseItem.id),
+        color: "text-red-600 hover:bg-red-50",
+        divider: true,
+      },
+    ];
+
+    return (
+      <div className="relative inline-block">
+        <button
+          ref={setButtonRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
+          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <MoreVertical size={16} className="text-gray-500" />
+        </button>
+
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 z-40"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenDropdown(null);
+              }}
+            />
+
+            {/* Dropdown Menu */}
+            <div className="fixed z-50 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1"
+                 style={{
+                   top: buttonRef ? `${buttonRef.getBoundingClientRect().bottom + 4}px` : '0',
+                   right: buttonRef ? `${window.innerWidth - buttonRef.getBoundingClientRect().right}px` : '0'
+                 }}>
+              {actions.map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <React.Fragment key={index}>
+                    {action.divider && <div className="my-1 border-t border-gray-100" />}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!action.disabled) {
+                          action.onClick();
+                          setOpenDropdown(null);
+                        }
+                      }}
+                      disabled={action.disabled}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors text-left ${action.color} ${
+                        action.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      <Icon size={14} />
+                      <span>{action.label}</span>
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
   if (!cases.length) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 text-center text-slate-500">
-        <p className="text-sm font-medium text-slate-600">No cases found</p>
-        <p className="text-xs text-slate-500 mt-1">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+          <FileText size={32} className="text-gray-400" />
+        </div>
+        <p className="text-sm font-semibold text-gray-700">No cases found</p>
+        <p className="text-xs text-gray-500 mt-1">
           Try adjusting your filters or search terms
         </p>
       </div>
@@ -68,12 +201,10 @@ const CaseTable = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden w-full">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full">
       {/* Mobile Card View */}
-      <div className="block md:hidden">
+      <div className="block md:hidden divide-y divide-gray-100">
         {cases.map((c) => {
-          const isArchived = c.case.status === "Archived";
-          const canArchive = c.case.status === "Closed" && !isArchived;
           const hearingDate =
             c.stages &&
             c.stages.length > 0 &&
@@ -84,27 +215,27 @@ const CaseTable = ({
           return (
             <div
               key={c._id || c.id}
-              className="border-b border-slate-200 p-3 space-y-2"
+              className="p-4 hover:bg-gray-50 transition-colors"
             >
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
                   {c.case.courtCaseId ? (
-                    <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-2.5 py-1 rounded text-xs font-bold border-2 border-[#A48C65]">
+                    <span className="inline-flex items-center gap-2 bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white px-3 py-1.5 rounded-lg text-xs font-semibold">
                       <FileText size={12} />
                       {c.case.courtCaseId}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-1 rounded text-[10px] font-medium border border-slate-300">
+                    <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-500 px-2.5 py-1 rounded-lg text-xs font-medium">
                       <FileText size={10} />
                       Not Assigned
                     </span>
                   )}
-                  <p className="text-xs font-semibold text-slate-900 mt-1.5">
+                  <p className="text-sm font-bold text-gray-900 mt-2">
                     {c.client.name}
                   </p>
                 </div>
                 <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusBadge(
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold ${getStatusBadge(
                     c.case.status
                   )}`}
                 >
@@ -112,26 +243,26 @@ const CaseTable = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-[10px]">
+              <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <span className="text-slate-500">Contact:</span>
-                  <p className="text-slate-700 truncate">{c.client.contact}</p>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Contact</p>
+                  <p className="text-gray-900 font-medium truncate">{c.client.contact}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Type:</span>
-                  <p className="text-slate-700">{c.case.caseType}</p>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Type</p>
+                  <p className="text-gray-900 font-medium">{c.case.caseType}</p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Lawyer:</span>
-                  <p className="text-slate-700 truncate">
-                    {c.case.assignedLawyer}
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Lawyer</p>
+                  <p className="text-gray-900 font-medium truncate">
+                    {c.case.assignedLawyer || <span className="text-gray-400 italic">Unassigned</span>}
                   </p>
                 </div>
                 <div>
-                  <span className="text-slate-500">Hearing:</span>
-                  <p className="text-slate-700">
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-0.5">Hearing</p>
+                  <p className="text-gray-900 font-medium">
                     {hearingDate === "Not Set" ? (
-                      <span className="text-slate-400 italic">Not Set</span>
+                      <span className="text-gray-400 italic">Not Set</span>
                     ) : (
                       new Date(hearingDate).toLocaleDateString()
                     )}
@@ -139,74 +270,12 @@ const CaseTable = ({
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-1 pt-2">
-                <button
-                  onClick={() => onViewCase?.(c.id)}
-                  className="p-1.5 bg-slate-100 text-[#A48C65] rounded transition-colors"
-                  title="View case"
-                >
-                  <Eye size={14} />
-                </button>
-                <button
-                  onClick={() => onEditCase?.(c.id)}
-                  className="p-1.5 bg-emerald-50 text-[#A48C65] rounded  transition-colors"
-                  title="Edit case"
-                >
-                  <Edit size={14} />
-                </button>
-                {c.case.status === "ReadyForSubmission" && (
-                  <button
-                    onClick={() => onScheduleHearing?.(c)}
-                    className="p-1.5 bg-cyan-50 text-[#A48C65] rounded transition-colors"
-                    title="Schedule hearing date"
-                  >
-                    <Calendar size={14} />
-                  </button>
-                )}
-                <button
-                  onClick={() => onUpdateCourtCaseId?.(c)}
-                  className="p-1.5 bg-indigo-50 text-[#A48C65] rounded  transition-colors"
-                  title={
-                    c.case.courtCaseId
-                      ? `Update Court Case ID (${c.case.courtCaseId})`
-                      : "Add Court Case ID"
-                  }
-                >
-                  <FileText size={14} />
-                </button>
-                <button
-                  onClick={() => onAssignLawyer?.(c)}
-                  className="p-1.5 bg-indigo-50 text-[#A48C65] rounded  transition-colors"
-                  title="Assign/reassign lawyer"
-                >
-                  <UserPlus size={14} />
-                </button>
-                <button
-                  onClick={() => onAddReminder?.(c)}
-                  className="p-1.5 bg-amber-50 text-[#A48C65] rounded  transition-colors"
-                  title="Add reminder"
-                >
-                  <Bell size={14} />
-                </button>
-                <button
-                  onClick={() => onArchive?.(c.id)}
-                  className={`p-1.5 rounded transition-colors ${
-                    canArchive
-                      ? "bg-purple-50 text-[#A48C65] hover:bg-purple-100"
-                      : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                  }`}
-                  disabled={!canArchive}
-                  title={isArchived ? "Case already archived" : "Archive case"}
-                >
-                  <Archive size={14} />
-                </button>
-                <button
-                  onClick={() => onDeleteCase?.(c.id)}
-                  className="p-1.5 bg-red-50 text-[#A48C65] rounded hover:bg-red-100 transition-colors"
-                  title="Delete case"
-                >
-                  <Trash2 size={14} />
-                </button>
+              <div className="flex justify-end pt-2 border-t border-gray-100">
+                <ActionDropdown
+                  caseItem={c}
+                  isOpen={openDropdown === c.id}
+                  onToggle={() => setOpenDropdown(openDropdown === c.id ? null : c.id)}
+                />
               </div>
             </div>
           );
@@ -214,39 +283,37 @@ const CaseTable = ({
       </div>
 
       {/* Desktop/Tablet Table */}
-      <div className="hidden md:block overflow-x-auto max-w-full">
-        <table className="w-full bg-white rounded-lg overflow-hidden">
-          <thead className="bg-[#A48C65] text-white border-b border-slate-200">
+      <div className="hidden md:block rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+          <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-white whitespace-nowrap">
-                Court Case ID
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider">
+                Court ID
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider">
                 Client
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">
                 Contact
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden xl:table-cell">
-                Email
-              </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider">
                 Type
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider hidden lg:table-cell">
                 Stage
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden lg:table-cell">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider hidden xl:table-cell">
                 Lawyer
               </th>
-              <th className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap hidden xl:table-cell">
+              <th className="px-4 py-3 text-left text-[10px] font-semibold text-gray-600 uppercase tracking-wider hidden xl:table-cell">
                 Hearing
               </th>
-              <th className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wide text-white whitespace-nowrap">
-                Actions
+              <th className="px-4 py-3 text-right text-[10px] font-semibold text-gray-600 uppercase tracking-wider w-16">
+
               </th>
             </tr>
           </thead>
@@ -265,153 +332,76 @@ const CaseTable = ({
                     "Not Set"
                   : c.case.hearingDate || "Not Set";
 
-              // Fix: Only disable archive for already archived cases
-              const isArchived = c.case.status === "Archived";
-              const canArchive = !isArchived;
-
               return (
                 <tr
                   key={c._id || c.id}
-                  className="border-t border-slate-100 hover:bg-slate-50 transition-colors duration-150"
+                  className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
                 >
-                  <td className="px-4 py-3 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     {c.case.courtCaseId ? (
-                      <span className="inline-flex items-center gap-1.5 bg-[#BCB083] text-[#6B5838] px-3 py-1.5 rounded text-sm font-bold border-2 border-[#A48C65]">
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm">
                         <FileText size={14} />
                         {c.case.courtCaseId}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2.5 py-1 rounded text-xs font-medium border border-slate-300">
+                      <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-xs font-medium">
                         <FileText size={12} />
                         Not Assigned
                       </span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-slate-700 whitespace-nowrap">
-                    {c.client.name}
+                  <td className="px-4 py-4 whitespace-nowrap">
+                    <p className="text-sm font-semibold text-gray-900">{c.client.name}</p>
                   </td>
-                  <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden lg:table-cell">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600 hidden lg:table-cell">
                     {c.client.contact}
                   </td>
-                  <td className="px-3 py-2 text-slate-600 whitespace-nowrap hidden xl:table-cell">
-                    {c.client.email}
-                  </td>
-                  <td className="px-3 py-2 text-slate-700 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                     {c.case.caseType}
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap hidden lg:table-cell">
+                  <td className="px-4 py-4 whitespace-nowrap hidden lg:table-cell">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStageBadge(
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold ${getStageBadge(
                         lastStage
                       )}`}
                     >
                       {lastStage}
                     </span>
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap">
+                  <td className="px-4 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-medium ${getStatusBadge(
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold ${getStatusBadge(
                         c.case.status
                       )}`}
                     >
                       {c.case.status}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-slate-700 whitespace-nowrap hidden lg:table-cell">
-                    {c.case.assignedLawyer}
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-700 hidden xl:table-cell">
+                    {c.case.assignedLawyer || <span className="text-gray-400 italic">Unassigned</span>}
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap hidden xl:table-cell">
+                  <td className="px-4 py-4 whitespace-nowrap hidden xl:table-cell">
                     {hearingDate === "Not Set" ? (
-                      <span className="text-slate-400 text-[10px] italic">
-                        Not Set
-                      </span>
+                      <span className="text-gray-400 text-xs italic">Not Set</span>
                     ) : (
-                      <span className="text-slate-700 text-xs">
+                      <span className="text-sm text-gray-700">
                         {new Date(hearingDate).toLocaleDateString()}
                       </span>
                     )}
                   </td>
-                  <td className="px-3 py-2 whitespace-nowrap">
-                    <div className="flex justify-center gap-1 flex-nowrap">
-                      <button
-                        onClick={() => onViewCase?.(c.id)}
-                        className="p-1.5 bg-slate-100 text-[#A48C65] rounded hover:bg-slate-200 transition-colors"
-                        title="View case"
-                      >
-                        <Eye size={14} />
-                      </button>
-                      <button
-                        onClick={() => onEditCase?.(c.id)}
-                        className="p-1.5 bg-emerald-50 text-[#A48C65] rounded hover:bg-emerald-100 transition-colors"
-                        title="Edit case"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      {c.case.status === "ReadyForSubmission" && (
-                        <button
-                          onClick={() => onScheduleHearing?.(c)}
-                          className="p-1.5 bg-cyan-50 text-[#A48C65] rounded hover:bg-cyan-100 transition-colors"
-                          title="Schedule hearing date"
-                        >
-                          <Calendar size={14} />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => onUpdateCourtCaseId?.(c)}
-                        className="p-1.5 bg-indigo-50 text-[#A48C65] rounded hover:bg-indigo-100 transition-colors"
-                        title={
-                          c.case.courtCaseId
-                            ? `Update Court Case ID (${c.case.courtCaseId})`
-                            : "Add Court Case ID"
-                        }
-                      >
-                        <FileText size={14} />
-                      </button>
-                      {c.case.status === "ReadyForSubmission" &&
-                        !c.case.assignedLawyer && (
-                          <button
-                            onClick={() => onAssignLawyer?.(c)}
-                            className="p-1.5 bg-blue-50 text-[#A48C65] rounded hover:bg-blue-100 transition-colors"
-                            title="Assign lawyer"
-                          >
-                            <UserPlus size={14} />
-                          </button>
-                        )}
-                      <button
-                        onClick={() => onAddReminder?.(c)}
-                        className="p-1.5 bg-amber-50 text-[#A48C65] rounded hover:bg-amber-100 transition-colors"
-                        title="Add reminder"
-                      >
-                        <Bell size={14} />
-                      </button>
-                      <button
-                        onClick={() => onArchive?.(c.id)}
-                        className={`p-1.5 rounded transition-colors ${
-                          canArchive
-                            ? "bg-purple-50 text-[#A48C65] hover:bg-purple-100"
-                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        }`}
-                        disabled={!canArchive}
-                        title={
-                          isArchived ? "Case already archived" : "Archive case"
-                        }
-                      >
-                        <Archive size={14} />
-                      </button>
-                      <button
-                        onClick={() => onDeleteCase?.(c.id)}
-                        className="p-1.5 bg-red-50 text-[#A48C65] rounded hover:bg-red-100 transition-colors"
-                        title="Delete case"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                  <td className="px-4 py-3 whitespace-nowrap text-right">
+                    <ActionDropdown
+                      caseItem={c}
+                      isOpen={openDropdown === c.id}
+                      onToggle={() => setOpenDropdown(openDropdown === c.id ? null : c.id)}
+                    />
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

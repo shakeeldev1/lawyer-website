@@ -59,10 +59,10 @@ export default function ApprovedLawyerPage() {
     return cases.filter((c) => {
       const matchStage = filterStage === "" || c.currentStage === filterStage;
       const matchSearch =
-        c.caseNumber.toLowerCase().includes(search.toLowerCase()) ||
-        c.client.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.client.email.toLowerCase().includes(search.toLowerCase()) ||
-        c.client.phone.toLowerCase().includes(search.toLowerCase());
+        c.caseNumber?.toLowerCase().includes(search.toLowerCase()) ||
+        c.clientId?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        c.clientId?.email?.toLowerCase().includes(search.toLowerCase()) ||
+        c.clientId?.contactNumber?.toLowerCase().includes(search.toLowerCase());
 
       return matchStage && matchSearch;
     });

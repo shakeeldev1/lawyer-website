@@ -50,6 +50,9 @@ const Login = () => {
         case "lawyer":
           navigate("/lawyer", { replace: true });
           break;
+        case "accountant":
+          navigate("/accountant", { replace: true });
+          break;
         default:
           toast.warning("Unknown role. Please contact administrator");
           navigate("/login", { replace: true });

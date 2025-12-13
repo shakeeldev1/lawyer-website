@@ -34,7 +34,7 @@ const Sidebar = () => {
   const links = [
     { name: "Overview", icon: <Home size={16} />, path: "." },
     { name: "My Cases", icon: <FileText size={16} />, path: "my-cases" },
-    { name: "Archive", icon: <Archive size={16} />, path: "archieve" },
+    { name: "Archive", icon: <Archive size={16} />, path: "archive" },
     { name: "Notifications", icon: <Bell size={16} />, path: "notifications" },
   ];
 
@@ -59,7 +59,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* ✅ Mobile Overlay */}
+      {/* Mobile Overlay */}
       {!isDesktop && isOpen && (
         <div
           onClick={() => setIsOpen(false)}
@@ -70,73 +70,81 @@ const Sidebar = () => {
       {/* Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed top-2 p-2 rounded-full shadow-md z-[9999]
-          bg-[#A48C65] text-white hover:bg-[#a48c659c] transition-all duration-300
-          ${isDesktop ? (isOpen ? "left-46" : "left-9") : isOpen ? "left-[210px]" : "left-4"}
+        className={`fixed top-4 p-2 rounded-lg shadow-md z-50
+          bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white
+          hover:from-[#A48C65] hover:to-[#8B7355]
+          transition-all duration-300
+          ${isDesktop ? (isOpen ? "left-48" : "left-10") : isOpen ? "left-48" : "left-4"}
         `}
       >
-        {isOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
+        {isOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full border-r border-blue-100
+        className={`fixed lg:static inset-y-0 left-0 z-40
         bg-gradient-to-b from-blue-50 to-indigo-50/80 backdrop-blur-xl
-        text-slate-700 shadow-lg transition-all duration-300 ease-in-out z-50
-        ${isDesktop ? (isOpen ? "w-52" : "w-14") : isOpen ? "translate-x-0 w-52" : "-translate-x-full w-52"}
-        flex flex-col`}
+        text-slate-700 border-r border-blue-100 shadow-lg
+        transition-all duration-300 ease-in-out
+        flex flex-col
+        ${isOpen ? "w-52" : "w-14"}
+        `}
       >
-        {/* Logo */}
-        <div
-          className={`flex items-center gap-2 px-3 py-4 border-b border-blue-100 ${
-            isOpen ? "justify-start" : "justify-center"
-          }`}
-        >
-          <div className="p-1.5 bg-[#A48C65] rounded-lg shadow-sm">
-            <Scale size={20} className="text-white" />
-          </div>
-
-          {isOpen && (
-            <div>
-              <h2 className="text-sm font-semibold text-[#494C52]">
-                Justice Law
-              </h2>
-              <p className="text-[10px] text-slate-500">Lawyer Portal</p>
+        {/* Header */}
+        <div className="h-16 flex items-center justify-center border-b border-blue-100 px-2">
+          {isOpen ? (
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-[#A48C65] rounded-lg shadow-sm">
+                <Scale size={20} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-sm font-semibold text-[#494C52]">Lawyer Portal</h1>
+                <p className="text-[10px] text-slate-500">Case Management</p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-1.5 bg-[#A48C65] rounded-lg shadow-sm">
+              <Scale size={20} className="text-white" />
             </div>
           )}
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-2">
+        {/* Navigation Menu */}
+        <nav className="mt-6 px-2 flex-1 overflow-y-auto">
           {links.map((link, i) => (
             <NavLink
               key={i}
               to={link.path}
               onClick={handleLinkClick}
               className={({ isActive }) =>
-                `flex items-center rounded-md mx-2 my-0.5 transition-colors duration-200
-                ${
+                `flex items-center px-3 py-2 mb-1 rounded-md transition-all duration-200 ${
+                  isOpen ? "gap-3" : "justify-center"
+                } ${
                   isActive
                     ? "bg-gradient-to-r from-[#BCB083] to-[#A48C65] text-white font-medium shadow-sm"
                     : "text-slate-700 hover:bg-white/80 hover:text-[#A48C65]"
-                }
-                ${isOpen ? "gap-2 px-3 py-2" : "justify-center py-2"}`
+                }`
               }
             >
-              {link.icon}
-              {isOpen && <span className="text-xs">{link.name}</span>}
+              <span className="flex-shrink-0">{link.icon}</span>
+              {isOpen && (
+                <span className="text-xs font-medium">{link.name}</span>
+              )}
             </NavLink>
           ))}
         </nav>
 
         {/* Logout */}
-        <div className="px-2 mt-auto mb-2">
+        <div className="px-2 pb-4 border-t border-blue-100 pt-2">
           <button
             onClick={handleLogout}
-            className={`flex w-full items-center text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors duration-200
-              ${isOpen ? "justify-start gap-2 px-3 py-2" : "justify-center py-2"}`}
+            className={`flex w-full items-center px-3 py-2 rounded-md
+              text-slate-600 hover:text-red-600 hover:bg-red-50
+              transition-all duration-200 ${
+                isOpen ? "gap-3" : "justify-center"
+              }`}
           >
-            <LogOut size={16} />
+            <LogOut size={16} className="flex-shrink-0" />
             {isOpen && (
               <span className="text-xs font-medium">Logout</span>
             )}

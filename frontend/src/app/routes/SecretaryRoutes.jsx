@@ -1,8 +1,9 @@
 import CaseManagement from "../../features/secretary/pages/CaseManagement";
 import ClientsPage from "../../features/secretary/pages/ClientsPage";
 import SecretaryArchiveCases from "../../features/secretary/pages/SecretaryArchiveCases";
-// import SecretaryDashboard from "../../features/secretary/pages/SecretaryDashboard"
 import SecretaryReminders from "../../features/secretary/pages/SecretaryReminders";
+import SecretaryInvoices from "../../features/secretary/pages/SecretaryInvoices";
+import SecretaryCreateInvoice from "../../features/secretary/pages/SecretaryCreateInvoice";
 import SecretaryLayout from "../layouts/SecretaryLayout";
 import RoleProtectedRoute from "../middlewares/RoleProtectedRoute";
 import SecretaryDashboard from "./../../features/secretary/pages/SecretaryDashboard";
@@ -18,8 +19,8 @@ export const SecretaryRoutes = {
     { index: true, element: <SecretaryDashboard /> },
     { path: "clients", element: <ClientsPage /> },
     { path: "case-management", element: <CaseManagement /> },
-    { path: "clients", element: <ClientsPage /> },
-    { path: "case-management", element: <CaseManagement /> },
+    { path: "invoices", element: <SecretaryInvoices /> },
+    { path: "invoices/create", element: <SecretaryCreateInvoice /> },
     { path: "reminders", element: <SecretaryReminders /> },
     { path: "archive-cases", element: <SecretaryArchiveCases /> },
   ],

@@ -6,22 +6,31 @@ import { customError } from "../../utils/customError.js";
 export const getAssignedCases = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, status, search } = req.query;
 
+  // Build base query to include both assignedLawyer and approvingLawyer
   const query = {
-    assignedLawyer: req.user._id,
+    $or: [
+      { assignedLawyer: req.user._id },
+      { approvingLawyer: req.user._id }
+    ],
     archived: false,
   };
 
   if (status) query.status = status;
   if (search) {
-    query.$or = [
-      { caseNumber: { $regex: search, $options: "i" } },
-      { caseType: { $regex: search, $options: "i" } },
+    query.$and = [
+      {
+        $or: [
+          { caseNumber: { $regex: search, $options: "i" } },
+          { caseType: { $regex: search, $options: "i" } },
+        ]
+      }
     ];
   }
 
   const cases = await Case.find(query)
     .populate("clientId", "name contactNumber email")
     .populate("secretary", "name email")
+    .populate("assignedLawyer", "name email")
     .populate("approvingLawyer", "name email")
     .limit(limit * 1)
     .skip((page - 1) * limit)
@@ -487,23 +496,24 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
 
 export const getPendingApprovals = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
-  const cases = await Case.find({
-    // approvingLawyer: req.user._id,
-    status: "PendingApproval" || "PendingSignature",
+
+  const query = {
+    approvingLawyer: req.user._id,
+    status: { $in: ["Assigned", "UnderReview", "PendingApproval", "PendingSignature"] },
     archived: false,
-  })
-    .populate("clientId", "name contactNumber")
+  };
+
+  const cases = await Case.find(query)
+    .populate("clientId", "name contactNumber email")
     .populate("assignedLawyer", "name email")
+    .populate("approvingLawyer", "name email")
     .populate("secretary", "name email")
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .sort({ updatedAt: -1 });
 
-  const count = await Case.countDocuments({
-    approvingLawyer: req.user._id,
-    status: "PendingApproval",
-    archived: false,
-  });
+
+  const count = await Case.countDocuments(query);
 
   res.status(200).json({
     success: true,

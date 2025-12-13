@@ -12,7 +12,6 @@ export default function MyCases() {
    const [selectedCase, setSelectedCase] = useState(null);
    const [activeTab, setActiveTab] = useState("Details");
    const [selectedStage, setSelectedStage] = useState(0);
-   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
    const { data, isLoading, isError } = useGetAssignedCasesQuery({
       search: search || undefined,
@@ -42,25 +41,6 @@ export default function MyCases() {
       }
    }, [data]);
 
-   // Sidebar state management
-   useEffect(() => {
-      const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-      const handleSidebarToggle = () => {
-         const sidebar = document.querySelector('aside');
-         if (sidebar) {
-            const width = sidebar.offsetWidth;
-            setSidebarOpen(width > 100);
-         }
-      };
-
-      window.addEventListener('resize', handleResize);
-      const interval = setInterval(handleSidebarToggle, 100);
-
-      return () => {
-         window.removeEventListener('resize', handleResize);
-         clearInterval(interval);
-      };
-   }, []);
 
    // Filter cases
    const filteredCases = useMemo(() => {
@@ -134,39 +114,36 @@ export default function MyCases() {
    }
 
    return (
-      <div
-         className={`min-h-screen pt-16 px-2 sm:px-3 py-3 sm:py-4 mt-12 transition-all duration-300 ease-in-out ${
-            sidebarOpen ? 'lg:ml-50 lg:w-[86%]' : 'lg:ml-14 w-[96%]'
-         }`}
-      >
-         <div className="max-w-full overflow-x-hidden">
-         {/* Header - Compact and minimalist */}
-         <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-3 gap-2">
+      <div className="space-y-6">
+         {/* Header */}
+         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-               <h2 className="text-md sm:text-2xl font-bold text-slate-800">
+               <h2 className="text-2xl font-bold text-gray-800">
                   My Assigned Cases
                </h2>
-               <p className="text-[10px] sm:text-lg mb-2 text-slate-600 mt-0.5">
+               <p className="text-sm text-gray-600 mt-1">
                   {filteredCases.length} case{filteredCases.length !== 1 ? "s" : ""} assigned
                </p>
             </div>
          </div>
 
          {/* Search and Filters */}
-         <div className="mb-3 space-y-2">
-            <div className="relative w-full sm:w-64">
-               <FiSearch size={14} className="absolute top-2.5 left-3 text-slate-400" />
-               <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search cases..."
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-300
-                     focus:ring-2 focus:ring-[#A48C65] focus:border-transparent focus:outline-none
-                     transition-all duration-200"
-               />
+         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+               <div className="relative flex-1">
+                  <FiSearch size={18} className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
+                  <input
+                     type="text"
+                     value={search}
+                     onChange={(e) => setSearch(e.target.value)}
+                     placeholder="Search cases..."
+                     className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300
+                        focus:ring-2 focus:ring-[#A48C65] focus:border-transparent focus:outline-none
+                        transition-all duration-200"
+                  />
+               </div>
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2 mt-3">
                <button
                   onClick={() => setStatusFilter("")}
                   className={`px-2.5 py-1 text-[10px] rounded transition-all ${
@@ -416,7 +393,6 @@ export default function MyCases() {
                </div>
             </div>
          )}
-         </div>
       </div>
    );
 }

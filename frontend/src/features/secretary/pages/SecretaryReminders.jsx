@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Bell,
   Calendar,
@@ -7,15 +7,12 @@ import {
   Trash2,
   Clock,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import {
   useGetRemindersQuery,
   useDeleteReminderMutation,
 } from "../api/secretaryApi";
 
 const SecretaryReminders = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-
   // Fetch reminders from API with auto-refresh
   const {
     data: remindersData,
@@ -55,43 +52,16 @@ const SecretaryReminders = () => {
     return <Bell size={18} />;
   };
 
-  // ✅ Sync with sidebar state
- useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-    const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        const width = sidebar.offsetWidth;
-        setSidebarOpen(width > 100);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`min-h-screen pt-16
-                 px-2 sm:px-3
-                 py-3 sm:py-4
-                 transition-all duration-300 ease-in-out mt-8
-                 ${sidebarOpen ? 'lg:ml-50  lg:w-[85%]' : 'lg:ml-10 w-[98%]'}`}
-    >
-      {/* Title & Subtitle */}
-      <div className="mb-4">
-        <h2 className="text-base sm:text-2xl mt-3 font-semibold text-slate-800 flex items-center gap-1.5">
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <Bell size={28} className="text-[#A48C65]" />
           Reminders
         </h2>
-        <p className="text-[10px] text-slate-500 mt-0.5">
+        <p className="text-sm text-gray-600 mt-1">
           Upcoming hearings and action-required alerts
         </p>
       </div>
@@ -140,10 +110,8 @@ const SecretaryReminders = () => {
       {!isLoading && !error && reminders.length > 0 && (
         <div className="space-y-2">
           {reminders.map((reminder) => (
-            <motion.div
+            <div
               key={reminder._id}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
               className={`p-2.5 rounded bg-white shadow-sm border-l-2 ${
                 reminder.isOverdue ? "border-red-500" : "border-[#A48C65]"
               } flex items-start gap-2 hover:shadow-md transition`}
@@ -220,11 +188,11 @@ const SecretaryReminders = () => {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

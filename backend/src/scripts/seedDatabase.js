@@ -80,6 +80,16 @@ const seedDatabase = async () => {
         status: "active",
         isVerified: true,
         profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+      },
+      {
+        name: "Accountant User",
+        email: "accountant@law.com",
+        password: "accountant123",
+        phone: "923001234571",
+        role: "accountant",
+        status: "active",
+        isVerified: true,
+        profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
       }
     ];
 

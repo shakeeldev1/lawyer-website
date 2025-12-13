@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import ArchiveHeader from "../components/LawyerArchive/ArchiveHeader";
 import ArchiveSearch from "../components/LawyerArchive/ArchiveSearch";
@@ -13,7 +13,6 @@ export default function LawyerArchive() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [caseToDelete, setCaseToDelete] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
   const { data, isLoading, isError } = useGetMyArchiveQuery({
     search: search || undefined,
@@ -21,30 +20,6 @@ export default function LawyerArchive() {
 
   const archivedCases = data?.data || [];
 
-   // ✅ Sync with sidebar state
-   useEffect(() => {
-      const handleResize = () => {
-         const desktop = window.innerWidth >= 1024;
-         setSidebarOpen(desktop);
-      };
-
-      const handleSidebarToggle = () => {
-         // Listen for sidebar state changes from the sidebar component
-         const sidebar = document.querySelector('aside');
-         if (sidebar) {
-            const isOpen = sidebar.classList.contains('w-64');
-            setSidebarOpen(isOpen);
-         }
-      };
-
-      window.addEventListener('resize', handleResize);
-      const interval = setInterval(handleSidebarToggle, 100);
-
-      return () => {
-         window.removeEventListener('resize', handleResize);
-         clearInterval(interval);
-      };
-   }, []);
   const filteredCases = archivedCases.filter(
     (c) =>
       c.caseNumber?.toLowerCase().includes(search.toLowerCase()) ||
@@ -69,13 +44,7 @@ export default function LawyerArchive() {
   };
 
   return (
-    <div
-             className={`min-h-screen
-                 px-3 sm:px-4 mt-10 md:px-6 lg:px-2
-                 py-3 sm:py-4 md:py-5 
-                 transition-all duration-300 ease-in-out
-              ${sidebarOpen ? 'lg:ml-64 md:ml-64' : 'lg:ml-20 md:ml-15'}`}
-    >
+    <div className="space-y-6">
       <ArchiveHeader caseCount={filteredCases.length} />
 
       <ArchiveSearch search={search} onSearchChange={setSearch} />

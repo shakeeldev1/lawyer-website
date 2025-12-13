@@ -28,65 +28,36 @@ const ClientsPage = () => {
     }
   }, [clientsData]);
 
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-
-  // ✅ Sync sidebar with screen size
- useEffect(() => {
-     const handleResize = () => setSidebarOpen(window.innerWidth >= 1024);
-     const handleSidebarToggle = () => {
-       const sidebar = document.querySelector("aside");
-       if (sidebar) {
-         const width = sidebar.offsetWidth;
-         setSidebarOpen(width > 100);
-       }
-     };
- 
-     window.addEventListener("resize", handleResize);
-     const interval = setInterval(handleSidebarToggle, 100);
- 
-     return () => {
-       window.removeEventListener("resize", handleResize);
-       clearInterval(interval);
-     };
-   }, []);
-
   return (
-    <div
-      className={`min-h-screen pt-16
-        px-2 sm:px-3
-        py-3 sm:py-8
-        transition-all duration-300 ease-in-out mt-8
-      ${sidebarOpen ? 'lg:ml-50  lg:w-[85.5%]' : 'lg:ml-13 w-[96%]'}`}
-    >
-      <div className="space-y-3">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-md sm:text-2xl font-semibold text-slate-800">
-              Client Management
-            </h2>
-            <p className="text-md text-slate-600 mt-0.5">
-              Manage client information and records
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedClient({
-                name: "",
-                email: "",
-                contactNumber: "",
-                nationalId: "",
-                address: "",
-                additionalInfo: "",
-              });
-              setIsCreatingNew(true);
-              setShowForm(true);
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#A48C65] hover:bg-[#ffff] hover:text-[#A48C65] text-white text-xs hover:border-[#A48C65]  border transition"
-          >
-            <Plus size={14} /> Add Client
-          </button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Client Management
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage client information and records
+          </p>
         </div>
+        <button
+          onClick={() => {
+            setSelectedClient({
+              name: "",
+              email: "",
+              contactNumber: "",
+              nationalId: "",
+              address: "",
+              additionalInfo: "",
+            });
+            setIsCreatingNew(true);
+            setShowForm(true);
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#BCB083] to-[#A48C65] hover:from-[#A48C65] hover:to-[#8B7355] text-white rounded-lg font-medium transition-all duration-200 shadow-md"
+        >
+          <Plus size={20} />
+          Add Client
+        </button>
       </div>
 
       {/* Client Table */}

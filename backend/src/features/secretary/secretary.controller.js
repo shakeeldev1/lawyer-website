@@ -182,7 +182,7 @@ export const createCase = asyncHandler(async (req, res) => {
   // Validate approving lawyer if provided
   if (approvingLawyer) {
     const approving = await User.findById(approvingLawyer);
-    if (!approving || approving.role !== "lawyer") {
+    if (!approving || approving.role !== "approvingLawyer") {
       throw new customError("Invalid approving lawyer assignment", 400);
     }
   }
@@ -400,7 +400,7 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
   }
 
   const approvingLawyer = await User.findById(approvingLawyerId);
-  if (!approvingLawyer || approvingLawyer.role !== "lawyer") {
+  if (!approvingLawyer || approvingLawyer.role !== "approvingLawyer") {
     throw new customError("Invalid approving lawyer", 400);
   }
 
@@ -409,12 +409,6 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
     throw new customError("Case not found", 404);
   }
 
-  if (caseData.documents.length < 3) {
-    throw new customError(
-      "Minimum 3 documents required before assigning to lawyer",
-      400
-    );
-  }
 
   caseData.assignedLawyer = lawyerId;
   caseData.approvingLawyer = approvingLawyerId;
@@ -932,9 +926,12 @@ function formatTimeAgo(date) {
 }
 
 export const getLawyers = asyncHandler(async (req, res) => {
-  const lawyers = await User.find({ role: "lawyer", status: "active" }).select(
-    "name email phone"
-  );
+  // Get both regular lawyers and approving lawyers from User collection
+  const lawyers = await User.find({
+    role: { $in: ["lawyer", "approvingLawyer"] },
+    status: "active"
+  }).select("name email phone role");
+
   res.status(200).json({ success: true, data: lawyers });
 });
 

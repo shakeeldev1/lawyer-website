@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { User, FileText, Calendar } from "lucide-react";
 import StatCards from "../components/Secretaryoverview/StatCards";
 import SecretaryCharts from "../components/Secretaryoverview/SecretaryCharts";
@@ -9,8 +9,6 @@ import {
 } from "../api/secretaryApi";
 
 const SecretaryDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
-
   // Fetch dashboard stats and activity logs with auto-refresh every 30 seconds
   const {
     data: statsData,
@@ -31,29 +29,6 @@ const SecretaryDashboard = () => {
     skipPollingIfUnfocused: true,
     refetchOnMountOrArgChange: true,
   });
-
-  useEffect(() => {
-    const handleResize = () => {
-      const desktop = window.innerWidth >= 1024;
-      setSidebarOpen(desktop);
-    };
-
-    const handleSidebarToggle = () => {
-      const sidebar = document.querySelector("aside");
-      if (sidebar) {
-        const width = sidebar.offsetWidth;
-        setSidebarOpen(width > 100);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    const interval = setInterval(handleSidebarToggle, 100);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearInterval(interval);
-    };
-  }, []);
 
   // Use API data or fallback to defaults
   const metrics = statsData?.stats
@@ -104,18 +79,13 @@ const SecretaryDashboard = () => {
   const recentActivities = activityData?.activities || [];
 
   return (
-    <div
-      className={`min-h-screen text-gray-900 
-      transition-all duration-300 ease-in-out
-      pt-16 px-2 py-3 sm:px-3 sm:py-4 mt-12
-      ${sidebarOpen ? "md:ml-52 ml-0" : "md:ml-14 ml-0"}`}
-    >
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-3">
-        <h1 className="text-lg sm:text-2xl font-bold text-slate-800">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800">
           Overview
         </h1>
-        <p className="text-[11px] sm:text-xs text-slate-600 mt-0.5">
+        <p className="text-sm text-gray-600 mt-1">
           Manage cases, documents, and client information
         </p>
       </div>

@@ -100,6 +100,85 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     });
 });
 
+// Get cases pending director signature
+export const getPendingSignatureCases = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
+  const query = {
+    status: "PendingSignature",
+    archived: false,
+  };
+
+  const cases = await Case.find(query)
+    .populate("clientId", "name contactNumber email")
+    .populate("assignedLawyer", "name email")
+    .populate("approvingLawyer", "name email")
+    .populate("secretary", "name email")
+    .limit(Number(limit))
+    .skip((Number(page) - 1) * Number(limit))
+    .sort({ updatedAt: -1 });
+
+  const count = await Case.countDocuments(query);
+
+  res.status(200).json({
+    success: true,
+    data: cases,
+    totalPages: Math.ceil(count / limit),
+    currentPage: Number(page),
+  });
+});
+
+// Approve case and upload signed document (replaces memorandum)
+export const approveWithSignedDocument = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { stageIndex } = req.body;
+
+  const caseData = await Case.findById(id);
+  if (!caseData) {
+    throw new customError("Case not found", 404);
+  }
+
+  if (caseData.status !== "PendingSignature") {
+    throw new customError("Case is not pending signature", 400);
+  }
+
+  if (!req.file) {
+    throw new customError("Signed document is required", 400);
+  }
+
+  const index = parseInt(stageIndex);
+  if (isNaN(index) || index < 0 || index >= caseData.stages.length) {
+    throw new customError("Invalid stage index", 400);
+  }
+
+  // Replace the memorandum file with signed document
+  if (caseData.stages[index].memorandum) {
+    caseData.stages[index].memorandum.fileUrl = req.file.path;
+    caseData.stages[index].memorandum.status = "Approved";
+    caseData.stages[index].memorandum.signedBy = req.user._id;
+    caseData.stages[index].memorandum.signedAt = new Date();
+  }
+
+  // Update case status to ReadyForSubmission (secretary can submit to court)
+  caseData.status = "ReadyForSubmission";
+
+  // Add director signature
+  caseData.directorSignature = {
+    signedBy: req.user._id,
+    signedAt: new Date(),
+    signatureUrl: req.file.path,
+  };
+
+  caseData.markModified("stages");
+  await caseData.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Case approved and ready for submission",
+    data: caseData,
+  });
+});
+
 export const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.params;
     console.log(id)

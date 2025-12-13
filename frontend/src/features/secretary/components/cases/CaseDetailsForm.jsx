@@ -8,15 +8,26 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
     error: lawyersError,
   } = useGetLawyersQuery();
 
+  // Filter lawyers by role
+  const regularLawyers = React.useMemo(() => {
+    return lawyersData?.data?.filter(lawyer => lawyer.role === "lawyer") || [];
+  }, [lawyersData]);
+
+  const approvingLawyers = React.useMemo(() => {
+    return lawyersData?.data?.filter(lawyer => lawyer.role === "approvingLawyer") || [];
+  }, [lawyersData]);
+
   // Debug logging
   React.useEffect(() => {
     if (lawyersData) {
-      console.log("Lawyers loaded:", lawyersData);
+      console.log("All Lawyers:", lawyersData);
+      console.log("Regular Lawyers:", regularLawyers);
+      console.log("Approving Lawyers:", approvingLawyers);
     }
     if (lawyersError) {
       console.error("Error loading lawyers:", lawyersError);
     }
-  }, [lawyersData, lawyersError]);
+  }, [lawyersData, lawyersError, regularLawyers, approvingLawyers]);
 
   return (
     <div className="space-y-3">
@@ -47,7 +58,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
         {/* Assigned Lawyer */}
         <div className="space-y-1">
           <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-            Assigned Lawyer *
+            Assigned Lawyer * (Regular Lawyer)
           </label>
           <select
             name="assignedLawyer"
@@ -58,16 +69,16 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
             disabled={loadingLawyers}
           >
             <option value="">
-              {loadingLawyers ? "Loading lawyers..." : "Select Lawyer"}
+              {loadingLawyers ? "Loading lawyers..." : "Select Regular Lawyer"}
             </option>
-            {lawyersData?.data?.map((lawyer) => (
+            {regularLawyers.map((lawyer) => (
               <option key={lawyer._id} value={lawyer._id}>
                 {lawyer.name} - {lawyer.email}
               </option>
             ))}
-            {!lawyersData?.data?.length && !loadingLawyers && (
+            {!regularLawyers.length && !loadingLawyers && (
               <option value="" disabled>
-                No lawyers available
+                No regular lawyers available
               </option>
             )}
           </select>
@@ -82,9 +93,9 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
               Error: {lawyersError?.data?.message || "Failed to load lawyers"}
             </p>
           )}
-          {!lawyersData?.data?.length && !loadingLawyers && !lawyersError && (
+          {!regularLawyers.length && !loadingLawyers && !lawyersError && (
             <p className="text-[10px] text-orange-500 mt-0.5">
-              No active lawyers found.
+              No regular lawyers found.
             </p>
           )}
         </div>
@@ -93,7 +104,7 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
         {!isEditMode && (
           <div className="space-y-1">
             <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-              Approving Lawyer *
+              Approving Lawyer * (Senior Lawyer)
             </label>
             <select
               name="approvingLawyer"
@@ -108,20 +119,25 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
                   ? "Loading lawyers..."
                   : "Select Approving Lawyer"}
               </option>
-              {lawyersData?.data?.map((lawyer) => (
+              {approvingLawyers.map((lawyer) => (
                 <option key={lawyer._id} value={lawyer._id}>
                   {lawyer.name} - {lawyer.email}
                 </option>
               ))}
-              {!lawyersData?.data?.length && !loadingLawyers && (
+              {!approvingLawyers.length && !loadingLawyers && (
                 <option value="" disabled>
-                  No lawyers available
+                  No approving lawyers available
                 </option>
               )}
             </select>
             <p className="text-[9px] text-slate-500 mt-0.5">
-              📋 Lawyer responsible for final case approval
+              📋 Senior lawyer responsible for final case approval
             </p>
+            {!approvingLawyers.length && !loadingLawyers && !lawyersError && (
+              <p className="text-[10px] text-orange-500 mt-0.5">
+                No approving lawyers found.
+              </p>
+            )}
           </div>
         )}
 
