@@ -8,10 +8,7 @@ export const getAssignedCases = asyncHandler(async (req, res) => {
 
   // Build base query to include both assignedLawyer and approvingLawyer
   const query = {
-    $or: [
-      { assignedLawyer: req.user._id },
-      { approvingLawyer: req.user._id }
-    ],
+    $or: [{ assignedLawyer: req.user._id }, { approvingLawyer: req.user._id }],
     archived: false,
   };
 
@@ -22,8 +19,8 @@ export const getAssignedCases = asyncHandler(async (req, res) => {
         $or: [
           { caseNumber: { $regex: search, $options: "i" } },
           { caseType: { $regex: search, $options: "i" } },
-        ]
-      }
+        ],
+      },
     ];
   }
 
@@ -132,8 +129,9 @@ export const submitMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_SUBMITTED",
-    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${caseData.caseNumber
-      }`,
+    description: `Memorandum submitted for stage ${stageIndex + 1} of case ${
+      caseData.caseNumber
+    }`,
   });
 
   res.status(200).json({
@@ -145,13 +143,6 @@ export const submitMemorandum = asyncHandler(async (req, res) => {
 
 export const uploadMemorandumFile = asyncHandler(async (req, res) => {
   try {
-    console.log("📝 Upload Memorandum Request:", {
-      caseId: req.params.id,
-      stageIndex: req.body.stageIndex,
-      hasFile: !!req.file,
-      userId: req.user?._id,
-    });
-
     let { stageIndex, content } = req.body;
 
     if (stageIndex === undefined || stageIndex === null || stageIndex === "") {
@@ -222,8 +213,9 @@ export const uploadMemorandumFile = asyncHandler(async (req, res) => {
       caseId: caseData._id,
       userId: req.user._id,
       action: "MEMORANDUM_SUBMITTED",
-      description: `Memorandum file submitted for stage ${parseInt(stageIndex) + 1
-        } of case ${caseData.caseNumber}`,
+      description: `Memorandum file submitted for stage ${
+        parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
     });
 
     res.status(200).json({
@@ -333,8 +325,9 @@ export const uploadCaseDocuments = asyncHandler(async (req, res) => {
       caseId: caseData._id,
       userId: req.user._id,
       action: "DOCUMENTS_UPLOADED",
-      description: `${req.files.length} document(s) uploaded for stage ${parseInt(stageIndex) + 1
-        } of case ${caseData.caseNumber}`,
+      description: `${req.files.length} document(s) uploaded for stage ${
+        parseInt(stageIndex) + 1
+      } of case ${caseData.caseNumber}`,
     });
 
     res.status(200).json({
@@ -389,8 +382,9 @@ export const updateMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_UPDATED",
-    description: `Memorandum updated for stage ${stageIndex + 1} of case ${caseData.caseNumber
-      }`,
+    description: `Memorandum updated for stage ${stageIndex + 1} of case ${
+      caseData.caseNumber
+    }`,
   });
 
   res.status(200).json({
@@ -437,8 +431,9 @@ export const approveMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_APPROVED",
-    description: `Memorandum approved for stage ${stageIndex + 1} of case ${caseData.caseNumber
-      } by ${req.user.name}`,
+    description: `Memorandum approved for stage ${stageIndex + 1} of case ${
+      caseData.caseNumber
+    } by ${req.user.name}`,
   });
 
   res.status(200).json({
@@ -483,8 +478,9 @@ export const rejectMemorandum = asyncHandler(async (req, res) => {
     caseId: caseData._id,
     userId: req.user._id,
     action: "MEMORANDUM_REJECTED",
-    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${caseData.caseNumber
-      }`,
+    description: `Memorandum rejected for stage ${stageIndex + 1} of case ${
+      caseData.caseNumber
+    }`,
   });
 
   res.status(200).json({
@@ -499,7 +495,9 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
 
   const query = {
     approvingLawyer: req.user._id,
-    status: { $in: ["Assigned", "UnderReview", "PendingApproval", "PendingSignature"] },
+    status: {
+      $in: ["Assigned", "UnderReview", "PendingApproval", "PendingSignature"],
+    },
     archived: false,
   };
 
@@ -511,7 +509,6 @@ export const getPendingApprovals = asyncHandler(async (req, res) => {
     .limit(limit * 1)
     .skip((page - 1) * limit)
     .sort({ updatedAt: -1 });
-
 
   const count = await Case.countDocuments(query);
 
@@ -536,7 +533,7 @@ export const updateStatusPendingSignature = asyncHandler(async (req, res) => {
     message: "Case status updated to Pending Signature",
     data: caseData,
   });
-})
+});
 
 export const requestModificationBAL = asyncHandler(async (req, res) => {
   const { note } = req.body;
@@ -940,8 +937,9 @@ export const getNotifications = asyncHandler(async (req, res) => {
             message:
               daysUntil === 0
                 ? `Hearing for ${stageName} stage is today!`
-                : `Hearing for ${stageName} stage in ${daysUntil} day${daysUntil > 1 ? "s" : ""
-                }.`,
+                : `Hearing for ${stageName} stage in ${daysUntil} day${
+                    daysUntil > 1 ? "s" : ""
+                  }.`,
             status: daysUntil <= 3 ? "unread" : "read",
             timestamp: hearingDate,
             daysUntil,
