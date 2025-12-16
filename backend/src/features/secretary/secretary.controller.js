@@ -3,6 +3,8 @@ import User from "../auth/User.model.js";
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { customError } from "../../utils/customError.js";
 import WhatsAppHelper from "../../utils/whatsappHelper.js";
+import sendMail from "../../utils/sendMail.js";
+import { caseRegistrationTemplate } from "../../utils/emailTemplates/caseRegistrationTemplate.js";
 
 export const createClient = asyncHandler(async (req, res) => {
   const { name, contactNumber, email, address, nationalId, additionalInfo } =
@@ -235,6 +237,26 @@ export const createCase = asyncHandler(async (req, res) => {
     action: "CASE_CREATED",
     description: `Case ${caseNumber} created for client ${client.name}`,
   });
+
+  // 🆕 Send email notification to client about case registration
+  if (client.email) {
+    try {
+      await sendMail({
+        email: client.email,
+        subject: "Case Registration Confirmation - Law Firm Associates",
+        text: caseRegistrationTemplate({
+          clientName: client.name,
+          caseNumber: caseNumber,
+          caseType: caseType,
+          caseDescription: caseDescription,
+        }),
+      });
+      console.log(`✅ Case registration email sent to ${client.email}`);
+    } catch (emailError) {
+      console.error("Email notification failed during case creation:", emailError.message);
+      // Don't fail the main operation if email fails
+    }
+  }
 
   // 🆕 Send WhatsApp notifications if lawyer is assigned during case creation
   if (assignedLawyer) {
