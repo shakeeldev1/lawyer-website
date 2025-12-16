@@ -30,7 +30,7 @@ const AddReminderModal = ({ isOpen, onClose, caseData }) => {
           `${formData.reminderType} reminder for ${caseData.case.caseNumber}`,
       }).unwrap();
 
-      toast.success("Reminder created successfully! 🔔");
+      toast.success("Reminder created successfully");
       onClose();
       setFormData({
         reminderType: "Hearing",

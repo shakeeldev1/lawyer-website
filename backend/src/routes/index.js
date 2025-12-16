@@ -8,6 +8,7 @@ import directorRoutes from "../features/dashboard/director.routes.js";
 import adminReminderRoutes from "../features/dashboard/reminder.routes.js";
 import whatsappRoutes from "../features/whatsapp/whatsapp.routes.js";
 import accountingRoutes from "../features/accounting/accounting.routes.js";
+import uploadRoutes from "./upload.routes.js";
 
 router.use("/auth", authRoutes);
 router.use("/secretary", secretaryRoutes);
@@ -16,5 +17,6 @@ router.use("/director", directorRoutes);
 router.use("/director", adminReminderRoutes);
 router.use("/whatsapp", whatsappRoutes);
 router.use("/accounting", accountingRoutes);
+router.use("/upload", uploadRoutes);
 
 export default router;

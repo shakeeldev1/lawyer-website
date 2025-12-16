@@ -1,7 +1,7 @@
 import React from "react";
 import { useGetLawyersQuery } from "../../api/secretaryApi";
 
-const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
+const CaseDetailsForm = ({ caseInfo, onChange }) => {
   const {
     data: lawyersData,
     isLoading: loadingLawyers,
@@ -12,22 +12,6 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
   const regularLawyers = React.useMemo(() => {
     return lawyersData?.data?.filter(lawyer => lawyer.role === "lawyer") || [];
   }, [lawyersData]);
-
-  const approvingLawyers = React.useMemo(() => {
-    return lawyersData?.data?.filter(lawyer => lawyer.role === "approvingLawyer") || [];
-  }, [lawyersData]);
-
-  // Debug logging
-  React.useEffect(() => {
-    if (lawyersData) {
-      console.log("All Lawyers:", lawyersData);
-      console.log("Regular Lawyers:", regularLawyers);
-      console.log("Approving Lawyers:", approvingLawyers);
-    }
-    if (lawyersError) {
-      console.error("Error loading lawyers:", lawyersError);
-    }
-  }, [lawyersData, lawyersError, regularLawyers, approvingLawyers]);
 
   return (
     <div className="space-y-3">
@@ -100,46 +84,6 @@ const CaseDetailsForm = ({ caseInfo, onChange, isEditMode = false }) => {
           )}
         </div>
 
-        {/* Approving Lawyer - Only show during creation, not edit */}
-        {!isEditMode && (
-          <div className="space-y-1">
-            <label className="block text-[10px] font-semibold uppercase tracking-wide text-slate-600">
-              Approving Lawyer * (Senior Lawyer)
-            </label>
-            <select
-              name="approvingLawyer"
-              value={caseInfo.approvingLawyer || ""}
-              onChange={onChange}
-              className="w-full rounded px-2 py-1.5 border  border-[#BCB083] bg-slate-50 focus:ring-1 focus:ring-[#BCB083] text-xs"
-              required
-              disabled={loadingLawyers}
-            >
-              <option value="">
-                {loadingLawyers
-                  ? "Loading lawyers..."
-                  : "Select Approving Lawyer"}
-              </option>
-              {approvingLawyers.map((lawyer) => (
-                <option key={lawyer._id} value={lawyer._id}>
-                  {lawyer.name} - {lawyer.email}
-                </option>
-              ))}
-              {!approvingLawyers.length && !loadingLawyers && (
-                <option value="" disabled>
-                  No approving lawyers available
-                </option>
-              )}
-            </select>
-            <p className="text-[9px] text-slate-500 mt-0.5">
-              📋 Senior lawyer responsible for final case approval
-            </p>
-            {!approvingLawyers.length && !loadingLawyers && !lawyersError && (
-              <p className="text-[10px] text-orange-500 mt-0.5">
-                No approving lawyers found.
-              </p>
-            )}
-          </div>
-        )}
 
         {/* Filing Date */}
         <div className="space-y-1">

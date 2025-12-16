@@ -8,13 +8,34 @@ export const createClient = asyncHandler(async (req, res) => {
   const { name, contactNumber, email, address, nationalId, additionalInfo } =
     req.body;
 
+  // Input validation
+  if (!name || name.trim().length < 2) {
+    throw new customError("Client name must be at least 2 characters", 400);
+  }
+
+  if (!contactNumber || contactNumber.trim().length === 0) {
+    throw new customError("Contact number is required", 400);
+  }
+
+  // Check for duplicate clients
+  const existingClient = await Client.findOne({
+    $or: [
+      { contactNumber: contactNumber.trim() },
+      email ? { email: email.toLowerCase().trim() } : null
+    ].filter(Boolean)
+  });
+
+  if (existingClient) {
+    throw new customError("Client with this contact number or email already exists", 409);
+  }
+
   const client = await Client.create({
-    name,
-    contactNumber,
-    email,
-    address,
-    nationalId,
-    additionalInfo,
+    name: name.trim(),
+    contactNumber: contactNumber.trim(),
+    email: email ? email.toLowerCase().trim() : undefined,
+    address: address ? address.trim() : undefined,
+    nationalId: nationalId ? nationalId.trim() : undefined,
+    additionalInfo: additionalInfo ? additionalInfo.trim() : undefined,
     createdBy: req.user._id,
   });
 
@@ -250,11 +271,11 @@ export const createCase = asyncHandler(async (req, res) => {
       });
 
       console.log(
-        "✅ WhatsApp notifications sent for new case creation with lawyer assignment"
+        "WhatsApp notifications sent for new case creation with lawyer assignment"
       );
     } catch (whatsappError) {
       console.error(
-        "❌ WhatsApp notification failed during case creation:",
+        "WhatsApp notification failed during case creation:",
         whatsappError.message
       );
       // Don't fail the main operation if WhatsApp fails
@@ -399,9 +420,13 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
     throw new customError("Invalid lawyer", 400);
   }
 
-  const approvingLawyer = await User.findById(approvingLawyerId);
-  if (!approvingLawyer || approvingLawyer.role !== "approvingLawyer") {
-    throw new customError("Invalid approving lawyer", 400);
+  // Validate approving lawyer only if provided
+  let approvingLawyer = null;
+  if (approvingLawyerId) {
+    approvingLawyer = await User.findById(approvingLawyerId);
+    if (!approvingLawyer || approvingLawyer.role !== "approvingLawyer") {
+      throw new customError("Invalid approving lawyer", 400);
+    }
   }
 
   const caseData = await Case.findById(req.params.id);
@@ -409,9 +434,11 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
     throw new customError("Case not found", 404);
   }
 
-
   caseData.assignedLawyer = lawyerId;
-  caseData.approvingLawyer = approvingLawyerId;
+  // Only update approving lawyer if provided
+  if (approvingLawyerId) {
+    caseData.approvingLawyer = approvingLawyerId;
+  }
   caseData.assignedAt = new Date();
   caseData.status = "Assigned";
 
@@ -459,9 +486,9 @@ export const assignCaseToLawyer = asyncHandler(async (req, res) => {
       },
     });
 
-    console.log("✅ WhatsApp notifications sent for case assignment");
+    console.log("WhatsApp notifications sent for case assignment");
   } catch (whatsappError) {
-    console.error("❌ WhatsApp notification failed:", whatsappError.message);
+    console.error("WhatsApp notification failed:", whatsappError.message);
     // Don't fail the main operation if WhatsApp fails
   }
 

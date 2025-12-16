@@ -15,6 +15,10 @@ const AssignLawyerModal = ({ isOpen, onClose, caseData }) => {
 
   if (!isOpen || !caseData) return null;
 
+  // Check if the case status allows showing approving lawyer
+  const showApprovingLawyer = caseData.status === "PendingApproval" ||
+                               caseData.case?.status === "PendingApproval";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,22 +27,31 @@ const AssignLawyerModal = ({ isOpen, onClose, caseData }) => {
       return;
     }
 
-    if (!selectedApprovingLawyer) {
-      toast.error("Please select an approving lawyer");
-      return;
-    }
+    // Only validate approving lawyer if the field is shown
+    if (showApprovingLawyer) {
+      if (!selectedApprovingLawyer) {
+        toast.error("Please select an approving lawyer");
+        return;
+      }
 
-    if (selectedLawyer === selectedApprovingLawyer) {
-      toast.error("Assigned lawyer and approving lawyer must be different");
-      return;
+      if (selectedLawyer === selectedApprovingLawyer) {
+        toast.error("Assigned lawyer and approving lawyer must be different");
+        return;
+      }
     }
 
     try {
-      await assignCaseToLawyer({
+      const payload = {
         id: caseData._id || caseData.id,
         lawyerId: selectedLawyer,
-        approvingLawyerId: selectedApprovingLawyer,
-      }).unwrap();
+      };
+
+      // Only include approving lawyer if it should be shown
+      if (showApprovingLawyer && selectedApprovingLawyer) {
+        payload.approvingLawyerId = selectedApprovingLawyer;
+      }
+
+      await assignCaseToLawyer(payload).unwrap();
 
       toast.success(
         "Case assigned successfully! 📱 WhatsApp notifications sent to lawyers."
@@ -107,40 +120,50 @@ const AssignLawyerModal = ({ isOpen, onClose, caseData }) => {
               ))}
             </select>
             <p className="text-xs text-slate-500">
-              👨‍💼 Primary lawyer responsible for case handling
+              Primary lawyer responsible for case handling
             </p>
           </div>
 
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-slate-700">
-              Approving Lawyer *
-            </label>
-            <select
-              value={selectedApprovingLawyer}
-              onChange={(e) => setSelectedApprovingLawyer(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-500 text-sm"
-              required
-              disabled={loadingLawyers || isLoading}
-            >
-              <option value="">
-                {loadingLawyers
-                  ? "Loading lawyers..."
-                  : "Select Approving Lawyer"}
-              </option>
-              {lawyersData?.data?.map((lawyer) => (
-                <option key={lawyer._id} value={lawyer._id}>
-                  {lawyer.name} - {lawyer.email}
+          {showApprovingLawyer && (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-slate-700">
+                Approving Lawyer *
+              </label>
+              <select
+                value={selectedApprovingLawyer}
+                onChange={(e) => setSelectedApprovingLawyer(e.target.value)}
+                className="w-full rounded-lg px-3 py-2 border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-blue-500 text-sm"
+                required={showApprovingLawyer}
+                disabled={loadingLawyers || isLoading}
+              >
+                <option value="">
+                  {loadingLawyers
+                    ? "Loading lawyers..."
+                    : "Select Approving Lawyer"}
                 </option>
-              ))}
-            </select>
-            <p className="text-xs text-slate-500">
-              ✅ Senior lawyer responsible for final case approval
-            </p>
-          </div>
+                {lawyersData?.data?.map((lawyer) => (
+                  <option key={lawyer._id} value={lawyer._id}>
+                    {lawyer.name} - {lawyer.email}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-slate-500">
+                Senior lawyer responsible for final case approval
+              </p>
+            </div>
+          )}
+
+          {!showApprovingLawyer && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <p className="text-xs text-amber-800">
+                <strong>Note:</strong> Approving lawyer can be assigned once the case reaches "Pending Approval" status.
+              </p>
+            </div>
+          )}
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-xs text-blue-800">
-              📱 <strong>WhatsApp Integration:</strong> Both lawyers will
+              <strong>WhatsApp Integration:</strong> Both lawyers will
               receive instant notifications about the case assignment with all
               relevant details.
             </p>

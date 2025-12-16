@@ -42,16 +42,53 @@ const caseStageSchema = new mongoose.Schema({
 
 const clientSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    contactNumber: { type: String, required: true },
-    email: String,
-    address: String,
-    nationalId: String,
-    additionalInfo: String,
+    name: {
+      type: String,
+      required: [true, "Client name is required"],
+      trim: true,
+      minlength: [2, "Name must be at least 2 characters"],
+      maxlength: [100, "Name cannot exceed 100 characters"]
+    },
+    contactNumber: {
+      type: String,
+      required: [true, "Contact number is required"],
+      trim: true,
+      validate: {
+        validator: function(v) {
+          return /^[0-9+\-\s()]+$/.test(v);
+        },
+        message: props => `${props.value} is not a valid phone number!`
+      }
+    },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: function(v) {
+          return !v || /^\S+@\S+\.\S+$/.test(v);
+        },
+        message: props => `${props.value} is not a valid email!`
+      }
+    },
+    address: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Address cannot exceed 500 characters"]
+    },
+    nationalId: {
+      type: String,
+      trim: true
+    },
+    additionalInfo: {
+      type: String,
+      trim: true,
+      maxlength: [1000, "Additional info cannot exceed 1000 characters"]
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "Created by is required"],
     },
     createdAt: { type: Date, default: Date.now },
   },
@@ -99,8 +136,9 @@ const caseSchema = new mongoose.Schema(
         "Archived",
       ],
       default: "Draft",
+      index: true
     },
-    archived: { type: Boolean, default: false },
+    archived: { type: Boolean, default: false, index: true },
     archivedAt: Date,
     archivedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     modificationRequests: [
@@ -135,13 +173,22 @@ const reminderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add indexes for reminders
+reminderSchema.index({ caseId: 1 });
+reminderSchema.index({ reminderDate: 1, sent: 1 });
+reminderSchema.index({ recipients: 1 });
+
 const activityLogSchema = new mongoose.Schema({
-  caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case" },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  action: { type: String, required: true },
+  caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case", index: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+  action: { type: String, required: true, index: true },
   description: String,
-  timestamp: { type: Date, default: Date.now },
+  timestamp: { type: Date, default: Date.now, index: true },
 });
+
+// Add compound index for activity log queries
+activityLogSchema.index({ caseId: 1, timestamp: -1 });
+activityLogSchema.index({ userId: 1, timestamp: -1 });
 
 export const Client = mongoose.model("Client", clientSchema);
 export const Case = mongoose.model("Case", caseSchema);

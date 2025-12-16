@@ -3,20 +3,129 @@ import {
   X,
   FileText,
   Clock,
-  CheckCircle,
   Shield,
   Download,
 } from "lucide-react";
 
 const ViewCaseModal = ({ caseData, onClose }) => {
-  console.log("ViewCaseModal rendered with caseData:", caseData);
-
   if (!caseData) {
-    console.log("No caseData - returning null");
     return null;
   }
 
   const { client, case: caseInfo } = caseData;
+
+  // Helper function to download a document
+  const handleDownload = async (url, filename) => {
+    if (!url) {
+      alert('Document URL is missing');
+      return;
+    }
+
+    try {
+      // Check if it's a Cloudinary URL or external URL
+      const isCloudinary = url.includes('cloudinary.com');
+
+      if (isCloudinary) {
+        // For Cloudinary, force download by adding fl_attachment parameter
+        let downloadUrl = url;
+        if (!url.includes('fl_attachment')) {
+          // Add download flag to Cloudinary URL
+          downloadUrl = url.replace('/upload/', '/upload/fl_attachment/');
+        }
+        // Open in new tab for Cloudinary URLs
+        window.open(downloadUrl, '_blank');
+      } else {
+        // For other URLs, try fetch and blob method
+        const response = await fetch(url, {
+          mode: 'cors',
+          credentials: 'omit'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename || 'document';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up blob URL after a delay
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      // Fallback: try to open in new tab
+      try {
+        window.open(url, '_blank');
+      } catch (fallbackError) {
+        alert('Failed to download document. Please try again or contact support.');
+      }
+    }
+  };
+
+  // Helper function to download all documents
+  const handleDownloadAll = async () => {
+    const allDocuments = [];
+
+    // Collect all documents from stages
+    caseInfo.stages?.forEach((stage, idx) => {
+      // Add memorandum if exists
+      if (stage.memorandum) {
+        const memoUrl = stage.memorandum.fileUrl || stage.memorandum.url;
+        const memoName = stage.memorandum.name || `memorandum-stage-${idx + 1}.pdf`;
+        if (memoUrl) {
+          allDocuments.push({ url: memoUrl, name: memoName });
+        }
+      }
+      // Add evidence documents
+      if (stage.evidence && Array.isArray(stage.evidence)) {
+        stage.evidence.forEach(e => {
+          if (e.url && e.name) {
+            allDocuments.push({ url: e.url, name: e.name });
+          }
+        });
+      }
+      // Add stage documents
+      if (stage.documents && Array.isArray(stage.documents)) {
+        stage.documents.forEach(d => {
+          if (d.url && d.name) {
+            allDocuments.push({ url: d.url, name: d.name });
+          }
+        });
+      }
+    });
+
+    // Collect case documents
+    if (caseInfo.documents && Array.isArray(caseInfo.documents)) {
+      caseInfo.documents.forEach(doc => {
+        if (doc.url && doc.name) {
+          allDocuments.push({ url: doc.url, name: doc.name });
+        }
+      });
+    }
+
+    if (allDocuments.length === 0) {
+      alert('No documents available to download');
+      return;
+    }
+
+    // Download each document with a slight delay to prevent blocking
+    for (const doc of allDocuments) {
+      try {
+        await handleDownload(doc.url, doc.name);
+        // Small delay between downloads
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error(`Failed to download ${doc.name}:`, error);
+      }
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4 sm:px-6 py-4">
@@ -76,83 +185,104 @@ const ViewCaseModal = ({ caseData, onClose }) => {
           {caseInfo.stages?.map((stage, idx) => (
             <div
               key={idx}
-              className="bg-white border  border-[#BCB083] rounded-lg p-3 shadow-sm"
+              className="bg-white border border-[#BCB083] rounded-lg p-3 shadow-sm"
             >
               {/* Stage Header */}
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-2 mb-2">
                 <div className="flex-1">
                   <h3 className="text-xs font-semibold text-slate-800 mb-1">
-                    Stage {idx + 1}: {stage.stage}
+                    Stage {stage.stageNumber || idx + 1}: {stage.stageType || 'Main'}
                   </h3>
                   <div className="space-y-0.5 text-[10px] text-slate-600">
-                    <p className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {stage.submittedOn}
-                    </p>
-                    <p className="line-clamp-1">{stage.description}</p>
-                    <p className="line-clamp-1">{stage.outcome}</p>
-                    {stage.approvedBy && <p>Approved: {stage.approvedBy}</p>}
+                    {stage.hearingDate && (
+                      <p className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        Hearing: {new Date(stage.hearingDate).toLocaleDateString()}
+                        {stage.hearingTime && ` at ${stage.hearingTime}`}
+                      </p>
+                    )}
+                    {stage.createdAt && (
+                      <p className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        Created: {new Date(stage.createdAt).toLocaleDateString()}
+                      </p>
+                    )}
+                    {stage.memorandum?.feedback && (
+                      <p className="line-clamp-2">Feedback: {stage.memorandum.feedback}</p>
+                    )}
                   </div>
                 </div>
 
                 {/* Stage Badges */}
                 <div className="flex flex-wrap gap-1">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 bg-amber-50 text-amber-700 border  border-[#BCB083]">
-                    <Clock size={10} /> Pending
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 border ${
+                    stage.status === 'Completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                    stage.status === 'Approved' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                    stage.status === 'Submitted' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                    'bg-amber-50 text-amber-700 border-amber-200'
+                  }`}>
+                    <Clock size={10} /> {stage.status || 'InProgress'}
                   </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200">
-                    <Shield size={10} /> Signed
-                  </span>
+                  {stage.memorandum?.status && (
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 border ${
+                      stage.memorandum.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-200' :
+                      stage.memorandum.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                      'bg-yellow-50 text-yellow-700 border-yellow-200'
+                    }`}>
+                      <Shield size={10} /> Memo: {stage.memorandum.status}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Memorandum */}
-              {stage.memorandum && (
+              {stage.memorandum?.fileUrl && (
                 <div className="mb-2">
                   <h4 className="font-semibold text-slate-700 text-[10px] mb-1 flex items-center gap-1">
                     <FileText size={10} /> Memorandum
                   </h4>
                   <div className="p-2 bg-slate-50 border border-slate-200 rounded flex justify-between items-center">
                     <span className="text-[10px] text-slate-700 truncate max-w-[70%]">
-                      {stage.memorandum.name}
+                      {stage.memorandum.fileUrl.split('/').pop() || `Memorandum-Stage-${stage.stageNumber || idx + 1}`}
                     </span>
-                    <a
-                      href={stage.memorandum.url}
+                    <button
+                      onClick={() => handleDownload(stage.memorandum.fileUrl, `memorandum-stage-${stage.stageNumber || idx + 1}.pdf`)}
                       className="p-1 text-slate-600 hover:text-blue-600 rounded transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="Download"
+                      title="Download Memorandum"
                     >
                       <Download size={12} />
-                    </a>
+                    </button>
                   </div>
+                  {stage.memorandum.content && (
+                    <p className="text-[9px] text-slate-500 mt-1 line-clamp-2">
+                      {stage.memorandum.content}
+                    </p>
+                  )}
                 </div>
               )}
 
-              {/* Evidence */}
-              {stage.evidence?.length > 0 && (
+              {/* Stage Documents */}
+              {stage.documents?.length > 0 && (
                 <div className="mb-2">
                   <h4 className="font-semibold text-slate-700 text-[10px] mb-1 flex items-center gap-1">
-                    <Shield size={10} /> Evidence ({stage.evidence.length})
+                    <Shield size={10} /> Stage Documents ({stage.documents.length})
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {stage.evidence.map((e, i) => (
+                    {stage.documents.map((doc, i) => (
                       <div
                         key={i}
                         className="p-2 bg-slate-50 border border-slate-200 rounded flex justify-between items-center"
                       >
                         <span className="text-[10px] text-slate-700 truncate max-w-[70%]">
-                          {e.name}
+                          {doc.name}
                         </span>
-                        <a
-                          href={e.url}
+                        <button
+                          onClick={() => handleDownload(doc.url, doc.name)}
                           className="p-1 text-slate-600 hover:text-blue-600 rounded transition-colors"
-                          target="_blank"
-                          rel="noopener noreferrer"
                           title="Download"
                         >
                           <Download size={12} />
-                        </a>
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -176,15 +306,13 @@ const ViewCaseModal = ({ caseData, onClose }) => {
                     <span className="text-[10px] text-slate-700 truncate max-w-[70%]">
                       {doc.name}
                     </span>
-                    <a
-                      href={doc.url}
+                    <button
+                      onClick={() => handleDownload(doc.url, doc.name)}
                       className="p-1 text-slate-600 hover:text-[#BCB083] rounded transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
                       title="Download"
                     >
                       <Download size={12} />
-                    </a>
+                    </button>
                   </div>
                 ))}
               </div>
@@ -219,8 +347,11 @@ const ViewCaseModal = ({ caseData, onClose }) => {
             >
               Close
             </button>
-            <button className="flex items-center gap-1 px-3 py-1 bg-[#A48C65] text-white rounded text-xs hover:bg-[#8c7a4e] transition">
-              <Download size={12} /> Download
+            <button
+              onClick={handleDownloadAll}
+              className="flex items-center gap-1 px-3 py-1 bg-[#A48C65] text-white rounded text-xs hover:bg-[#8c7a4e] transition"
+            >
+              <Download size={12} /> Download All
             </button>
           </div>
         </div>

@@ -2,16 +2,17 @@ import React, { useState, useRef } from "react";
 import {
   Upload,
   FileText,
-  X,
   Trash2,
   AlertCircle,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 
 const DocumentDetailsForm = ({ caseInfo, onChange }) => {
   const [documents, setDocuments] = useState(caseInfo?.documents || []);
   const [errors, setErrors] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   const fileInputRef = useRef(null);
 
   // Update parent when documents change
@@ -26,52 +27,68 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
     }
   }, [documents, onChange]);
 
-  // Validate documents
-  const validateDocuments = () => {
-    const newErrors = [];
+  // Upload file to backend API which will handle Cloudinary upload
+  const uploadFileToBackend = async (file) => {
+    const formData = new FormData();
+    formData.append('document', file);
 
-    if (documents.length < 3) {
-      newErrors.push(
-        `At least 3 documents are required. Currently have ${documents.length}.`
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/upload/document`,
+        {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        }
       );
-    }
 
-    // Validate file types and sizes
-    documents.forEach((doc, index) => {
-      if (doc.file) {
-        const maxSize = 10 * 1024 * 1024; // 10MB
-        const allowedTypes = [
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          "image/jpeg",
-          "image/png",
-          "image/jpg",
-        ];
-
-        if (doc.file.size > maxSize) {
-          newErrors.push(`"${doc.name}" is too large. Maximum size is 10MB.`);
-        }
-
-        if (!allowedTypes.includes(doc.file.type)) {
-          newErrors.push(`"${doc.name}" has an invalid file type.`);
-        }
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Upload failed');
       }
-    });
 
-    setErrors(newErrors);
-    return newErrors.length === 0;
+      const data = await response.json();
+      return data.url; // Returns the Cloudinary URL from backend
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
   };
 
-  // Handle file selection
-  const handleFileSelect = (files) => {
-    const newDocuments = Array.from(files).map((file) => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-      file: file, // Store the actual file object
-    }));
+  // Handle file selection with upload
+  const handleFileSelect = async (files) => {
+    setUploadingFiles(true);
+    setErrors([]);
 
-    setDocuments((prev) => [...prev, ...newDocuments]);
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        try {
+          // Upload to backend API
+          const cloudinaryUrl = await uploadFileToBackend(file);
+
+          return {
+            name: file.name,
+            url: cloudinaryUrl, // Store actual Cloudinary URL
+            uploadedAt: new Date().toISOString(),
+          };
+        } catch (error) {
+          console.error('Upload error:', error);
+          setErrors(prev => [...prev, `Failed to upload ${file.name}`]);
+          return null;
+        }
+      });
+
+      const uploadedDocs = (await Promise.all(uploadPromises)).filter(Boolean);
+
+      if (uploadedDocs.length > 0) {
+        setDocuments((prev) => [...prev, ...uploadedDocs]);
+      }
+    } catch (error) {
+      console.error('Upload batch error:', error);
+      setErrors(prev => [...prev, 'Failed to upload files. Please try again.']);
+    } finally {
+      setUploadingFiles(false);
+    }
   };
 
   // Handle drag and drop
@@ -156,7 +173,9 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
 
       {/* Upload Area */}
       <div
-        className={`border-2 border-dashed rounded p-4 text-center transition-all cursor-pointer ${
+        className={`border-2 border-dashed rounded p-4 text-center transition-all ${
+          uploadingFiles ? 'cursor-wait opacity-75' : 'cursor-pointer'
+        } ${
           isDragging
             ? "border-blue-400 bg-[#BCB083]"
             : "border-slate-300 bg-slate-50 hover:bg-slate-100"
@@ -164,15 +183,29 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => !uploadingFiles && fileInputRef.current?.click()}
       >
-        <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-        <p className="text-slate-600 mb-1 font-medium text-xs">
-          Drag and drop or click to upload
-        </p>
-        <p className="text-[10px] text-slate-500">
-          PDF, DOC, DOCX, JPG, PNG (Max 10MB)
-        </p>
+        {uploadingFiles ? (
+          <>
+            <Loader2 className="w-8 h-8 text-blue-500 mx-auto mb-2 animate-spin" />
+            <p className="text-blue-600 mb-1 font-medium text-xs">
+              Uploading files to cloud storage...
+            </p>
+            <p className="text-[10px] text-slate-500">
+              Please wait, this may take a moment
+            </p>
+          </>
+        ) : (
+          <>
+            <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+            <p className="text-slate-600 mb-1 font-medium text-xs">
+              Drag and drop or click to upload
+            </p>
+            <p className="text-[10px] text-slate-500">
+              PDF, DOC, DOCX, JPG, PNG (Max 10MB)
+            </p>
+          </>
+        )}
         <input
           type="file"
           ref={fileInputRef}
@@ -180,6 +213,7 @@ const DocumentDetailsForm = ({ caseInfo, onChange }) => {
           multiple
           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
           className="hidden"
+          disabled={uploadingFiles}
         />
       </div>
 

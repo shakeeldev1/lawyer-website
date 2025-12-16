@@ -134,7 +134,6 @@ const CaseManagement = () => {
 
   const handleViewCase = (caseId) => {
     const caseToView = cases.find((c) => c.id === caseId);
-    console.log("success");
     setViewCase(caseToView);
   };
 

@@ -108,12 +108,12 @@ const Signup = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="923120201709 (without + sign)"
+              placeholder="97412345678 (without + sign)"
               className="w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#BCB083] rounded-xl bg-[#ffff] text-black placeholder-[#494C52] border border-[#BCB083] transition-all"
               required
             />
             <p className="text-xs text-[#494C52] mt-1">
-            Format: Country code + number (e.g., 923120201709 for Pakistan)
+            Format: Country code + number (e.g., 97412345678 for Qatar)
             </p>
           </div>
 
